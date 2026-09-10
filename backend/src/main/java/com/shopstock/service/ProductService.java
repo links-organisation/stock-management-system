@@ -46,9 +46,15 @@ public class ProductService {
         return new ProductResponse(getEntityById(id));
     }
 
-    public List<ProductResponse> search(String query) {
-        return productRepository.findByNameContainingIgnoreCaseOrReferenceContainingIgnoreCase(query, query)
-                .stream()
+    public List<ProductResponse> search(String query, Long categoryId) {
+        List<Product> base = categoryId != null
+                ? productRepository.findByCategoryId(categoryId)
+                : productRepository.findAll();
+
+        return base.stream()
+                .filter(p -> query == null || query.isBlank()
+                        || p.getName().toLowerCase().contains(query.toLowerCase())
+                        || p.getReference().toLowerCase().contains(query.toLowerCase()))
                 .map(ProductResponse::new)
                 .collect(Collectors.toList());
     }

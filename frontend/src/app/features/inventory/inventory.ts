@@ -16,6 +16,7 @@ export class Inventory implements OnInit {
   products: Product[] = [];
   isLoading = true;
   errorMessage = '';
+  successMessage = '';
 
   adjustingProductId: number | null = null;
   newQuantity = 0;
@@ -63,7 +64,12 @@ export class Inventory implements OnInit {
         this.isSaving = false;
         this.adjustingProductId = null;
         this.products = this.products.map((p) => (p.id === updated.id ? updated : p));
+        this.successMessage = `${updated.name} adjusted to ${updated.quantityInStock}.`;
         this.cdr.detectChanges();
+        setTimeout(() => {
+          this.successMessage = '';
+          this.cdr.detectChanges();
+        }, 3000);
       },
       error: () => {
         this.isSaving = false;

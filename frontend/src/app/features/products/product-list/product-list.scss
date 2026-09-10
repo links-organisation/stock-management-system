@@ -25,20 +25,28 @@ button.primary:hover {
 }
 
 .search {
+  display: flex;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
 
 .search input {
-  width: 100%;
+  flex: 1;
   max-width: 360px;
+}
+
+.search input,
+.search select {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   background: var(--color-surface);
   padding: 0.625rem 0.875rem;
   font-size: 0.9375rem;
+  color: var(--color-ink);
 }
 
-.search input:focus-visible {
+.search input:focus-visible,
+.search select:focus-visible {
   border-color: var(--color-accent);
 }
 

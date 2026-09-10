@@ -21,8 +21,11 @@ export class ProductService {
     return this.http.get<Product>(`${this.baseUrl}/${id}`);
   }
 
-  search(query: string): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.baseUrl}/search`, { params: { query } });
+  search(query: string, categoryId?: number | null): Observable<Product[]> {
+    const params: Record<string, string> = {};
+    if (query) params['query'] = query;
+    if (categoryId != null) params['categoryId'] = String(categoryId);
+    return this.http.get<Product[]>(`${this.baseUrl}/search`, { params });
   }
 
   create(data: ProductFormData): Observable<Product> {

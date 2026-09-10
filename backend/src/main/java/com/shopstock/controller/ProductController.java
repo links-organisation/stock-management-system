@@ -41,8 +41,9 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public List<ProductResponse> search(@RequestParam String query) {
-        return productService.search(query);
+    public List<ProductResponse> search(@RequestParam(required = false) String query,
+                                         @RequestParam(required = false) Long categoryId) {
+        return productService.search(query, categoryId);
     }
 
     @DeleteMapping("/{id}")

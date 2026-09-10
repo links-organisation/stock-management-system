@@ -4,6 +4,9 @@
   @if (errorMessage) {
     <p class="status status--error">{{ errorMessage }}</p>
   }
+  @if (successMessage) {
+    <p class="status status--success">{{ successMessage }}</p>
+  }
 
   @if (isLoading) {
     <p class="status">Loading…</p>

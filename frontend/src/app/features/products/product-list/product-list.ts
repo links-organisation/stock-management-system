@@ -18,8 +18,10 @@ export class ProductList implements OnInit {
   products: Product[] = [];
   categories: Category[] = [];
   searchQuery = '';
+  categoryFilter: number | null = null;
   isLoading = true;
   errorMessage = '';
+  successMessage = '';
 
   isFormOpen = false;
   editingProduct: Product | null = null;
@@ -54,13 +56,13 @@ export class ProductList implements OnInit {
     });
   }
 
-  onSearch(): void {
+  applyFilters(): void {
     const query = this.searchQuery.trim();
-    if (!query) {
+    if (!query && this.categoryFilter == null) {
       this.loadProducts();
       return;
     }
-    this.productService.search(query).subscribe((products) => {
+    this.productService.search(query, this.categoryFilter).subscribe((products) => {
       this.products = products;
       this.cdr.detectChanges();
     });
@@ -85,6 +87,7 @@ export class ProductList implements OnInit {
   }
 
   onSaveProduct(data: ProductFormData): void {
+    const wasEditing = this.editingProduct !== null;
     const request = this.editingProduct
       ? this.productService.update(this.editingProduct.id, data)
       : this.productService.create(data);
@@ -92,7 +95,10 @@ export class ProductList implements OnInit {
     request.subscribe({
       next: () => {
         this.closeForm();
-        this.loadProducts();
+        this.applyFilters();
+        this.successMessage = wasEditing ? 'Product updated.' : 'Product registered.';
+        this.cdr.detectChanges();
+        this.clearSuccessMessageSoon();
       },
       error: () => {
         this.errorMessage = 'Could not save the product. Check the reference is unique.';
@@ -105,6 +111,18 @@ export class ProductList implements OnInit {
     if (!confirm(`Delete "${product.name}"? This cannot be undone.`)) {
       return;
     }
-    this.productService.delete(product.id).subscribe(() => this.loadProducts());
+    this.productService.delete(product.id).subscribe(() => {
+      this.applyFilters();
+      this.successMessage = `"${product.name}" deleted.`;
+      this.cdr.detectChanges();
+      this.clearSuccessMessageSoon();
+    });
+  }
+
+  private clearSuccessMessageSoon(): void {
+    setTimeout(() => {
+      this.successMessage = '';
+      this.cdr.detectChanges();
+    }, 3000);
   }
 }

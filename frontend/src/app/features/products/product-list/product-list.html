@@ -10,12 +10,21 @@
       name="search"
       placeholder="Search by name or reference…"
       [(ngModel)]="searchQuery"
-      (ngModelChange)="onSearch()"
+      (ngModelChange)="applyFilters()"
     />
+    <select name="categoryFilter" [(ngModel)]="categoryFilter" (ngModelChange)="applyFilters()">
+      <option [ngValue]="null">All categories</option>
+      @for (category of categories; track category.id) {
+        <option [ngValue]="category.id">{{ category.name }}</option>
+      }
+    </select>
   </div>
 
   @if (errorMessage) {
     <p class="status status--error">{{ errorMessage }}</p>
+  }
+  @if (successMessage) {
+    <p class="status status--success">{{ successMessage }}</p>
   }
 
   @if (isLoading) {
