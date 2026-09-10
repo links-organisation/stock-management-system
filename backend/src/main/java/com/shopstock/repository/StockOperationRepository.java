@@ -15,4 +15,6 @@ public interface StockOperationRepository extends JpaRepository<StockOperation, 
     List<StockOperation> findByPerformedById(Long userId);
 
     List<StockOperation> findAllByOrderByOperationDateDesc();
+
+    boolean existsByProductId(Long productId);
 }

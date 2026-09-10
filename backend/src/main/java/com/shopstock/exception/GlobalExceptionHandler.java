@@ -31,6 +31,12 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(409, "Conflict", ex.getMessage()));
     }
 
+    @ExceptionHandler(ProductInUseException.class)
+    public ResponseEntity<ErrorResponse> handleProductInUse(ProductInUseException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(409, "Conflict", ex.getMessage()));
+    }
+
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

@@ -8,8 +8,10 @@ import com.shopstock.entity.Product;
 import com.shopstock.entity.StockOperation;
 import com.shopstock.entity.User;
 import com.shopstock.exception.DuplicateResourceException;
+import com.shopstock.exception.ProductInUseException;
 import com.shopstock.exception.ResourceNotFoundException;
 import com.shopstock.repository.ProductRepository;
+import com.shopstock.repository.SaleItemRepository;
 import com.shopstock.repository.StockOperationRepository;
 import com.shopstock.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -24,15 +26,18 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final StockOperationRepository stockOperationRepository;
+    private final SaleItemRepository saleItemRepository;
     private final CategoryService categoryService;
 
     public ProductService(ProductRepository productRepository,
                            UserRepository userRepository,
                            StockOperationRepository stockOperationRepository,
+                           SaleItemRepository saleItemRepository,
                            CategoryService categoryService) {
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.stockOperationRepository = stockOperationRepository;
+        this.saleItemRepository = saleItemRepository;
         this.categoryService = categoryService;
     }
 
@@ -97,6 +102,12 @@ public class ProductService {
 
     public void delete(Long id) {
         Product product = getEntityById(id);
+
+        if (stockOperationRepository.existsByProductId(id) || saleItemRepository.existsByProductId(id)) {
+            throw new ProductInUseException("Cannot delete '" + product.getName()
+                    + "' because it has recorded stock history or sales. Products with activity are kept for the audit trail.");
+        }
+
         productRepository.delete(product);
     }
 

@@ -111,11 +111,18 @@ export class ProductList implements OnInit {
     if (!confirm(`Delete "${product.name}"? This cannot be undone.`)) {
       return;
     }
-    this.productService.delete(product.id).subscribe(() => {
-      this.applyFilters();
-      this.successMessage = `"${product.name}" deleted.`;
-      this.cdr.detectChanges();
-      this.clearSuccessMessageSoon();
+    this.errorMessage = '';
+    this.productService.delete(product.id).subscribe({
+      next: () => {
+        this.applyFilters();
+        this.successMessage = `"${product.name}" deleted.`;
+        this.cdr.detectChanges();
+        this.clearSuccessMessageSoon();
+      },
+      error: (err) => {
+        this.errorMessage = err.error?.message ?? `Could not delete "${product.name}".`;
+        this.cdr.detectChanges();
+      },
     });
   }
 
