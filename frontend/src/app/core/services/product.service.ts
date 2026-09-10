@@ -17,14 +17,14 @@ export class ProductService {
     return this.http.get<Product[]>(this.baseUrl);
   }
 
-  getById(id: number): Observable<Product> {
+  getById(id: string): Observable<Product> {
     return this.http.get<Product>(`${this.baseUrl}/${id}`);
   }
 
-  search(query: string, categoryId?: number | null): Observable<Product[]> {
+  search(query: string, categoryId?: string | null): Observable<Product[]> {
     const params: Record<string, string> = {};
     if (query) params['query'] = query;
-    if (categoryId != null) params['categoryId'] = String(categoryId);
+    if (categoryId != null) params['categoryId'] = categoryId;
     return this.http.get<Product[]>(`${this.baseUrl}/search`, { params });
   }
 
@@ -32,12 +32,14 @@ export class ProductService {
     return this.http.post<Product>(this.baseUrl, this.withUser(data));
   }
 
-  update(id: number, data: ProductFormData): Observable<Product> {
+  update(id: string, data: ProductFormData): Observable<Product> {
     return this.http.put<Product>(`${this.baseUrl}/${id}`, this.withUser(data));
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`, {
+      params: { userId: this.authService.currentUserId! },
+    });
   }
 
   private withUser(data: ProductFormData): ProductRequest {

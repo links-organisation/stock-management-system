@@ -11,6 +11,7 @@ import { Product } from '../../../core/models/product.model';
 })
 export class ProductCard {
   @Input({ required: true }) product!: Product;
+  @Input() canManage = false;
   @Output() edit = new EventEmitter<Product>();
   @Output() remove = new EventEmitter<Product>();
 }

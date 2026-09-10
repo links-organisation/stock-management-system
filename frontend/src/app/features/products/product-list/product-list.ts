@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Category } from '../../../core/models/category.model';
 import { Product } from '../../../core/models/product.model';
+import { AuthService } from '../../../core/services/auth.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { ProductFormData, ProductService } from '../../../core/services/product.service';
 import { ProductCard } from '../product-card/product-card';
@@ -18,7 +19,7 @@ export class ProductList implements OnInit {
   products: Product[] = [];
   categories: Category[] = [];
   searchQuery = '';
-  categoryFilter: number | null = null;
+  categoryFilter: string | null = null;
   isLoading = true;
   errorMessage = '';
   successMessage = '';
@@ -29,6 +30,7 @@ export class ProductList implements OnInit {
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
+    public authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 

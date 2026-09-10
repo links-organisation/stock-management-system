@@ -29,8 +29,10 @@
     <p class="warning">Below alert threshold</p>
   }
 
-  <footer>
-    <button type="button" (click)="edit.emit(product)">Edit</button>
-    <button type="button" class="danger" (click)="remove.emit(product)">Delete</button>
-  </footer>
+  @if (canManage) {
+    <footer>
+      <button type="button" (click)="edit.emit(product)">Edit</button>
+      <button type="button" class="danger" (click)="remove.emit(product)">Delete</button>
+    </footer>
+  }
 </article>

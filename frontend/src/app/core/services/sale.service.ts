@@ -15,7 +15,7 @@ export class SaleService {
     return this.http.get<Sale[]>(this.baseUrl);
   }
 
-  getById(id: number): Observable<Sale> {
+  getById(id: string): Observable<Sale> {
     return this.http.get<Sale>(`${this.baseUrl}/${id}`);
   }
 

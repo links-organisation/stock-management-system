@@ -1,5 +1,5 @@
 export interface Category {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
 }
@@ -7,4 +7,5 @@ export interface Category {
 export interface CategoryRequest {
   name: string;
   description?: string;
+  userId: string;
 }

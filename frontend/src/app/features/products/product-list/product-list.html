@@ -1,7 +1,9 @@
 <div class="page">
   <header class="page-head">
     <h1>Products</h1>
-    <button type="button" class="primary" (click)="openCreateForm()">Register product</button>
+    @if (authService.isAdminOrAbove()) {
+      <button type="button" class="primary" (click)="openCreateForm()">Register product</button>
+    }
   </header>
 
   <div class="search">
@@ -34,7 +36,12 @@
   } @else {
     <div class="grid">
       @for (product of products; track product.id) {
-        <app-product-card [product]="product" (edit)="openEditForm($event)" (remove)="onDeleteProduct($event)"></app-product-card>
+        <app-product-card
+          [product]="product"
+          [canManage]="authService.isAdminOrAbove()"
+          (edit)="openEditForm($event)"
+          (remove)="onDeleteProduct($event)"
+        ></app-product-card>
       }
     </div>
   }

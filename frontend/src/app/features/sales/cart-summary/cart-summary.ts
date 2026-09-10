@@ -2,7 +2,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 export interface CartLine {
-  productId: number;
+  productId: string;
   productName: string;
   quantity: number;
   unitPrice: number;
@@ -18,7 +18,7 @@ export interface CartLine {
 export class CartSummary {
   @Input() lines: CartLine[] = [];
   @Input() isSubmitting = false;
-  @Output() removeLine = new EventEmitter<number>();
+  @Output() removeLine = new EventEmitter<string>();
   @Output() checkout = new EventEmitter<void>();
 
   get total(): number {

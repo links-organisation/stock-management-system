@@ -1,8 +1,8 @@
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   reference: string;
-  categoryId: number | null;
+  categoryId: string | null;
   categoryName: string | null;
   purchasePrice: number;
   sellingPrice: number;
@@ -14,10 +14,10 @@ export interface Product {
 export interface ProductRequest {
   name: string;
   reference: string;
-  categoryId?: number | null;
+  categoryId?: string | null;
   purchasePrice: number;
   sellingPrice: number;
   quantityInStock: number;
   alertThreshold: number;
-  userId: number;
+  userId: string;
 }

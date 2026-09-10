@@ -1,10 +1,10 @@
 import { Sale } from './sale.model';
 
 export interface Invoice {
-  id: number;
+  id: string;
   invoiceNumber: string;
   invoiceDate: string;
-  saleId: number;
+  saleId: string;
   totalAmount: number;
   sale: Sale | null;
 }

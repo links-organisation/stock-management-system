@@ -1,0 +1,46 @@
+<div class="page narrow">
+  <h1>My account</h1>
+  <p class="role-hint">Signed in as <strong>{{ role }}</strong></p>
+
+  <form class="panel" (ngSubmit)="onSubmit()" novalidate>
+    <label class="field">
+      <span>Full name</span>
+      <input type="text" name="fullName" [(ngModel)]="fullName" required />
+    </label>
+
+    <label class="field">
+      <span>Username</span>
+      <input type="text" name="username" [(ngModel)]="username" required />
+    </label>
+
+    <h2>Change password</h2>
+    <p class="hint">Leave blank to keep your current password.</p>
+
+    <label class="field">
+      <span>Current password</span>
+      <input type="password" name="currentPassword" [(ngModel)]="currentPassword" autocomplete="current-password" />
+    </label>
+
+    <div class="row">
+      <label class="field">
+        <span>New password</span>
+        <input type="password" name="newPassword" [(ngModel)]="newPassword" autocomplete="new-password" />
+      </label>
+      <label class="field">
+        <span>Confirm new password</span>
+        <input type="password" name="confirmPassword" [(ngModel)]="confirmPassword" autocomplete="new-password" />
+      </label>
+    </div>
+
+    @if (errorMessage) {
+      <p class="status status--error">{{ errorMessage }}</p>
+    }
+    @if (successMessage) {
+      <p class="status status--success">{{ successMessage }}</p>
+    }
+
+    <button type="submit" class="primary" [disabled]="isSaving">
+      {{ isSaving ? 'Saving…' : 'Save changes' }}
+    </button>
+  </form>
+</div>

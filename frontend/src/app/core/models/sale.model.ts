@@ -1,6 +1,6 @@
 export interface SaleItem {
-  id: number;
-  productId: number;
+  id: string;
+  productId: string;
   productName: string;
   quantity: number;
   unitPrice: number;
@@ -8,22 +8,22 @@ export interface SaleItem {
 }
 
 export interface Sale {
-  id: number;
+  id: string;
   saleDate: string;
   totalAmount: number;
   customerName: string | null;
-  performedByUserId: number;
+  performedByUserId: string;
   performedByUsername: string;
   items: SaleItem[];
 }
 
 export interface SaleItemRequest {
-  productId: number;
+  productId: string;
   quantity: number;
 }
 
 export interface SaleRequest {
-  userId: number;
+  userId: string;
   customerName?: string;
   items: SaleItemRequest[];
 }

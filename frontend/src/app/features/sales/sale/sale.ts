@@ -55,7 +55,7 @@ export class Sale implements OnInit {
     this.cdr.detectChanges();
   }
 
-  onRemoveLine(productId: number): void {
+  onRemoveLine(productId: string): void {
     this.cart = this.cart.filter((line) => line.productId !== productId);
     this.cdr.detectChanges();
   }

@@ -20,7 +20,7 @@ export class StockOperationHistory implements OnInit {
   errorMessage = '';
 
   typeFilter: OperationType | '' = '';
-  productFilter: number | null = null;
+  productFilter: string | null = null;
   fromFilter = '';
   toFilter = '';
 

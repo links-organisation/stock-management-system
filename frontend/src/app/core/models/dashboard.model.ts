@@ -1,7 +1,7 @@
 import { Product } from './product.model';
 
 export interface TopProduct {
-  productId: number;
+  productId: string;
   productName: string;
   quantitySold: number;
 }

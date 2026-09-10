@@ -1,20 +1,20 @@
 export type OperationType = 'REGISTRATION' | 'SALE' | 'ADJUSTMENT';
 
 export interface StockOperation {
-  id: number;
+  id: string;
   operationType: OperationType;
-  productId: number;
+  productId: string;
   productName: string;
   quantityChange: number;
   operationDate: string;
   comment: string | null;
-  performedByUserId: number;
+  performedByUserId: string;
   performedByUsername: string;
 }
 
 export interface AdjustmentRequest {
-  productId: number;
+  productId: string;
   newQuantity: number;
   comment?: string;
-  userId: number;
+  userId: string;
 }

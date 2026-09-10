@@ -19,7 +19,7 @@ export class ProductSelector {
   @Input() products: Product[] = [];
   @Output() add = new EventEmitter<ProductPick>();
 
-  selectedProductId: number | null = null;
+  selectedProductId: string | null = null;
   quantity = 1;
 
   get selectedProduct(): Product | null {

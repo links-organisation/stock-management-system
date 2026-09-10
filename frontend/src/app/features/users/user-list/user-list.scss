@@ -1,0 +1,94 @@
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.75rem;
+}
+
+.page-head h1 {
+  margin-bottom: 0;
+}
+
+button.primary {
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.625rem 1.125rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button.primary:hover {
+  background: var(--color-accent-hover);
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-ink-muted);
+  padding: 0 0.75rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.875rem;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.role {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: var(--radius);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.role--super_admin {
+  background: #f7e7e1;
+  color: var(--color-danger);
+}
+
+.role--admin {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.role--seller {
+  background: #eaf0f8;
+  color: #2d5285;
+}
+
+.role--compta {
+  background: #f3ecf9;
+  color: #6b3f96;
+}
+
+.actions {
+  text-align: right;
+}
+
+.actions button {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.actions button:hover {
+  border-color: var(--color-ink-muted);
+}

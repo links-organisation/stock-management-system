@@ -11,7 +11,7 @@ export class InventoryService {
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  adjust(productId: number, newQuantity: number, comment?: string): Observable<Product> {
+  adjust(productId: string, newQuantity: number, comment?: string): Observable<Product> {
     return this.http.post<Product>(`${this.baseUrl}/adjust`, {
       productId,
       newQuantity,

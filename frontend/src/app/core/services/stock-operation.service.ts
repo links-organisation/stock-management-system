@@ -5,9 +5,9 @@ import { API_BASE_URL } from '../api-config';
 import { OperationType, StockOperation } from '../models/stock-operation.model';
 
 export interface StockOperationFilter {
-  productId?: number | null;
+  productId?: string | null;
   type?: OperationType | '';
-  userId?: number | null;
+  userId?: string | null;
   from?: string;
   to?: string;
 }

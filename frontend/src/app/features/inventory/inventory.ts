@@ -18,7 +18,7 @@ export class Inventory implements OnInit {
   errorMessage = '';
   successMessage = '';
 
-  adjustingProductId: number | null = null;
+  adjustingProductId: string | null = null;
   newQuantity = 0;
   comment = '';
   isSaving = false;
