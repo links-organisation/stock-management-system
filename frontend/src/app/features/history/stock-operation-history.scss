@@ -1,28 +1,27 @@
-.page-head {
+.filters {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
   margin-bottom: 1.75rem;
-}
-
-.page-head h1 {
-  margin-bottom: 0;
 }
 
 .filter {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
+  flex-direction: column;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
   color: var(--color-ink-muted);
 }
 
-.filter select {
+.filter select,
+.filter input {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 0.375rem 0.625rem;
   font-size: 0.875rem;
   background: var(--color-surface);
+  color: var(--color-ink);
 }
 
 table {

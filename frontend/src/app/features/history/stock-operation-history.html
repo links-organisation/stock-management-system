@@ -1,6 +1,7 @@
 <div class="page">
-  <header class="page-head">
-    <h1>Operations history</h1>
+  <h1>Operations history</h1>
+
+  <div class="filters">
     <label class="filter">
       <span>Type</span>
       <select [(ngModel)]="typeFilter" (ngModelChange)="load()">
@@ -10,7 +11,27 @@
         <option value="ADJUSTMENT">Adjustment</option>
       </select>
     </label>
-  </header>
+
+    <label class="filter">
+      <span>Product</span>
+      <select [(ngModel)]="productFilter" (ngModelChange)="load()">
+        <option [ngValue]="null">All</option>
+        @for (product of products; track product.id) {
+          <option [ngValue]="product.id">{{ product.name }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="filter">
+      <span>From</span>
+      <input type="date" [(ngModel)]="fromFilter" (ngModelChange)="load()" />
+    </label>
+
+    <label class="filter">
+      <span>To</span>
+      <input type="date" [(ngModel)]="toFilter" (ngModelChange)="load()" />
+    </label>
+  </div>
 
   @if (errorMessage) {
     <p class="status status--error">{{ errorMessage }}</p>
@@ -19,7 +40,7 @@
   @if (isLoading) {
     <p class="status">Loading…</p>
   } @else if (operations.length === 0) {
-    <p class="empty">No operations recorded yet.</p>
+    <p class="empty">No operations match these filters.</p>
   } @else {
     <table class="panel">
       <thead>
