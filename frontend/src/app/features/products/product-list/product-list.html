@@ -1,0 +1,41 @@
+<div class="page">
+  <header class="page-head">
+    <h1>Products</h1>
+    <button type="button" class="primary" (click)="openCreateForm()">Register product</button>
+  </header>
+
+  <div class="search">
+    <input
+      type="search"
+      name="search"
+      placeholder="Search by name or reference…"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearch()"
+    />
+  </div>
+
+  @if (errorMessage) {
+    <p class="status status--error">{{ errorMessage }}</p>
+  }
+
+  @if (isLoading) {
+    <p class="status">Loading products…</p>
+  } @else if (products.length === 0) {
+    <p class="empty">No products match your search.</p>
+  } @else {
+    <div class="grid">
+      @for (product of products; track product.id) {
+        <app-product-card [product]="product" (edit)="openEditForm($event)" (remove)="onDeleteProduct($event)"></app-product-card>
+      }
+    </div>
+  }
+
+  @if (isFormOpen) {
+    <app-product-form
+      [product]="editingProduct"
+      [categories]="categories"
+      (save)="onSaveProduct($event)"
+      (cancel)="closeForm()"
+    ></app-product-form>
+  }
+</div>

@@ -1,0 +1,52 @@
+<div class="page">
+  <h1>Dashboard</h1>
+
+  @if (isLoading) {
+    <p class="status">Loading…</p>
+  } @else if (errorMessage) {
+    <p class="status status--error">{{ errorMessage }}</p>
+  } @else if (summary) {
+    <div class="kpis">
+      <app-kpi-card label="Stock value" [value]="summary.totalStockValue | currency"></app-kpi-card>
+      <app-kpi-card label="Total sales" [value]="summary.totalSalesCount | number"></app-kpi-card>
+      <app-kpi-card label="Revenue today" [value]="summary.revenueToday | currency"></app-kpi-card>
+      <app-kpi-card label="Revenue this week" [value]="summary.revenueThisWeek | currency"></app-kpi-card>
+      <app-kpi-card label="Revenue this month" [value]="summary.revenueThisMonth | currency"></app-kpi-card>
+    </div>
+
+    <div class="columns">
+      <section class="panel">
+        <h2>Top-selling products</h2>
+        @if (summary.topSellingProducts.length === 0) {
+          <p class="empty">No sales recorded yet.</p>
+        } @else {
+          <ol class="ranked">
+            @for (item of summary.topSellingProducts; track item.productId) {
+              <li>
+                <span>{{ item.productName }}</span>
+                <span class="ranked__count">{{ item.quantitySold }} sold</span>
+              </li>
+            }
+          </ol>
+        }
+      </section>
+
+      <section class="panel">
+        <h2>Low stock alerts</h2>
+        @if (summary.lowStockProducts.length === 0) {
+          <p class="empty">Every product is above its alert threshold.</p>
+        } @else {
+          <ul class="alerts">
+            @for (product of summary.lowStockProducts; track product.id) {
+              <li>
+                <span>{{ product.name }}</span>
+                <span class="alerts__qty">{{ product.quantityInStock }} left</span>
+              </li>
+            }
+          </ul>
+          <a class="panel__link" routerLink="/inventory">Go to inventory</a>
+        }
+      </section>
+    </div>
+  }
+</div>

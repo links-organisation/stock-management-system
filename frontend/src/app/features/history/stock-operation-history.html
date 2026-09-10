@@ -1,0 +1,51 @@
+<div class="page">
+  <header class="page-head">
+    <h1>Operations history</h1>
+    <label class="filter">
+      <span>Type</span>
+      <select [(ngModel)]="typeFilter" (ngModelChange)="load()">
+        <option value="">All</option>
+        <option value="REGISTRATION">Registration</option>
+        <option value="SALE">Sale</option>
+        <option value="ADJUSTMENT">Adjustment</option>
+      </select>
+    </label>
+  </header>
+
+  @if (errorMessage) {
+    <p class="status status--error">{{ errorMessage }}</p>
+  }
+
+  @if (isLoading) {
+    <p class="status">Loading…</p>
+  } @else if (operations.length === 0) {
+    <p class="empty">No operations recorded yet.</p>
+  } @else {
+    <table class="panel">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Product</th>
+          <th>Change</th>
+          <th>Performed by</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (op of operations; track op.id) {
+          <tr>
+            <td class="data">{{ op.operationDate | date: 'medium' }}</td>
+            <td><span class="type" [class]="'type--' + op.operationType.toLowerCase()">{{ op.operationType }}</span></td>
+            <td>{{ op.productName }}</td>
+            <td class="data" [class.negative]="op.quantityChange < 0" [class.positive]="op.quantityChange > 0">
+              {{ op.quantityChange > 0 ? '+' : '' }}{{ op.quantityChange }}
+            </td>
+            <td>{{ op.performedByUsername }}</td>
+            <td class="comment">{{ op.comment || '—' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

@@ -1,0 +1,89 @@
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-ink-muted);
+  padding: 0 0.75rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.875rem;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr.low td:first-child {
+  border-left: 3px solid var(--color-danger);
+}
+
+.tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border-radius: var(--radius);
+  padding: 0.0625rem 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 500;
+}
+
+.actions {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.actions button {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.actions button:hover {
+  border-color: var(--color-ink-muted);
+}
+
+.adjust {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.adjust input[type='number'] {
+  width: 70px;
+}
+
+.adjust input[type='text'] {
+  width: 140px;
+}
+
+.adjust input {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.375rem 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.adjust .save {
+  background: var(--color-accent);
+  color: var(--color-accent-ink);
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.adjust .cancel {
+  color: var(--color-ink-muted);
+}

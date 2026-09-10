@@ -1,0 +1,25 @@
+<div class="cart">
+  @if (lines.length === 0) {
+    <p class="empty">Add products to build up the sale.</p>
+  } @else {
+    <ul class="lines">
+      @for (line of lines; track line.productId) {
+        <li>
+          <span class="lines__name">{{ line.productName }}</span>
+          <span class="data">{{ line.quantity }} × {{ line.unitPrice | currency }}</span>
+          <span class="data lines__subtotal">{{ line.quantity * line.unitPrice | currency }}</span>
+          <button type="button" class="lines__remove" (click)="removeLine.emit(line.productId)" aria-label="Remove">×</button>
+        </li>
+      }
+    </ul>
+
+    <div class="total">
+      <span>Total</span>
+      <span class="data total__amount">{{ total | currency }}</span>
+    </div>
+
+    <button type="button" class="checkout" [disabled]="isSubmitting" (click)="checkout.emit()">
+      {{ isSubmitting ? 'Completing sale…' : 'Complete sale' }}
+    </button>
+  }
+</div>

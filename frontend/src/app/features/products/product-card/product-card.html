@@ -1,0 +1,36 @@
+<article class="card" [class.card--low]="product.lowStock">
+  <header>
+    <h3>{{ product.name }}</h3>
+    <span class="ref data">{{ product.reference }}</span>
+  </header>
+
+  <p class="category">{{ product.categoryName || 'Uncategorized' }}</p>
+
+  <dl class="stats">
+    <div>
+      <dt>In stock</dt>
+      <dd class="data" [class.stats__danger]="product.lowStock">{{ product.quantityInStock }}</dd>
+    </div>
+    <div>
+      <dt>Alert at</dt>
+      <dd class="data">{{ product.alertThreshold }}</dd>
+    </div>
+    <div>
+      <dt>Sells for</dt>
+      <dd class="data">{{ product.sellingPrice | currency }}</dd>
+    </div>
+    <div>
+      <dt>Cost</dt>
+      <dd class="data">{{ product.purchasePrice | currency }}</dd>
+    </div>
+  </dl>
+
+  @if (product.lowStock) {
+    <p class="warning">Below alert threshold</p>
+  }
+
+  <footer>
+    <button type="button" (click)="edit.emit(product)">Edit</button>
+    <button type="button" class="danger" (click)="remove.emit(product)">Delete</button>
+  </footer>
+</article>
