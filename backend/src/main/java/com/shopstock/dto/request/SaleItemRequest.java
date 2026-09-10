@@ -3,20 +3,22 @@ package com.shopstock.dto.request;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.UUID;
+
 public class SaleItemRequest {
 
     @NotNull
-    private Long productId;
+    private UUID productId;
 
     @NotNull
     @Min(1)
     private Integer quantity;
 
-    public Long getProductId() {
+    public UUID getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(UUID productId) {
         this.productId = productId;
     }
 

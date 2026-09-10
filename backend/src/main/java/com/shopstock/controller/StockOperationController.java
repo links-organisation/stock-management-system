@@ -4,10 +4,14 @@ import com.shopstock.dto.response.StockOperationResponse;
 import com.shopstock.entity.OperationType;
 import com.shopstock.service.StockOperationService;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/stock-operations")
@@ -20,11 +24,11 @@ public class StockOperationController {
     }
 
     @GetMapping
-    public List<StockOperationResponse> getAll(@RequestParam(required = false) Long productId,
-                                                @RequestParam(required = false) OperationType type,
-                                                @RequestParam(required = false) Long userId,
-                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-                                                @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+    public List<StockOperationResponse> getAll(@RequestParam(required = false) UUID productId,
+                                               @RequestParam(required = false) OperationType type,
+                                               @RequestParam(required = false) UUID userId,
+                                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
         return stockOperationService.findAll(productId, type, userId, from, to);
     }
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class ProductRequest {
 
@@ -14,7 +15,7 @@ public class ProductRequest {
     @NotBlank
     private String reference;
 
-    private Long categoryId;
+    private UUID categoryId;
 
     @NotNull
     @Min(0)
@@ -33,7 +34,7 @@ public class ProductRequest {
     private Integer alertThreshold;
 
     @NotNull
-    private Long userId;
+    private UUID userId;
 
     public String getName() {
         return name;
@@ -51,11 +52,11 @@ public class ProductRequest {
         this.reference = reference;
     }
 
-    public Long getCategoryId() {
+    public UUID getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Long categoryId) {
+    public void setCategoryId(UUID categoryId) {
         this.categoryId = categoryId;
     }
 
@@ -91,11 +92,11 @@ public class ProductRequest {
         this.alertThreshold = alertThreshold;
     }
 
-    public Long getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 }

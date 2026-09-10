@@ -4,14 +4,15 @@ import com.shopstock.entity.Invoice;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class InvoiceResponse {
 
-    private Long id;
-    private String invoiceNumber;
-    private LocalDateTime invoiceDate;
-    private Long saleId;
-    private BigDecimal totalAmount;
+    private final UUID id;
+    private final String invoiceNumber;
+    private final LocalDateTime invoiceDate;
+    private final UUID saleId;
+    private final BigDecimal totalAmount;
     private SaleResponse sale;
 
     public InvoiceResponse(Invoice invoice) {
@@ -29,7 +30,7 @@ public class InvoiceResponse {
         }
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -41,7 +42,7 @@ public class InvoiceResponse {
         return invoiceDate;
     }
 
-    public Long getSaleId() {
+    public UUID getSaleId() {
         return saleId;
     }
 

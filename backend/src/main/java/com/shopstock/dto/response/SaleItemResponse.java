@@ -3,15 +3,16 @@ package com.shopstock.dto.response;
 import com.shopstock.entity.SaleItem;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class SaleItemResponse {
 
-    private Long id;
-    private Long productId;
-    private String productName;
-    private Integer quantity;
-    private BigDecimal unitPrice;
-    private BigDecimal subtotal;
+    private final UUID id;
+    private final UUID productId;
+    private final String productName;
+    private final Integer quantity;
+    private final BigDecimal unitPrice;
+    private final BigDecimal subtotal;
 
     public SaleItemResponse(SaleItem item) {
         this.id = item.getId();
@@ -22,11 +23,11 @@ public class SaleItemResponse {
         this.subtotal = item.getSubtotal();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public Long getProductId() {
+    public UUID getProductId() {
         return productId;
     }
 

@@ -5,11 +5,12 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.UUID;
 
 public class SaleRequest {
 
     @NotNull
-    private Long userId;
+    private UUID userId;
 
     private String customerName;
 
@@ -17,11 +18,11 @@ public class SaleRequest {
     @Valid
     private List<SaleItemRequest> items;
 
-    public Long getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 

@@ -10,13 +10,13 @@ import com.shopstock.repository.InvoiceRepository;
 import com.shopstock.repository.ProductRepository;
 import com.shopstock.repository.SaleRepository;
 import com.shopstock.repository.StockOperationRepository;
-import com.shopstock.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Year;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,20 +24,20 @@ public class SaleService {
 
     private final SaleRepository saleRepository;
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
     private final StockOperationRepository stockOperationRepository;
     private final InvoiceRepository invoiceRepository;
+    private final AuthorizationService authorizationService;
 
     public SaleService(SaleRepository saleRepository,
-                        ProductRepository productRepository,
-                        UserRepository userRepository,
-                        StockOperationRepository stockOperationRepository,
-                        InvoiceRepository invoiceRepository) {
+                       ProductRepository productRepository,
+                       StockOperationRepository stockOperationRepository,
+                       InvoiceRepository invoiceRepository,
+                       AuthorizationService authorizationService) {
         this.saleRepository = saleRepository;
         this.productRepository = productRepository;
-        this.userRepository = userRepository;
         this.stockOperationRepository = stockOperationRepository;
         this.invoiceRepository = invoiceRepository;
+        this.authorizationService = authorizationService;
     }
 
     public List<SaleResponse> findAll() {
@@ -46,19 +46,18 @@ public class SaleService {
                 .collect(Collectors.toList());
     }
 
-    public SaleResponse findById(Long id) {
+    public SaleResponse findById(UUID id) {
         return new SaleResponse(getEntityById(id));
     }
 
-    Sale getEntityById(Long id) {
+    Sale getEntityById(UUID id) {
         return saleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found with id " + id));
     }
 
     @Transactional
     public SaleResponse createSale(SaleRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + request.getUserId()));
+        User user = authorizationService.requireRole(request.getUserId(), Role.SUPER_ADMIN, Role.ADMIN, Role.SELLER);
 
         Sale sale = new Sale();
         sale.setPerformedBy(user);

@@ -2,11 +2,13 @@ package com.shopstock.dto.response;
 
 import com.shopstock.entity.Category;
 
+import java.util.UUID;
+
 public class CategoryResponse {
 
-    private Long id;
-    private String name;
-    private String description;
+    private final UUID id;
+    private final String name;
+    private final String description;
 
     public CategoryResponse(Category category) {
         this.id = category.getId();
@@ -14,7 +16,7 @@ public class CategoryResponse {
         this.description = category.getDescription();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 

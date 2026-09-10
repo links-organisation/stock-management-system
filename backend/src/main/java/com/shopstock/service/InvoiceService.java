@@ -7,6 +7,7 @@ import com.shopstock.repository.InvoiceRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,7 +25,7 @@ public class InvoiceService {
                 .collect(Collectors.toList());
     }
 
-    public InvoiceResponse findById(Long id) {
+    public InvoiceResponse findById(UUID id) {
         Invoice invoice = invoiceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Invoice not found with id " + id));
         return new InvoiceResponse(invoice, true);

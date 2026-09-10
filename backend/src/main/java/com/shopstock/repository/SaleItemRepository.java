@@ -4,10 +4,11 @@ import com.shopstock.entity.SaleItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface SaleItemRepository extends JpaRepository<SaleItem, Long> {
+public interface SaleItemRepository extends JpaRepository<SaleItem, UUID> {
 
-    List<SaleItem> findByProductId(Long productId);
+    List<SaleItem> findByProductId(UUID productId);
 
-    boolean existsByProductId(Long productId);
+    boolean existsByProductId(UUID productId);
 }

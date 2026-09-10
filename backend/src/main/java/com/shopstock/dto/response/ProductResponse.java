@@ -3,19 +3,20 @@ package com.shopstock.dto.response;
 import com.shopstock.entity.Product;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public class ProductResponse {
 
-    private Long id;
-    private String name;
-    private String reference;
-    private Long categoryId;
+    private final UUID id;
+    private final String name;
+    private final String reference;
+    private UUID categoryId;
     private String categoryName;
-    private BigDecimal purchasePrice;
-    private BigDecimal sellingPrice;
-    private Integer quantityInStock;
-    private Integer alertThreshold;
-    private boolean lowStock;
+    private final BigDecimal purchasePrice;
+    private final BigDecimal sellingPrice;
+    private final Integer quantityInStock;
+    private final Integer alertThreshold;
+    private final boolean lowStock;
 
     public ProductResponse(Product product) {
         this.id = product.getId();
@@ -34,7 +35,7 @@ public class ProductResponse {
                 && product.getQuantityInStock() < product.getAlertThreshold();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -46,7 +47,7 @@ public class ProductResponse {
         return reference;
     }
 
-    public Long getCategoryId() {
+    public UUID getCategoryId() {
         return categoryId;
     }
 

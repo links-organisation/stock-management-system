@@ -2,43 +2,39 @@ package com.shopstock.service;
 
 import com.shopstock.dto.request.ProductRequest;
 import com.shopstock.dto.response.ProductResponse;
-import com.shopstock.entity.Category;
-import com.shopstock.entity.OperationType;
-import com.shopstock.entity.Product;
-import com.shopstock.entity.StockOperation;
-import com.shopstock.entity.User;
+import com.shopstock.entity.*;
 import com.shopstock.exception.DuplicateResourceException;
 import com.shopstock.exception.ProductInUseException;
 import com.shopstock.exception.ResourceNotFoundException;
 import com.shopstock.repository.ProductRepository;
 import com.shopstock.repository.SaleItemRepository;
 import com.shopstock.repository.StockOperationRepository;
-import com.shopstock.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
     private final StockOperationRepository stockOperationRepository;
     private final SaleItemRepository saleItemRepository;
     private final CategoryService categoryService;
+    private final AuthorizationService authorizationService;
 
     public ProductService(ProductRepository productRepository,
-                           UserRepository userRepository,
-                           StockOperationRepository stockOperationRepository,
-                           SaleItemRepository saleItemRepository,
-                           CategoryService categoryService) {
+                          StockOperationRepository stockOperationRepository,
+                          SaleItemRepository saleItemRepository,
+                          CategoryService categoryService,
+                          AuthorizationService authorizationService) {
         this.productRepository = productRepository;
-        this.userRepository = userRepository;
         this.stockOperationRepository = stockOperationRepository;
         this.saleItemRepository = saleItemRepository;
         this.categoryService = categoryService;
+        this.authorizationService = authorizationService;
     }
 
     public List<ProductResponse> findAll() {
@@ -47,11 +43,11 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public ProductResponse findById(Long id) {
+    public ProductResponse findById(UUID id) {
         return new ProductResponse(getEntityById(id));
     }
 
-    public List<ProductResponse> search(String query, Long categoryId) {
+    public List<ProductResponse> search(String query, UUID categoryId) {
         List<Product> base = categoryId != null
                 ? productRepository.findByCategoryId(categoryId)
                 : productRepository.findAll();
@@ -66,11 +62,11 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(ProductRequest request) {
+        User user = authorizationService.requireRole(request.getUserId(), Role.SUPER_ADMIN, Role.ADMIN);
+
         productRepository.findByReference(request.getReference()).ifPresent(p -> {
             throw new DuplicateResourceException("A product with reference '" + request.getReference() + "' already exists");
         });
-
-        User user = getUserOrThrow(request.getUserId());
 
         Product product = new Product();
         applyRequest(product, request);
@@ -83,9 +79,9 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductResponse update(Long id, ProductRequest request) {
+    public ProductResponse update(UUID id, ProductRequest request) {
+        User user = authorizationService.requireRole(request.getUserId(), Role.SUPER_ADMIN, Role.ADMIN);
         Product product = getEntityById(id);
-        User user = getUserOrThrow(request.getUserId());
 
         int previousQuantity = product.getQuantityInStock();
         applyRequest(product, request);
@@ -100,7 +96,8 @@ public class ProductService {
         return new ProductResponse(product);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id, UUID actorUserId) {
+        authorizationService.requireRole(actorUserId, Role.SUPER_ADMIN, Role.ADMIN);
         Product product = getEntityById(id);
 
         if (stockOperationRepository.existsByProductId(id) || saleItemRepository.existsByProductId(id)) {
@@ -111,7 +108,7 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    Product getEntityById(Long id) {
+    Product getEntityById(UUID id) {
         return productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + id));
     }
@@ -139,10 +136,5 @@ public class ProductService {
         operation.setComment(comment);
         operation.setPerformedBy(user);
         stockOperationRepository.save(operation);
-    }
-
-    private User getUserOrThrow(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + userId));
     }
 }

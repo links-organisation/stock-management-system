@@ -16,6 +16,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,7 +51,7 @@ public class DashboardService {
                 .flatMap(sale -> sale.getItems().stream())
                 .collect(Collectors.groupingBy(item -> item.getProduct().getId(), Collectors.summingLong(SaleItem::getQuantity)))
                 .entrySet().stream()
-                .sorted(Map.Entry.<Long, Long>comparingByValue().reversed())
+                .sorted(Map.Entry.<UUID, Long>comparingByValue().reversed())
                 .limit(5)
                 .map(e -> {
                     Product product = productRepository.findById(e.getKey()).orElseThrow();

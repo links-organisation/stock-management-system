@@ -2,20 +2,21 @@ package com.shopstock.dto.response;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 public class DashboardSummaryResponse {
 
-    private BigDecimal totalStockValue;
-    private long totalSalesCount;
-    private BigDecimal revenueToday;
-    private BigDecimal revenueThisWeek;
-    private BigDecimal revenueThisMonth;
-    private List<TopProduct> topSellingProducts;
-    private List<ProductResponse> lowStockProducts;
+    private final BigDecimal totalStockValue;
+    private final long totalSalesCount;
+    private final BigDecimal revenueToday;
+    private final BigDecimal revenueThisWeek;
+    private final BigDecimal revenueThisMonth;
+    private final List<TopProduct> topSellingProducts;
+    private final List<ProductResponse> lowStockProducts;
 
     public DashboardSummaryResponse(BigDecimal totalStockValue, long totalSalesCount,
-                                     BigDecimal revenueToday, BigDecimal revenueThisWeek, BigDecimal revenueThisMonth,
-                                     List<TopProduct> topSellingProducts, List<ProductResponse> lowStockProducts) {
+                                    BigDecimal revenueToday, BigDecimal revenueThisWeek, BigDecimal revenueThisMonth,
+                                    List<TopProduct> topSellingProducts, List<ProductResponse> lowStockProducts) {
         this.totalStockValue = totalStockValue;
         this.totalSalesCount = totalSalesCount;
         this.revenueToday = revenueToday;
@@ -54,17 +55,17 @@ public class DashboardSummaryResponse {
     }
 
     public static class TopProduct {
-        private Long productId;
-        private String productName;
-        private long quantitySold;
+        private final UUID productId;
+        private final String productName;
+        private final long quantitySold;
 
-        public TopProduct(Long productId, String productName, long quantitySold) {
+        public TopProduct(UUID productId, String productName, long quantitySold) {
             this.productId = productId;
             this.productName = productName;
             this.quantitySold = quantitySold;
         }
 
-        public Long getProductId() {
+        public UUID getProductId() {
             return productId;
         }
 

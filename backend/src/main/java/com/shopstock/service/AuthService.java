@@ -25,6 +25,6 @@ public class AuthService {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 
-        return new UserResponse(user.getId(), user.getUsername(), user.getFullName());
+        return new UserResponse(user);
     }
 }

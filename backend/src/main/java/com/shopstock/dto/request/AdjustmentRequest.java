@@ -2,10 +2,12 @@ package com.shopstock.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.util.UUID;
+
 public class AdjustmentRequest {
 
     @NotNull
-    private Long productId;
+    private UUID productId;
 
     @NotNull
     private Integer newQuantity;
@@ -13,13 +15,13 @@ public class AdjustmentRequest {
     private String comment;
 
     @NotNull
-    private Long userId;
+    private UUID userId;
 
-    public Long getProductId() {
+    public UUID getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(UUID productId) {
         this.productId = productId;
     }
 
@@ -39,11 +41,11 @@ public class AdjustmentRequest {
         this.comment = comment;
     }
 
-    public Long getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(UUID userId) {
         this.userId = userId;
     }
 }

@@ -5,17 +5,18 @@ import com.shopstock.entity.Sale;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class SaleResponse {
 
-    private Long id;
-    private LocalDateTime saleDate;
-    private BigDecimal totalAmount;
-    private String customerName;
-    private Long performedByUserId;
-    private String performedByUsername;
-    private List<SaleItemResponse> items;
+    private final UUID id;
+    private final LocalDateTime saleDate;
+    private final BigDecimal totalAmount;
+    private final String customerName;
+    private final UUID performedByUserId;
+    private final String performedByUsername;
+    private final List<SaleItemResponse> items;
 
     public SaleResponse(Sale sale) {
         this.id = sale.getId();
@@ -27,7 +28,7 @@ public class SaleResponse {
         this.items = sale.getItems().stream().map(SaleItemResponse::new).collect(Collectors.toList());
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -43,7 +44,7 @@ public class SaleResponse {
         return customerName;
     }
 
-    public Long getPerformedByUserId() {
+    public UUID getPerformedByUserId() {
         return performedByUserId;
     }
 

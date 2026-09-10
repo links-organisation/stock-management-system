@@ -1,51 +1,34 @@
-package com.shopstock.entity;
+package com.shopstock.dto.request;
 
-import jakarta.persistence.*;
+import com.shopstock.entity.Role;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity
-@Table(name = "app_user")
-public class User {
+public class CreateUserRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @NotNull
+    private UUID actorUserId;
 
     @NotBlank
-    @Column(nullable = false, unique = true)
     private String username;
 
     @NotBlank
-    @Column(nullable = false)
     private String password;
 
     @NotBlank
-    @Column(nullable = false)
     private String fullName;
 
     @NotNull
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Role role;
 
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now();
+    public UUID getActorUserId() {
+        return actorUserId;
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
+    public void setActorUserId(UUID actorUserId) {
+        this.actorUserId = actorUserId;
     }
 
     public String getUsername() {
@@ -78,13 +61,5 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/sales")
@@ -31,7 +32,7 @@ public class SaleController {
     }
 
     @GetMapping("/{id}")
-    public SaleResponse getById(@PathVariable Long id) {
+    public SaleResponse getById(@PathVariable UUID id) {
         return saleService.findById(id);
     }
 }

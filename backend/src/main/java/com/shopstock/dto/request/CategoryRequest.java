@@ -1,6 +1,9 @@
 package com.shopstock.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.UUID;
 
 public class CategoryRequest {
 
@@ -8,6 +11,9 @@ public class CategoryRequest {
     private String name;
 
     private String description;
+
+    @NotNull
+    private UUID userId;
 
     public String getName() {
         return name;
@@ -23,5 +29,13 @@ public class CategoryRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 }

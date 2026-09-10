@@ -22,9 +22,15 @@ Two servers, both need to be running.
 cd backend
 ./mvnw spring-boot:run
 ```
-On first run this creates `backend/data/stockdb.mv.db` and seeds:
-- a user: **admin / admin123**
-- two categories (Beverages, Snacks) and three sample products
+On first run this creates `backend/data/stockdb.mv.db` and seeds one account per
+role, plus two categories (Beverages, Snacks) and three sample products:
+
+| Username | Password | Role |
+|---|---|---|
+| `admin` | `admin123` | Super Admin (the only one — see Roles below) |
+| `shopadmin` | `admin123` | Admin |
+| `seller` | `seller123` | Seller |
+| `compta` | `compta123` | Compta |
 
 **Frontend** (port 4200):
 ```bash
@@ -32,7 +38,7 @@ cd frontend
 npm install   # first time only
 npx ng serve
 ```
-Then open `http://localhost:4200` and sign in with `admin` / `admin123`.
+Then open `http://localhost:4200` and sign in with any of the accounts above.
 
 The frontend's CORS/API base URL assumes the backend is on `localhost:8080`
 (see `frontend/src/app/core/api-config.ts`).
@@ -51,6 +57,27 @@ backend/   Spring Boot API — entity / repository / service / controller / dto 
 frontend/  Angular SPA — core (services/guards/models) / shared (navbar) / features (one folder per page)
 .docs/     Project specification
 ```
+
+## Roles
+
+All entity IDs are UUIDs. Every user has exactly one role, checked server-side on
+every mutating request (there's still no Spring Security — the acting user's id
+travels in the request body/query, same as before; the backend now also loads
+that user and checks their role before proceeding).
+
+| Feature | Super Admin | Admin | Seller | Compta |
+|---|---|---|---|---|
+| Manage products/categories | ✓ | ✓ | – | – |
+| Adjust inventory | ✓ | ✓ | – | – |
+| Sell (create sales) | ✓ | ✓ | ✓ | – |
+| View dashboard/history/invoices | ✓ | ✓ | ✓ | ✓ |
+| Manage users | ✓ (anyone but Super Admin) | ✓ (Seller/Compta only) | – | – |
+
+There is exactly one Super Admin — the account seeded by `DataSeeder`. No API path
+can create, promote a user to, or edit a Super Admin account; `POST /api/users` and
+`PUT /api/users/{id}` both reject a `SUPER_ADMIN` role outright. Every user can
+change their own username/password from **My account** (`/account`) regardless of
+role.
 
 ## Demo walkthrough (~8 minutes)
 

@@ -4,18 +4,19 @@ import com.shopstock.entity.OperationType;
 import com.shopstock.entity.StockOperation;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public class StockOperationResponse {
 
-    private Long id;
-    private OperationType operationType;
-    private Long productId;
-    private String productName;
-    private Integer quantityChange;
-    private LocalDateTime operationDate;
-    private String comment;
-    private Long performedByUserId;
-    private String performedByUsername;
+    private final UUID id;
+    private final OperationType operationType;
+    private final UUID productId;
+    private final String productName;
+    private final Integer quantityChange;
+    private final LocalDateTime operationDate;
+    private final String comment;
+    private final UUID performedByUserId;
+    private final String performedByUsername;
 
     public StockOperationResponse(StockOperation operation) {
         this.id = operation.getId();
@@ -29,7 +30,7 @@ public class StockOperationResponse {
         this.performedByUsername = operation.getPerformedBy().getUsername();
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -37,7 +38,7 @@ public class StockOperationResponse {
         return operationType;
     }
 
-    public Long getProductId() {
+    public UUID getProductId() {
         return productId;
     }
 
@@ -57,7 +58,7 @@ public class StockOperationResponse {
         return comment;
     }
 
-    public Long getPerformedByUserId() {
+    public UUID getPerformedByUserId() {
         return performedByUserId;
     }
 

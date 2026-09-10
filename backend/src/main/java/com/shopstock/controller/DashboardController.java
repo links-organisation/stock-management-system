@@ -2,7 +2,9 @@ package com.shopstock.controller;
 
 import com.shopstock.dto.response.DashboardSummaryResponse;
 import com.shopstock.service.DashboardService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/dashboard")

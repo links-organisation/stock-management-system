@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,8 +20,8 @@ public class StockOperationService {
         this.stockOperationRepository = stockOperationRepository;
     }
 
-    public List<StockOperationResponse> findAll(Long productId, OperationType type, Long userId,
-                                                 LocalDate from, LocalDate to) {
+    public List<StockOperationResponse> findAll(UUID productId, OperationType type, UUID userId,
+                                                LocalDate from, LocalDate to) {
         List<StockOperation> operations = stockOperationRepository.findAllByOrderByOperationDateDesc();
 
         return operations.stream()

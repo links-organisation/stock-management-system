@@ -2,14 +2,10 @@ package com.shopstock.service;
 
 import com.shopstock.dto.request.AdjustmentRequest;
 import com.shopstock.dto.response.ProductResponse;
-import com.shopstock.entity.OperationType;
-import com.shopstock.entity.Product;
-import com.shopstock.entity.StockOperation;
-import com.shopstock.entity.User;
+import com.shopstock.entity.*;
 import com.shopstock.exception.ResourceNotFoundException;
 import com.shopstock.repository.ProductRepository;
 import com.shopstock.repository.StockOperationRepository;
-import com.shopstock.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,23 +13,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class InventoryService {
 
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
     private final StockOperationRepository stockOperationRepository;
+    private final AuthorizationService authorizationService;
 
     public InventoryService(ProductRepository productRepository,
-                             UserRepository userRepository,
-                             StockOperationRepository stockOperationRepository) {
+                            StockOperationRepository stockOperationRepository,
+                            AuthorizationService authorizationService) {
         this.productRepository = productRepository;
-        this.userRepository = userRepository;
         this.stockOperationRepository = stockOperationRepository;
+        this.authorizationService = authorizationService;
     }
 
     @Transactional
     public ProductResponse adjust(AdjustmentRequest request) {
+        User user = authorizationService.requireRole(request.getUserId(), Role.SUPER_ADMIN, Role.ADMIN);
+
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + request.getProductId()));
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + request.getUserId()));
 
         int delta = request.getNewQuantity() - product.getQuantityInStock();
         product.setQuantityInStock(request.getNewQuantity());
