@@ -44,4 +44,8 @@ tbody tr.selected {
 .detail {
     position: sticky;
     top: 72px;
+
+    @media (max-width: 760px) {
+        position: static;
+    }
 }

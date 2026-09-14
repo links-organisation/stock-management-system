@@ -87,6 +87,22 @@ table {
     margin-bottom: 1.75rem;
 }
 
+@media (max-width: 760px) {
+    .page {
+        padding: 1.5rem 1.25rem 3rem;
+    }
+
+    .page h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+    }
+}
+
+/* Applied to <body> while the mobile sidebar is open, to stop background scroll. */
+.no-scroll {
+    overflow: hidden;
+}
+
 .panel {
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -119,5 +135,14 @@ table {
 .data {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
+}
+
+/* Wraps a <table class="panel"> so it scrolls horizontally on narrow
+   screens instead of squeezing columns or breaking the page layout.
+   Tables size themselves by content, so this only scrolls when the
+   table actually can't fit. */
+.table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 

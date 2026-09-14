@@ -29,6 +29,11 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
+
+    @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
 }
 
 .field {

@@ -14,30 +14,32 @@
     @if (isLoading) {
         <p class="status">Loading users…</p>
     } @else {
-        <table class="panel">
-            <thead>
-            <tr>
-                <th>Full name</th>
-                <th>Username</th>
-                <th>Role</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-                @for (user of users; track user.id) {
-                    <tr>
-                        <td>{{ user.fullName }}</td>
-                        <td class="data">{{ user.username }}</td>
-                        <td><span [class]="'role--' + user.role.toLowerCase()" class="role">{{ user.role }}</span></td>
-                        <td class="actions">
-                            @if (canManage(user)) {
-                                <button (click)="openEditForm(user)" type="button">Edit</button>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="table-wrap panel">
+            <table>
+                <thead>
+                <tr>
+                    <th>Full name</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    @for (user of users; track user.id) {
+                        <tr>
+                            <td>{{ user.fullName }}</td>
+                            <td class="data">{{ user.username }}</td>
+                            <td><span [class]="'role--' + user.role.toLowerCase()" class="role">{{ user.role }}</span></td>
+                            <td class="actions">
+                                @if (canManage(user)) {
+                                    <button (click)="openEditForm(user)" type="button">Edit</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 
     @if (isFormOpen) {

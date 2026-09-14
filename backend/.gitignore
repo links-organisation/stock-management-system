@@ -1,7 +1,7 @@
 HELP.md
 target/
 data/
-src/main/resources/static/
+src/main/resources/static/**.js
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/

@@ -4,3 +4,8 @@ spring:
         driver-class-name: org.h2.Driver
     jpa:
         hibernate.ddl-auto: create-drop
+
+application:
+    allowed:
+        origins: http://localhost:4200
+        methods: GET, POST, PUT, DELETE, OPTIONS

@@ -26,6 +26,12 @@
     margin-bottom: 0.25rem;
 }
 
+@media (max-width: 480px) {
+    .backdrop {
+        padding: 2rem 1rem;
+    }
+}
+
 .field {
     display: flex;
     flex-direction: column;

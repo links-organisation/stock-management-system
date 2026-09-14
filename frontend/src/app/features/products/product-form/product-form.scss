@@ -32,6 +32,17 @@
     gap: 1rem;
 }
 
+@media (max-width: 480px) {
+    .backdrop {
+        padding: 2rem 1rem;
+    }
+
+    .row {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+}
+
 .field {
     display: flex;
     flex-direction: column;

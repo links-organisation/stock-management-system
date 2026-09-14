@@ -11,47 +11,49 @@
     @if (isLoading) {
         <p class="status">Loading…</p>
     } @else {
-        <table class="panel">
-            <thead>
-            <tr>
-                <th>Product</th>
-                <th>Reference</th>
-                <th>Category</th>
-                <th>Stock value</th>
-                <th>Quantity</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-                @for (product of products; track product.id) {
-                    <tr [class.low]="product.lowStock">
-                        <td>{{ product.name }}</td>
-                        <td class="data">{{ product.reference }}</td>
-                        <td>{{ product.categoryName || '—' }}</td>
-                        <td class="data">{{ product.purchasePrice * product.quantityInStock | fcfa }}</td>
-                        <td class="data">
-                            {{ product.quantityInStock }}
-                            @if (product.lowStock) {
-                                <span class="tag">low</span>
-                            }
-                        </td>
-                        <td class="actions">
-                            @if (adjustingProductId === product.id) {
-                                <div class="adjust">
-                                    <input [(ngModel)]="newQuantity" min="0" type="number"/>
-                                    <input [(ngModel)]="comment" placeholder="Reason (optional)" type="text"/>
-                                    <button (click)="saveAdjust(product)" [disabled]="isSaving" class="save"
-                                            type="button">Save
-                                    </button>
-                                    <button (click)="cancelAdjust()" class="cancel" type="button">Cancel</button>
-                                </div>
-                            } @else {
-                                <button (click)="startAdjust(product)" type="button">Adjust</button>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <div class="table-wrap panel">
+            <table>
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Reference</th>
+                    <th>Category</th>
+                    <th>Stock value</th>
+                    <th>Quantity</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    @for (product of products; track product.id) {
+                        <tr [class.low]="product.lowStock">
+                            <td>{{ product.name }}</td>
+                            <td class="data">{{ product.reference }}</td>
+                            <td>{{ product.categoryName || '—' }}</td>
+                            <td class="data">{{ product.purchasePrice * product.quantityInStock | fcfa }}</td>
+                            <td class="data">
+                                {{ product.quantityInStock }}
+                                @if (product.lowStock) {
+                                    <span class="tag">low</span>
+                                }
+                            </td>
+                            <td class="actions">
+                                @if (adjustingProductId === product.id) {
+                                    <div class="adjust">
+                                        <input [(ngModel)]="newQuantity" min="0" type="number"/>
+                                        <input [(ngModel)]="comment" placeholder="Reason (optional)" type="text"/>
+                                        <button (click)="saveAdjust(product)" [disabled]="isSaving" class="save"
+                                                type="button">Save
+                                        </button>
+                                        <button (click)="cancelAdjust()" class="cancel" type="button">Cancel</button>
+                                    </div>
+                                } @else {
+                                    <button (click)="startAdjust(product)" type="button">Adjust</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 </div>

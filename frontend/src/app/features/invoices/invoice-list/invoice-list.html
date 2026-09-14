@@ -11,24 +11,26 @@
         <p class="empty">No invoices yet — invoices are generated automatically on sale.</p>
     } @else {
         <div class="layout">
-            <table class="panel list">
-                <thead>
-                <tr>
-                    <th>Number</th>
-                    <th>Date</th>
-                    <th>Amount</th>
-                </tr>
-                </thead>
-                <tbody>
-                    @for (invoice of invoices; track invoice.id) {
-                        <tr (click)="selectInvoice(invoice)" [class.selected]="selectedInvoice?.id === invoice.id">
-                            <td class="data">{{ invoice.invoiceNumber }}</td>
-                            <td class="data">{{ invoice.invoiceDate | date: 'short' }}</td>
-                            <td class="data">{{ invoice.totalAmount | fcfa }}</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <div class="table-wrap panel list">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Number</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        @for (invoice of invoices; track invoice.id) {
+                            <tr (click)="selectInvoice(invoice)" [class.selected]="selectedInvoice?.id === invoice.id">
+                                <td class="data">{{ invoice.invoiceNumber }}</td>
+                                <td class="data">{{ invoice.invoiceDate | date: 'short' }}</td>
+                                <td class="data">{{ invoice.totalAmount | fcfa }}</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
             <section class="panel detail">
                 <app-invoice-detail [invoice]="selectedInvoice"></app-invoice-detail>

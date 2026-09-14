@@ -1,19 +1,22 @@
 <nav class="bar">
+    <button
+        class="hamburger"
+        type="button"
+        (click)="toggleSidebar()"
+        [attr.aria-expanded]="isSidebarOpen"
+        aria-label="Open menu"
+        aria-controls="mobile-sidebar"
+    >
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
     <a class="brand" routerLink="/dashboard">Stockroom</a>
 
     <div class="links">
-        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-        <a routerLink="/products" routerLinkActive="active">Products</a>
-        @if (authService.canSell()) {
-            <a routerLink="/sales" routerLinkActive="active">Sell</a>
-        }
-        @if (authService.isAdminOrAbove()) {
-            <a routerLink="/inventory" routerLinkActive="active">Inventory</a>
-        }
-        <a routerLink="/history" routerLinkActive="active">History</a>
-        <a routerLink="/invoices" routerLinkActive="active">Invoices</a>
-        @if (authService.isAdminOrAbove()) {
-            <a routerLink="/users" routerLinkActive="active">Users</a>
+        @for (item of navItems; track item.path) {
+            <a [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
         }
     </div>
 
@@ -24,3 +27,28 @@
         </div>
     }
 </nav>
+
+<div class="backdrop" [class.backdrop--visible]="isSidebarOpen" (click)="closeSidebar()"></div>
+
+<aside class="sidebar" [class.sidebar--open]="isSidebarOpen" id="mobile-sidebar">
+    <div class="sidebar__header">
+        <span class="sidebar__brand">Stockroom</span>
+        <button class="sidebar__close" type="button" (click)="closeSidebar()" aria-label="Close menu">
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+
+    <nav class="sidebar__links">
+        @for (item of navItems; track item.path) {
+            <a [routerLink]="item.path" routerLinkActive="active" (click)="closeSidebar()">{{ item.label }}</a>
+        }
+    </nav>
+
+    @if (authService.currentUser; as user) {
+        <div class="sidebar__account">
+            <a routerLink="/account" routerLinkActive="active" (click)="closeSidebar()">{{ user.fullName }}</a>
+            <button (click)="logout()" type="button">Sign out</button>
+        </div>
+    }
+</aside>
