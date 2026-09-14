@@ -57,39 +57,39 @@ public class SaleService {
 
     @Transactional
     public SaleResponse createSale(SaleRequest request) {
-        User user = authorizationService.requireRole(request.getUserId(), Role.SUPER_ADMIN, Role.ADMIN, Role.SELLER);
+        User user = authorizationService.requireRole(request.userId(), Role.SUPER_ADMIN, Role.ADMIN, Role.SELLER);
 
         Sale sale = new Sale();
         sale.setPerformedBy(user);
-        sale.setCustomerName(request.getCustomerName());
+        sale.setCustomerName(request.customerName());
 
         BigDecimal total = BigDecimal.ZERO;
 
-        for (SaleItemRequest itemRequest : request.getItems()) {
-            Product product = productRepository.findById(itemRequest.getProductId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + itemRequest.getProductId()));
+        for (SaleItemRequest itemRequest : request.items()) {
+            Product product = productRepository.findById(itemRequest.productId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + itemRequest.productId()));
 
-            if (product.getQuantityInStock() < itemRequest.getQuantity()) {
+            if (product.getQuantityInStock() < itemRequest.quantity()) {
                 throw new InsufficientStockException("Insufficient stock for product '" + product.getName()
-                        + "': requested " + itemRequest.getQuantity() + ", available " + product.getQuantityInStock());
+                        + "': requested " + itemRequest.quantity() + ", available " + product.getQuantityInStock());
             }
 
-            BigDecimal subtotal = product.getSellingPrice().multiply(BigDecimal.valueOf(itemRequest.getQuantity()));
+            BigDecimal subtotal = product.getSellingPrice().multiply(BigDecimal.valueOf(itemRequest.quantity()));
 
             SaleItem saleItem = new SaleItem();
             saleItem.setProduct(product);
-            saleItem.setQuantity(itemRequest.getQuantity());
+            saleItem.setQuantity(itemRequest.quantity());
             saleItem.setUnitPrice(product.getSellingPrice());
             saleItem.setSubtotal(subtotal);
             sale.addItem(saleItem);
 
-            product.setQuantityInStock(product.getQuantityInStock() - itemRequest.getQuantity());
+            product.setQuantityInStock(product.getQuantityInStock() - itemRequest.quantity());
             productRepository.save(product);
 
             StockOperation operation = new StockOperation();
             operation.setProduct(product);
             operation.setOperationType(OperationType.SALE);
-            operation.setQuantityChange(-itemRequest.getQuantity());
+            operation.setQuantityChange(-itemRequest.quantity());
             operation.setComment("Sold via sale");
             operation.setPerformedBy(user);
             stockOperationRepository.save(operation);

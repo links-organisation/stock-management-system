@@ -1,57 +1,57 @@
 <div class="page">
-  <header class="page-head">
-    <h1>Products</h1>
-    @if (authService.isAdminOrAbove()) {
-      <button type="button" class="primary" (click)="openCreateForm()">Register product</button>
-    }
-  </header>
+    <header class="page-head">
+        <h1>Products</h1>
+        @if (authService.isAdminOrAbove()) {
+            <button (click)="openCreateForm()" class="primary" type="button">Register product</button>
+        }
+    </header>
 
-  <div class="search">
-    <input
-      type="search"
-      name="search"
-      placeholder="Search by name or reference…"
-      [(ngModel)]="searchQuery"
-      (ngModelChange)="applyFilters()"
-    />
-    <select name="categoryFilter" [(ngModel)]="categoryFilter" (ngModelChange)="applyFilters()">
-      <option [ngValue]="null">All categories</option>
-      @for (category of categories; track category.id) {
-        <option [ngValue]="category.id">{{ category.name }}</option>
-      }
-    </select>
-  </div>
-
-  @if (errorMessage) {
-    <p class="status status--error">{{ errorMessage }}</p>
-  }
-  @if (successMessage) {
-    <p class="status status--success">{{ successMessage }}</p>
-  }
-
-  @if (isLoading) {
-    <p class="status">Loading products…</p>
-  } @else if (products.length === 0) {
-    <p class="empty">No products match your search.</p>
-  } @else {
-    <div class="grid">
-      @for (product of products; track product.id) {
-        <app-product-card
-          [product]="product"
-          [canManage]="authService.isAdminOrAbove()"
-          (edit)="openEditForm($event)"
-          (remove)="onDeleteProduct($event)"
-        ></app-product-card>
-      }
+    <div class="search">
+        <input
+            (ngModelChange)="applyFilters()"
+            [(ngModel)]="searchQuery"
+            name="search"
+            placeholder="Search by name or reference…"
+            type="search"
+        />
+        <select (ngModelChange)="applyFilters()" [(ngModel)]="categoryFilter" name="categoryFilter">
+            <option [ngValue]="null">All categories</option>
+            @for (category of categories; track category.id) {
+                <option [ngValue]="category.id">{{ category.name }}</option>
+            }
+        </select>
     </div>
-  }
 
-  @if (isFormOpen) {
-    <app-product-form
-      [product]="editingProduct"
-      [categories]="categories"
-      (save)="onSaveProduct($event)"
-      (cancel)="closeForm()"
-    ></app-product-form>
-  }
+    @if (errorMessage) {
+        <p class="status status--error">{{ errorMessage }}</p>
+    }
+    @if (successMessage) {
+        <p class="status status--success">{{ successMessage }}</p>
+    }
+
+    @if (isLoading) {
+        <p class="status">Loading products…</p>
+    } @else if (products.length === 0) {
+        <p class="empty">No products match your search.</p>
+    } @else {
+        <div class="grid">
+            @for (product of products; track product.id) {
+                <app-product-card
+                    (edit)="openEditForm($event)"
+                    (remove)="onDeleteProduct($event)"
+                    [canManage]="authService.isAdminOrAbove()"
+                    [product]="product"
+                ></app-product-card>
+            }
+        </div>
+    }
+
+    @if (isFormOpen) {
+        <app-product-form
+            (cancel)="closeForm()"
+            (save)="onSaveProduct($event)"
+            [categories]="categories"
+            [product]="editingProduct"
+        ></app-product-form>
+    }
 </div>

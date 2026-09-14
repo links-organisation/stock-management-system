@@ -1,51 +1,51 @@
 <div class="page">
-  <header class="page-head">
-    <h1>Users</h1>
-    <button type="button" class="primary" (click)="openCreateForm()">Register user</button>
-  </header>
+    <header class="page-head">
+        <h1>Users</h1>
+        <button (click)="openCreateForm()" class="primary" type="button">Register user</button>
+    </header>
 
-  @if (errorMessage) {
-    <p class="status status--error">{{ errorMessage }}</p>
-  }
-  @if (successMessage) {
-    <p class="status status--success">{{ successMessage }}</p>
-  }
+    @if (errorMessage) {
+        <p class="status status--error">{{ errorMessage }}</p>
+    }
+    @if (successMessage) {
+        <p class="status status--success">{{ successMessage }}</p>
+    }
 
-  @if (isLoading) {
-    <p class="status">Loading users…</p>
-  } @else {
-    <table class="panel">
-      <thead>
-        <tr>
-          <th>Full name</th>
-          <th>Username</th>
-          <th>Role</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (user of users; track user.id) {
-          <tr>
-            <td>{{ user.fullName }}</td>
-            <td class="data">{{ user.username }}</td>
-            <td><span class="role" [class]="'role--' + user.role.toLowerCase()">{{ user.role }}</span></td>
-            <td class="actions">
-              @if (canManage(user)) {
-                <button type="button" (click)="openEditForm(user)">Edit</button>
-              }
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  }
+    @if (isLoading) {
+        <p class="status">Loading users…</p>
+    } @else {
+        <table class="panel">
+            <thead>
+            <tr>
+                <th>Full name</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (user of users; track user.id) {
+                    <tr>
+                        <td>{{ user.fullName }}</td>
+                        <td class="data">{{ user.username }}</td>
+                        <td><span [class]="'role--' + user.role.toLowerCase()" class="role">{{ user.role }}</span></td>
+                        <td class="actions">
+                            @if (canManage(user)) {
+                                <button (click)="openEditForm(user)" type="button">Edit</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 
-  @if (isFormOpen) {
-    <app-user-form
-      [user]="editingUser"
-      [assignableRoles]="assignableRoles"
-      (save)="onSave($event)"
-      (cancel)="closeForm()"
-    ></app-user-form>
-  }
+    @if (isFormOpen) {
+        <app-user-form
+            (cancel)="closeForm()"
+            (save)="onSave($event)"
+            [assignableRoles]="assignableRoles"
+            [user]="editingUser"
+        ></app-user-form>
+    }
 </div>

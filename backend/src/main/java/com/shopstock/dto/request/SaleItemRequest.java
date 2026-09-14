@@ -5,28 +5,10 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public class SaleItemRequest {
+public record SaleItemRequest(
 
-    @NotNull
-    private UUID productId;
+        @NotNull UUID productId,
 
-    @NotNull
-    @Min(1)
-    private Integer quantity;
-
-    public UUID getProductId() {
-        return productId;
-    }
-
-    public void setProductId(UUID productId) {
-        this.productId = productId;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
+        @NotNull @Min(1) Integer quantity
+) {
 }

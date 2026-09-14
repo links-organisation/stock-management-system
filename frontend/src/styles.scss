@@ -1,123 +1,123 @@
 /* Design tokens — "Stockroom" visual identity.
    Sage-paper ledger surfaces, mustard signage accent, monospace data. */
 :root {
-  --color-paper: #f1f4ec;
-  --color-surface: #ffffff;
-  --color-ink: #1f2421;
-  --color-ink-muted: #5b6058;
-  --color-ink-faint: #8a9086;
-  --color-border: #d8ddd2;
-  --color-accent: #d9a62e;
-  --color-accent-ink: #4a3a0a;
-  --color-accent-hover: #c1911f;
-  --color-success: #2f6f5e;
-  --color-success-bg: #e4efe9;
-  --color-danger: #b5432f;
-  --color-danger-bg: #f7e7e1;
+    --color-paper: #f1f4ec;
+    --color-surface: #ffffff;
+    --color-ink: #1f2421;
+    --color-ink-muted: #5b6058;
+    --color-ink-faint: #8a9086;
+    --color-border: #d8ddd2;
+    --color-accent: #d9a62e;
+    --color-accent-ink: #4a3a0a;
+    --color-accent-hover: #c1911f;
+    --color-success: #2f6f5e;
+    --color-success-bg: #e4efe9;
+    --color-danger: #b5432f;
+    --color-danger-bg: #f7e7e1;
 
-  --font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
-  --font-body: 'IBM Plex Sans', 'Segoe UI', sans-serif;
-  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+    --font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
+    --font-body: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+    --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
 
-  --radius: 4px;
-  --shadow-none: none;
+    --radius: 4px;
+    --shadow-none: none;
 
-  color-scheme: light;
+    color-scheme: light;
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html, body {
-  height: 100%;
-  margin: 0;
+    height: 100%;
+    margin: 0;
 }
 
 body {
-  background: var(--color-paper);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  margin: 0;
-  color: var(--color-ink);
+    font-family: var(--font-display);
+    font-weight: 600;
+    margin: 0;
+    color: var(--color-ink);
 }
 
 a {
-  color: inherit;
+    color: inherit;
 }
 
 button, input, select, textarea {
-  font-family: inherit;
-  font-size: inherit;
+    font-family: inherit;
+    font-size: inherit;
 }
 
 table {
-  border-collapse: collapse;
-  width: 100%;
+    border-collapse: collapse;
+    width: 100%;
 }
 
 ::selection {
-  background: var(--color-accent);
-  color: var(--color-accent-ink);
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
 }
 
 /* Shared layout primitives used across route-level pages.
    Component-specific look still lives in each component's own stylesheet. */
 .page {
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 2.5rem 2rem 4rem;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
 }
 
 .page h1 {
-  font-size: 1.75rem;
-  margin-bottom: 1.75rem;
+    font-size: 1.75rem;
+    margin-bottom: 1.75rem;
 }
 
 .panel {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 1.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
 }
 
 .panel h2 {
-  font-size: 1.0625rem;
-  margin-bottom: 1rem;
+    font-size: 1.0625rem;
+    margin-bottom: 1rem;
 }
 
 .status {
-  color: var(--color-ink-muted);
+    color: var(--color-ink-muted);
 }
 
 .status--error {
-  color: var(--color-danger);
+    color: var(--color-danger);
 }
 
 .status--success {
-  color: var(--color-success);
+    color: var(--color-success);
 }
 
 .empty {
-  color: var(--color-ink-faint);
-  font-size: 0.875rem;
+    color: var(--color-ink-faint);
+    font-size: 0.875rem;
 }
 
 .data {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
 }
 

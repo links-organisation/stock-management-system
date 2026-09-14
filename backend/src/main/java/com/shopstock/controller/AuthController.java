@@ -4,13 +4,14 @@ import com.shopstock.dto.request.LoginRequest;
 import com.shopstock.dto.response.UserResponse;
 import com.shopstock.service.AuthService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -20,7 +21,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public UserResponse login(@Valid @RequestBody LoginRequest request) {
-        return authService.login(request);
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(authService.login(request));
     }
 }

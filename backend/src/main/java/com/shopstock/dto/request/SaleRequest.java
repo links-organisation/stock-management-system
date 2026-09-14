@@ -7,38 +7,12 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 
-public class SaleRequest {
+public record SaleRequest(
 
-    @NotNull
-    private UUID userId;
+        @NotNull UUID userId,
 
-    private String customerName;
+        String customerName,
 
-    @NotEmpty
-    @Valid
-    private List<SaleItemRequest> items;
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
-    public List<SaleItemRequest> getItems() {
-        return items;
-    }
-
-    public void setItems(List<SaleItemRequest> items) {
-        this.items = items;
-    }
+        @NotEmpty @Valid List<SaleItemRequest> items
+) {
 }

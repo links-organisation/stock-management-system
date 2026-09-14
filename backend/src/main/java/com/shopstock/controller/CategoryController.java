@@ -5,12 +5,13 @@ import com.shopstock.dto.response.CategoryResponse;
 import com.shopstock.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/categories")
+@RequestMapping("/api/v1/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -20,8 +21,8 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<CategoryResponse> getAll() {
-        return categoryService.findAll();
+    public ResponseEntity<List<CategoryResponse>> getAll() {
+        return ResponseEntity.ok(categoryService.findAll());
     }
 
     @PostMapping

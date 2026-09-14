@@ -1,24 +1,24 @@
 <div class="selector">
-  <label class="field">
-    <span>Product</span>
-    <select name="product" [(ngModel)]="selectedProductId">
-      <option [ngValue]="null">Choose a product…</option>
-      @for (product of products; track product.id) {
-        <option [ngValue]="product.id" [disabled]="product.quantityInStock === 0">
-          {{ product.name }} ({{ product.quantityInStock }} in stock)
-        </option>
-      }
-    </select>
-  </label>
+    <label class="field">
+        <span>Product</span>
+        <select [(ngModel)]="selectedProductId" name="product">
+            <option [ngValue]="null">Choose a product…</option>
+            @for (product of products; track product.id) {
+                <option [disabled]="product.quantityInStock === 0" [ngValue]="product.id">
+                    {{ product.name }} ({{ product.quantityInStock }} in stock)
+                </option>
+            }
+        </select>
+    </label>
 
-  <label class="field field--qty">
-    <span>Qty</span>
-    <input type="number" name="quantity" min="1" [(ngModel)]="quantity" />
-  </label>
+    <label class="field field--qty">
+        <span>Qty</span>
+        <input [(ngModel)]="quantity" min="1" name="quantity" type="number"/>
+    </label>
 
-  <button type="button" [disabled]="!selectedProduct" (click)="onAdd()">Add to sale</button>
+    <button (click)="onAdd()" [disabled]="!selectedProduct" type="button">Add to sale</button>
 </div>
 
 @if (selectedProduct) {
-  <p class="price-hint">{{ selectedProduct.sellingPrice | currency }} each</p>
+    <p class="price-hint">{{ selectedProduct.sellingPrice | fcfa }} each</p>
 }

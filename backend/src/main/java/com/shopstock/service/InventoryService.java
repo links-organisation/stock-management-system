@@ -26,13 +26,13 @@ public class InventoryService {
 
     @Transactional
     public ProductResponse adjust(AdjustmentRequest request) {
-        User user = authorizationService.requireRole(request.getUserId(), Role.SUPER_ADMIN, Role.ADMIN);
+        User user = authorizationService.requireRole(request.userId(), Role.SUPER_ADMIN, Role.ADMIN);
 
-        Product product = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + request.getProductId()));
+        Product product = productRepository.findById(request.productId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + request.productId()));
 
-        int delta = request.getNewQuantity() - product.getQuantityInStock();
-        product.setQuantityInStock(request.getNewQuantity());
+        int delta = request.newQuantity() - product.getQuantityInStock();
+        product.setQuantityInStock(request.newQuantity());
         productRepository.save(product);
 
         if (delta != 0) {
@@ -40,7 +40,7 @@ public class InventoryService {
             operation.setProduct(product);
             operation.setOperationType(OperationType.ADJUSTMENT);
             operation.setQuantityChange(delta);
-            operation.setComment(request.getComment());
+            operation.setComment(request.comment());
             operation.setPerformedBy(user);
             stockOperationRepository.save(operation);
         }

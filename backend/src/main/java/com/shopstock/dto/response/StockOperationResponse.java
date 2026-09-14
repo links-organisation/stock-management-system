@@ -6,63 +6,18 @@ import com.shopstock.entity.StockOperation;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class StockOperationResponse {
-
-    private final UUID id;
-    private final OperationType operationType;
-    private final UUID productId;
-    private final String productName;
-    private final Integer quantityChange;
-    private final LocalDateTime operationDate;
-    private final String comment;
-    private final UUID performedByUserId;
-    private final String performedByUsername;
-
+public record StockOperationResponse(
+        UUID id,
+        OperationType operationType,
+        UUID productId,
+        String productName,
+        Integer quantityChange,
+        LocalDateTime operationDate,
+        String comment,
+        UUID performedByUserId,
+        String performedByUsername
+) {
     public StockOperationResponse(StockOperation operation) {
-        this.id = operation.getId();
-        this.operationType = operation.getOperationType();
-        this.productId = operation.getProduct().getId();
-        this.productName = operation.getProduct().getName();
-        this.quantityChange = operation.getQuantityChange();
-        this.operationDate = operation.getOperationDate();
-        this.comment = operation.getComment();
-        this.performedByUserId = operation.getPerformedBy().getId();
-        this.performedByUsername = operation.getPerformedBy().getUsername();
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public OperationType getOperationType() {
-        return operationType;
-    }
-
-    public UUID getProductId() {
-        return productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public Integer getQuantityChange() {
-        return quantityChange;
-    }
-
-    public LocalDateTime getOperationDate() {
-        return operationDate;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public UUID getPerformedByUserId() {
-        return performedByUserId;
-    }
-
-    public String getPerformedByUsername() {
-        return performedByUsername;
+        this(operation.getId(), operation.getOperationType(), operation.getProduct().getId(), operation.getProduct().getName(), operation.getQuantityChange(), operation.getOperationDate(), operation.getComment(), operation.getPerformedBy().getId(), operation.getPerformedBy().getUsername());
     }
 }

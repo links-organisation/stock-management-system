@@ -1,46 +1,48 @@
 <div class="page narrow">
-  <h1>My account</h1>
-  <p class="role-hint">Signed in as <strong>{{ role }}</strong></p>
+    <h1>My account</h1>
+    <p class="role-hint">Signed in as <strong>{{ role }}</strong></p>
 
-  <form class="panel" (ngSubmit)="onSubmit()" novalidate>
-    <label class="field">
-      <span>Full name</span>
-      <input type="text" name="fullName" [(ngModel)]="fullName" required />
-    </label>
+    <form (ngSubmit)="onSubmit()" class="panel" novalidate>
+        <label class="field">
+            <span>Full name</span>
+            <input [(ngModel)]="fullName" name="fullName" required type="text"/>
+        </label>
 
-    <label class="field">
-      <span>Username</span>
-      <input type="text" name="username" [(ngModel)]="username" required />
-    </label>
+        <label class="field">
+            <span>Username</span>
+            <input [(ngModel)]="username" name="username" required type="text"/>
+        </label>
 
-    <h2>Change password</h2>
-    <p class="hint">Leave blank to keep your current password.</p>
+        <h2>Change password</h2>
+        <p class="hint">Leave blank to keep your current password.</p>
 
-    <label class="field">
-      <span>Current password</span>
-      <input type="password" name="currentPassword" [(ngModel)]="currentPassword" autocomplete="current-password" />
-    </label>
+        <label class="field">
+            <span>Current password</span>
+            <input [(ngModel)]="currentPassword" autocomplete="current-password" name="currentPassword"
+                   type="password"/>
+        </label>
 
-    <div class="row">
-      <label class="field">
-        <span>New password</span>
-        <input type="password" name="newPassword" [(ngModel)]="newPassword" autocomplete="new-password" />
-      </label>
-      <label class="field">
-        <span>Confirm new password</span>
-        <input type="password" name="confirmPassword" [(ngModel)]="confirmPassword" autocomplete="new-password" />
-      </label>
-    </div>
+        <div class="row">
+            <label class="field">
+                <span>New password</span>
+                <input [(ngModel)]="newPassword" autocomplete="new-password" name="newPassword" type="password"/>
+            </label>
+            <label class="field">
+                <span>Confirm new password</span>
+                <input [(ngModel)]="confirmPassword" autocomplete="new-password" name="confirmPassword"
+                       type="password"/>
+            </label>
+        </div>
 
-    @if (errorMessage) {
-      <p class="status status--error">{{ errorMessage }}</p>
-    }
-    @if (successMessage) {
-      <p class="status status--success">{{ successMessage }}</p>
-    }
+        @if (errorMessage) {
+            <p class="status status--error">{{ errorMessage }}</p>
+        }
+        @if (successMessage) {
+            <p class="status status--success">{{ successMessage }}</p>
+        }
 
-    <button type="submit" class="primary" [disabled]="isSaving">
-      {{ isSaving ? 'Saving…' : 'Save changes' }}
-    </button>
-  </form>
+        <button [disabled]="isSaving" class="primary" type="submit">
+            {{ isSaving ? 'Saving…' : 'Save changes' }}
+        </button>
+    </form>
 </div>

@@ -4,48 +4,13 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public class AdjustmentRequest {
+public record AdjustmentRequest(
 
-    @NotNull
-    private UUID productId;
+        @NotNull UUID productId,
 
-    @NotNull
-    private Integer newQuantity;
+        @NotNull Integer newQuantity,
 
-    private String comment;
+        String comment,
 
-    @NotNull
-    private UUID userId;
-
-    public UUID getProductId() {
-        return productId;
-    }
-
-    public void setProductId(UUID productId) {
-        this.productId = productId;
-    }
-
-    public Integer getNewQuantity() {
-        return newQuantity;
-    }
-
-    public void setNewQuantity(Integer newQuantity) {
-        this.newQuantity = newQuantity;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
-}
+        @NotNull UUID userId
+) { }

@@ -5,13 +5,14 @@ import com.shopstock.dto.response.ProductResponse;
 import com.shopstock.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/v1/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -27,24 +28,23 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
-    public ProductResponse update(@PathVariable UUID id, @Valid @RequestBody ProductRequest request) {
-        return productService.update(id, request);
+    public ResponseEntity<ProductResponse> update(@PathVariable UUID id, @Valid @RequestBody ProductRequest request) {
+        return ResponseEntity.ok(productService.update(id, request));
     }
 
     @GetMapping
-    public List<ProductResponse> getAll() {
-        return productService.findAll();
+    public ResponseEntity<List<ProductResponse>> getAll() {
+        return ResponseEntity.ok(productService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ProductResponse getById(@PathVariable UUID id) {
-        return productService.findById(id);
+    public ResponseEntity<ProductResponse> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(productService.findById(id));
     }
 
     @GetMapping("/search")
-    public List<ProductResponse> search(@RequestParam(required = false) String query,
-                                        @RequestParam(required = false) UUID categoryId) {
-        return productService.search(query, categoryId);
+    public ResponseEntity<List<ProductResponse>> search(@RequestParam(required = false) String query, @RequestParam(required = false) UUID categoryId) {
+        return ResponseEntity.ok(productService.search(query, categoryId));
     }
 
     @DeleteMapping("/{id}")

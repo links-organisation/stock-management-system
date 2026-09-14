@@ -4,6 +4,7 @@ import com.shopstock.dto.response.StockOperationResponse;
 import com.shopstock.entity.OperationType;
 import com.shopstock.service.StockOperationService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/stock-operations")
+@RequestMapping("/api/v1/stock-operations")
 public class StockOperationController {
 
     private final StockOperationService stockOperationService;
@@ -24,11 +25,11 @@ public class StockOperationController {
     }
 
     @GetMapping
-    public List<StockOperationResponse> getAll(@RequestParam(required = false) UUID productId,
-                                               @RequestParam(required = false) OperationType type,
-                                               @RequestParam(required = false) UUID userId,
-                                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-                                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        return stockOperationService.findAll(productId, type, userId, from, to);
+    public ResponseEntity<List<StockOperationResponse>> getAll(@RequestParam(required = false) UUID productId,
+                                                               @RequestParam(required = false) OperationType type,
+                                                               @RequestParam(required = false) UUID userId,
+                                                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+                                                               @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+        return ResponseEntity.ok(stockOperationService.findAll(productId, type, userId, from, to));
     }
 }

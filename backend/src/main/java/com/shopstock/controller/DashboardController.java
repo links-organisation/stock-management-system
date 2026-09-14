@@ -2,12 +2,13 @@ package com.shopstock.controller;
 
 import com.shopstock.dto.response.DashboardSummaryResponse;
 import com.shopstock.service.DashboardService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/dashboard")
+@RequestMapping("/api/v1/dashboard")
 public class DashboardController {
 
     private final DashboardService dashboardService;
@@ -17,7 +18,7 @@ public class DashboardController {
     }
 
     @GetMapping("/summary")
-    public DashboardSummaryResponse getSummary() {
-        return dashboardService.getSummary();
+    public ResponseEntity<DashboardSummaryResponse> getSummary() {
+        return ResponseEntity.ok(dashboardService.getSummary());
     }
 }

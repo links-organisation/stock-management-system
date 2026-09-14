@@ -1,33 +1,33 @@
 <div class="page">
-  <h1>New sale</h1>
+    <h1>New sale</h1>
 
-  <div class="layout">
-    <section class="panel">
-      <h2>Add products</h2>
-      <app-product-selector [products]="products" (add)="onAddToCart($event)"></app-product-selector>
+    <div class="layout">
+        <section class="panel">
+            <h2>Add products</h2>
+            <app-product-selector (add)="onAddToCart($event)" [products]="products"></app-product-selector>
 
-      <label class="field customer">
-        <span>Customer (optional)</span>
-        <input type="text" name="customerName" [(ngModel)]="customerName" placeholder="Walk-in customer" />
-      </label>
-    </section>
+            <label class="field customer">
+                <span>Customer (optional)</span>
+                <input [(ngModel)]="customerName" name="customerName" placeholder="Walk-in customer" type="text"/>
+            </label>
+        </section>
 
-    <section class="panel">
-      <h2>Current sale</h2>
+        <section class="panel">
+            <h2>Current sale</h2>
 
-      @if (errorMessage) {
-        <p class="status status--error">{{ errorMessage }}</p>
-      }
-      @if (successMessage) {
-        <p class="status status--success">{{ successMessage }}</p>
-      }
+            @if (errorMessage) {
+                <p class="status status--error">{{ errorMessage }}</p>
+            }
+            @if (successMessage) {
+                <p class="status status--success">{{ successMessage }}</p>
+            }
 
-      <app-cart-summary
-        [lines]="cart"
-        [isSubmitting]="isSubmitting"
-        (removeLine)="onRemoveLine($event)"
-        (checkout)="onCheckout()"
-      ></app-cart-summary>
-    </section>
-  </div>
+            <app-cart-summary
+                (checkout)="onCheckout()"
+                (removeLine)="onRemoveLine($event)"
+                [isSubmitting]="isSubmitting"
+                [lines]="cart"
+            ></app-cart-summary>
+        </section>
+    </div>
 </div>

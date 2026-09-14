@@ -1,47 +1,47 @@
 .layout {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 1.5rem;
-  align-items: start;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
 
-  @media (max-width: 760px) {
-    grid-template-columns: 1fr;
-  }
+    @media (max-width: 760px) {
+        grid-template-columns: 1fr;
+    }
 }
 
 .list {
-  border-collapse: separate;
-  border-spacing: 0;
-  padding: 0.5rem;
+    border-collapse: separate;
+    border-spacing: 0;
+    padding: 0.5rem;
 }
 
 th {
-  text-align: left;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--color-ink-muted);
-  padding: 0.5rem 0.75rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-ink-muted);
+    padding: 0.5rem 0.75rem;
 }
 
 td {
-  padding: 0.625rem 0.75rem;
-  font-size: 0.875rem;
-  border-top: 1px solid var(--color-border);
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    border-top: 1px solid var(--color-border);
 }
 
 tbody tr {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 tbody tr:hover {
-  background: var(--color-paper);
+    background: var(--color-paper);
 }
 
 tbody tr.selected {
-  background: var(--color-success-bg);
+    background: var(--color-success-bg);
 }
 
 .detail {
-  position: sticky;
-  top: 72px;
+    position: sticky;
+    top: 72px;
 }

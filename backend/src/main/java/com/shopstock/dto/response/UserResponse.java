@@ -5,33 +5,13 @@ import com.shopstock.entity.User;
 
 import java.util.UUID;
 
-public class UserResponse {
-
-    private final UUID id;
-    private final String username;
-    private final String fullName;
-    private final Role role;
-
+public record UserResponse(
+        UUID id,
+        String username,
+        String fullName,
+        Role role
+) {
     public UserResponse(User user) {
-        this.id = user.getId();
-        this.username = user.getUsername();
-        this.fullName = user.getFullName();
-        this.role = user.getRole();
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public Role getRole() {
-        return role;
+        this(user.getId(), user.getUsername(), user.getFullName(), user.getRole());
     }
 }

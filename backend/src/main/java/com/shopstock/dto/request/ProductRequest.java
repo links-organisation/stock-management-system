@@ -7,96 +7,22 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class ProductRequest {
+public record ProductRequest(
 
-    @NotBlank
-    private String name;
+        @NotBlank String name,
 
-    @NotBlank
-    private String reference;
+        @NotBlank String reference,
 
-    private UUID categoryId;
+        UUID categoryId,
 
-    @NotNull
-    @Min(0)
-    private BigDecimal purchasePrice;
+        @NotNull @Min(0) BigDecimal purchasePrice,
 
-    @NotNull
-    @Min(0)
-    private BigDecimal sellingPrice;
+        @NotNull @Min(0) BigDecimal sellingPrice,
 
-    @NotNull
-    @Min(0)
-    private Integer quantityInStock;
+        @NotNull @Min(0) Integer quantityInStock,
 
-    @NotNull
-    @Min(0)
-    private Integer alertThreshold;
+        @NotNull @Min(0) Integer alertThreshold,
 
-    @NotNull
-    private UUID userId;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getReference() {
-        return reference;
-    }
-
-    public void setReference(String reference) {
-        this.reference = reference;
-    }
-
-    public UUID getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(UUID categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public BigDecimal getPurchasePrice() {
-        return purchasePrice;
-    }
-
-    public void setPurchasePrice(BigDecimal purchasePrice) {
-        this.purchasePrice = purchasePrice;
-    }
-
-    public BigDecimal getSellingPrice() {
-        return sellingPrice;
-    }
-
-    public void setSellingPrice(BigDecimal sellingPrice) {
-        this.sellingPrice = sellingPrice;
-    }
-
-    public Integer getQuantityInStock() {
-        return quantityInStock;
-    }
-
-    public void setQuantityInStock(Integer quantityInStock) {
-        this.quantityInStock = quantityInStock;
-    }
-
-    public Integer getAlertThreshold() {
-        return alertThreshold;
-    }
-
-    public void setAlertThreshold(Integer alertThreshold) {
-        this.alertThreshold = alertThreshold;
-    }
-
-    public UUID getUserId() {
-        return userId;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
-    }
+        @NotNull UUID userId
+) {
 }

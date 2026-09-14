@@ -18,10 +18,10 @@ public class AuthService {
     }
 
     public UserResponse login(LoginRequest request) {
-        User user = userRepository.findByUsername(request.getUsername())
+        User user = userRepository.findByUsername(request.username())
                 .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
 
-        if (!BCrypt.checkpw(request.getPassword(), user.getPassword())) {
+        if (!BCrypt.checkpw(request.password(), user.getPassword())) {
             throw new InvalidCredentialsException("Invalid username or password");
         }
 

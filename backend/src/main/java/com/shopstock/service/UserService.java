@@ -37,75 +37,75 @@ public class UserService {
     }
 
     public UserResponse create(CreateUserRequest request) {
-        User actor = authorizationService.requireRole(request.getActorUserId(), Role.SUPER_ADMIN, Role.ADMIN);
+        User actor = authorizationService.requireRole(request.actorUserId(), Role.SUPER_ADMIN, Role.ADMIN);
 
-        if (!authorizationService.canManage(actor.getRole(), request.getRole())) {
-            throw new ForbiddenException("Role " + actor.getRole() + " is not allowed to create a " + request.getRole() + " account.");
+        if (!authorizationService.canManage(actor.getRole(), request.role())) {
+            throw new ForbiddenException("Role " + actor.getRole() + " is not allowed to create a " + request.role() + " account.");
         }
 
-        userRepository.findByUsername(request.getUsername()).ifPresent(u -> {
-            throw new DuplicateResourceException("Username '" + request.getUsername() + "' is already taken.");
+        userRepository.findByUsername(request.username()).ifPresent(u -> {
+            throw new DuplicateResourceException("Username '" + request.username() + "' is already taken.");
         });
 
         User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
-        user.setFullName(request.getFullName());
-        user.setRole(request.getRole());
+        user.setUsername(request.username());
+        user.setPassword(BCrypt.hashpw(request.password(), BCrypt.gensalt()));
+        user.setFullName(request.fullName());
+        user.setRole(request.role());
 
         return new UserResponse(userRepository.save(user));
     }
 
     public UserResponse update(UUID targetId, UpdateUserRequest request) {
-        User actor = authorizationService.requireRole(request.getActorUserId(), Role.SUPER_ADMIN, Role.ADMIN);
+        User actor = authorizationService.requireRole(request.actorUserId(), Role.SUPER_ADMIN, Role.ADMIN);
         User target = getEntityById(targetId);
 
         if (!authorizationService.canManage(actor.getRole(), target.getRole())) {
             throw new ForbiddenException("Role " + actor.getRole() + " is not allowed to edit a " + target.getRole() + " account.");
         }
 
-        if (request.getRole() != null && !authorizationService.canManage(actor.getRole(), request.getRole())) {
-            throw new ForbiddenException("Role " + actor.getRole() + " is not allowed to assign the " + request.getRole() + " role.");
+        if (request.role() != null && !authorizationService.canManage(actor.getRole(), request.role())) {
+            throw new ForbiddenException("Role " + actor.getRole() + " is not allowed to assign the " + request.role() + " role.");
         }
 
-        if (request.getUsername() != null && !request.getUsername().equals(target.getUsername())) {
-            userRepository.findByUsername(request.getUsername()).ifPresent(u -> {
-                throw new DuplicateResourceException("Username '" + request.getUsername() + "' is already taken.");
+        if (request.username() != null && !request.username().equals(target.getUsername())) {
+            userRepository.findByUsername(request.username()).ifPresent(u -> {
+                throw new DuplicateResourceException("Username '" + request.username() + "' is already taken.");
             });
-            target.setUsername(request.getUsername());
+            target.setUsername(request.username());
         }
-        if (request.getFullName() != null) {
-            target.setFullName(request.getFullName());
+        if (request.fullName() != null) {
+            target.setFullName(request.fullName());
         }
-        if (request.getPassword() != null) {
-            target.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
+        if (request.password() != null) {
+            target.setPassword(BCrypt.hashpw(request.password(), BCrypt.gensalt()));
         }
-        if (request.getRole() != null) {
-            target.setRole(request.getRole());
+        if (request.role() != null) {
+            target.setRole(request.role());
         }
 
         return new UserResponse(userRepository.save(target));
     }
 
     public UserResponse updateSelf(SelfUpdateRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + request.getUserId()));
+        User user = userRepository.findById(request.userId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id " + request.userId()));
 
-        if (request.getUsername() != null && !request.getUsername().equals(user.getUsername())) {
-            userRepository.findByUsername(request.getUsername()).ifPresent(u -> {
-                throw new DuplicateResourceException("Username '" + request.getUsername() + "' is already taken.");
+        if (request.username() != null && !request.username().equals(user.getUsername())) {
+            userRepository.findByUsername(request.username()).ifPresent(u -> {
+                throw new DuplicateResourceException("Username '" + request.username() + "' is already taken.");
             });
-            user.setUsername(request.getUsername());
+            user.setUsername(request.username());
         }
-        if (request.getFullName() != null) {
-            user.setFullName(request.getFullName());
+        if (request.fullName() != null) {
+            user.setFullName(request.fullName());
         }
-        if (request.getNewPassword() != null) {
-            if (request.getCurrentPassword() == null
-                    || !BCrypt.checkpw(request.getCurrentPassword(), user.getPassword())) {
+        if (request.newPassword() != null) {
+            if (request.currentPassword() == null
+                    || !BCrypt.checkpw(request.currentPassword(), user.getPassword())) {
                 throw new InvalidCredentialsException("Current password is incorrect.");
             }
-            user.setPassword(BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt()));
+            user.setPassword(BCrypt.hashpw(request.newPassword(), BCrypt.gensalt()));
         }
 
         return new UserResponse(userRepository.save(user));

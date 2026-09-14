@@ -31,15 +31,15 @@ public class CategoryService {
     }
 
     public CategoryResponse create(CategoryRequest request) {
-        authorizationService.requireRole(request.getUserId(), Role.SUPER_ADMIN, Role.ADMIN);
+        authorizationService.requireRole(request.userId(), Role.SUPER_ADMIN, Role.ADMIN);
 
-        categoryRepository.findByNameIgnoreCase(request.getName()).ifPresent(c -> {
-            throw new DuplicateResourceException("A category named '" + request.getName() + "' already exists");
+        categoryRepository.findByNameIgnoreCase(request.name()).ifPresent(c -> {
+            throw new DuplicateResourceException("A category named '" + request.name() + "' already exists");
         });
 
         Category category = new Category();
-        category.setName(request.getName());
-        category.setDescription(request.getDescription());
+        category.setName(request.name());
+        category.setDescription(request.description());
         return new CategoryResponse(categoryRepository.save(category));
     }
 

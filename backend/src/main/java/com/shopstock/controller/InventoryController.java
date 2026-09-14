@@ -4,13 +4,14 @@ import com.shopstock.dto.request.AdjustmentRequest;
 import com.shopstock.dto.response.ProductResponse;
 import com.shopstock.service.InventoryService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/inventory")
+@RequestMapping("/api/v1/inventory")
 public class InventoryController {
 
     private final InventoryService inventoryService;
@@ -20,7 +21,7 @@ public class InventoryController {
     }
 
     @PostMapping("/adjust")
-    public ProductResponse adjust(@Valid @RequestBody AdjustmentRequest request) {
-        return inventoryService.adjust(request);
+    public ResponseEntity<ProductResponse> adjust(@Valid @RequestBody AdjustmentRequest request) {
+        return ResponseEntity.ok(inventoryService.adjust(request));
     }
 }

@@ -1,26 +1,26 @@
 <nav class="bar">
-  <a class="brand" routerLink="/dashboard">Stockroom</a>
+    <a class="brand" routerLink="/dashboard">Stockroom</a>
 
-  <div class="links">
-    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    <a routerLink="/products" routerLinkActive="active">Products</a>
-    @if (authService.canSell()) {
-      <a routerLink="/sales" routerLinkActive="active">Sell</a>
-    }
-    @if (authService.isAdminOrAbove()) {
-      <a routerLink="/inventory" routerLinkActive="active">Inventory</a>
-    }
-    <a routerLink="/history" routerLinkActive="active">History</a>
-    <a routerLink="/invoices" routerLinkActive="active">Invoices</a>
-    @if (authService.isAdminOrAbove()) {
-      <a routerLink="/users" routerLinkActive="active">Users</a>
-    }
-  </div>
-
-  @if (authService.currentUser; as user) {
-    <div class="account">
-      <a class="account__name" routerLink="/account" routerLinkActive="active">{{ user.fullName }}</a>
-      <button class="account__logout" type="button" (click)="logout()">Sign out</button>
+    <div class="links">
+        <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+        <a routerLink="/products" routerLinkActive="active">Products</a>
+        @if (authService.canSell()) {
+            <a routerLink="/sales" routerLinkActive="active">Sell</a>
+        }
+        @if (authService.isAdminOrAbove()) {
+            <a routerLink="/inventory" routerLinkActive="active">Inventory</a>
+        }
+        <a routerLink="/history" routerLinkActive="active">History</a>
+        <a routerLink="/invoices" routerLinkActive="active">Invoices</a>
+        @if (authService.isAdminOrAbove()) {
+            <a routerLink="/users" routerLinkActive="active">Users</a>
+        }
     </div>
-  }
+
+    @if (authService.currentUser; as user) {
+        <div class="account">
+            <a class="account__name" routerLink="/account" routerLinkActive="active">{{ user.fullName }}</a>
+            <button (click)="logout()" class="account__logout" type="button">Sign out</button>
+        </div>
+    }
 </nav>

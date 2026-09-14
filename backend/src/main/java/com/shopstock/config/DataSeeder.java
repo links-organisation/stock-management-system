@@ -45,9 +45,9 @@ public class DataSeeder implements CommandLineRunner {
             Category snacks = save(categoryRepository, "Snacks", "Chips, biscuits and other snacks");
 
             if (productRepository.count() == 0) {
-                createProduct("Mineral Water 1L", "BEV-001", beverages, "0.50", "1.20", 100, 20);
-                createProduct("Orange Juice 1L", "BEV-002", beverages, "1.00", "2.50", 40, 10);
-                createProduct("Potato Chips 150g", "SNK-001", snacks, "0.80", "1.80", 8, 15);
+                createProduct("Mineral Water 1L", "BEV-001", beverages, "250.0", "350.0", 100, 20);
+                createProduct("Orange Juice 1L", "BEV-002", beverages, "600.0", "750.0", 40, 10);
+                createProduct("Potato Chips 150g", "SNK-001", snacks, "100.0", "75.0", 8, 15);
             }
         }
     }

@@ -1,34 +1,34 @@
 @if (!invoice) {
-  <p class="empty">Select an invoice to see its detail.</p>
+    <p class="empty">Select an invoice to see its detail.</p>
 } @else {
-  <div class="detail">
-    <header>
-      <h2 class="data">{{ invoice.invoiceNumber }}</h2>
-      <span class="date">{{ invoice.invoiceDate | date: 'medium' }}</span>
-    </header>
+    <div class="detail">
+        <header>
+            <h2 class="data">{{ invoice.invoiceNumber }}</h2>
+            <span class="date">{{ invoice.invoiceDate | date: 'medium' }}</span>
+        </header>
 
-    @if (invoice.sale) {
-      <p class="meta">
-        Sold by <strong>{{ invoice.sale.performedByUsername }}</strong>
-        @if (invoice.sale.customerName) {
-          to <strong>{{ invoice.sale.customerName }}</strong>
+        @if (invoice.sale) {
+            <p class="meta">
+                Sold by <strong>{{ invoice.sale.performedByUsername }}</strong>
+                @if (invoice.sale.customerName) {
+                    to <strong>{{ invoice.sale.customerName }}</strong>
+                }
+            </p>
+
+            <ul class="items">
+                @for (item of invoice.sale.items; track item.id) {
+                    <li>
+                        <span>{{ item.productName }}</span>
+                        <span class="data">{{ item.quantity }} × {{ item.unitPrice | fcfa }}</span>
+                        <span class="data amount">{{ item.subtotal | fcfa }}</span>
+                    </li>
+                }
+            </ul>
         }
-      </p>
 
-      <ul class="items">
-        @for (item of invoice.sale.items; track item.id) {
-          <li>
-            <span>{{ item.productName }}</span>
-            <span class="data">{{ item.quantity }} × {{ item.unitPrice | currency }}</span>
-            <span class="data amount">{{ item.subtotal | currency }}</span>
-          </li>
-        }
-      </ul>
-    }
-
-    <div class="total">
-      <span>Total</span>
-      <span class="data">{{ invoice.totalAmount | currency }}</span>
+        <div class="total">
+            <span>Total</span>
+            <span class="data">{{ invoice.totalAmount | fcfa }}</span>
+        </div>
     </div>
-  </div>
 }

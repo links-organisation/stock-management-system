@@ -2,6 +2,7 @@ package com.shopstock.controller;
 
 import com.shopstock.dto.response.InvoiceResponse;
 import com.shopstock.service.InvoiceService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/invoices")
+@RequestMapping("/api/v1/invoices")
 public class InvoiceController {
 
     private final InvoiceService invoiceService;
@@ -21,12 +22,12 @@ public class InvoiceController {
     }
 
     @GetMapping
-    public List<InvoiceResponse> getAll() {
-        return invoiceService.findAll();
+    public ResponseEntity<List<InvoiceResponse>> getAll() {
+        return ResponseEntity.ok(invoiceService.findAll());
     }
 
     @GetMapping("/{id}")
-    public InvoiceResponse getById(@PathVariable UUID id) {
-        return invoiceService.findById(id);
+    public ResponseEntity<InvoiceResponse> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(invoiceService.findById(id));
     }
 }

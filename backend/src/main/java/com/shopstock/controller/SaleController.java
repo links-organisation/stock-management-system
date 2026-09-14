@@ -5,13 +5,14 @@ import com.shopstock.dto.response.SaleResponse;
 import com.shopstock.service.SaleService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/sales")
+@RequestMapping("/api/v1/sales")
 public class SaleController {
 
     private final SaleService saleService;
@@ -27,12 +28,12 @@ public class SaleController {
     }
 
     @GetMapping
-    public List<SaleResponse> getAll() {
-        return saleService.findAll();
+    public ResponseEntity<List<SaleResponse>> getAll() {
+        return ResponseEntity.ok(saleService.findAll());
     }
 
     @GetMapping("/{id}")
-    public SaleResponse getById(@PathVariable UUID id) {
-        return saleService.findById(id);
+    public ResponseEntity<SaleResponse> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(saleService.findById(id));
     }
 }

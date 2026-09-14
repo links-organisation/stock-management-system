@@ -62,10 +62,10 @@ public class ProductService {
 
     @Transactional
     public ProductResponse create(ProductRequest request) {
-        User user = authorizationService.requireRole(request.getUserId(), Role.SUPER_ADMIN, Role.ADMIN);
+        User user = authorizationService.requireRole(request.userId(), Role.SUPER_ADMIN, Role.ADMIN);
 
-        productRepository.findByReference(request.getReference()).ifPresent(p -> {
-            throw new DuplicateResourceException("A product with reference '" + request.getReference() + "' already exists");
+        productRepository.findByReference(request.reference()).ifPresent(p -> {
+            throw new DuplicateResourceException("A product with reference '" + request.reference() + "' already exists");
         });
 
         Product product = new Product();
@@ -80,7 +80,7 @@ public class ProductService {
 
     @Transactional
     public ProductResponse update(UUID id, ProductRequest request) {
-        User user = authorizationService.requireRole(request.getUserId(), Role.SUPER_ADMIN, Role.ADMIN);
+        User user = authorizationService.requireRole(request.userId(), Role.SUPER_ADMIN, Role.ADMIN);
         Product product = getEntityById(id);
 
         int previousQuantity = product.getQuantityInStock();
@@ -114,14 +114,14 @@ public class ProductService {
     }
 
     private void applyRequest(Product product, ProductRequest request) {
-        product.setName(request.getName());
-        product.setReference(request.getReference());
-        product.setPurchasePrice(request.getPurchasePrice());
-        product.setSellingPrice(request.getSellingPrice());
-        product.setQuantityInStock(request.getQuantityInStock());
-        product.setAlertThreshold(request.getAlertThreshold());
-        if (request.getCategoryId() != null) {
-            Category category = categoryService.getEntityById(request.getCategoryId());
+        product.setName(request.name());
+        product.setReference(request.reference());
+        product.setPurchasePrice(request.purchasePrice());
+        product.setSellingPrice(request.sellingPrice());
+        product.setQuantityInStock(request.quantityInStock());
+        product.setAlertThreshold(request.alertThreshold());
+        if (request.categoryId() != null) {
+            Category category = categoryService.getEntityById(request.categoryId());
             product.setCategory(category);
         } else {
             product.setCategory(null);

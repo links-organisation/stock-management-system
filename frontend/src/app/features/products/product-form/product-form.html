@@ -1,54 +1,57 @@
-<div class="backdrop" (click)="cancel.emit()">
-  <form class="sheet" (click)="$event.stopPropagation()" (ngSubmit)="onSubmit()" novalidate>
-    <h2>{{ isEditing ? 'Edit product' : 'Register a product' }}</h2>
+<div (click)="cancel.emit()" class="backdrop">
+    <form (click)="$event.stopPropagation()" (ngSubmit)="onSubmit()" class="sheet" novalidate>
+        <h2>{{ isEditing ? 'Edit product' : 'Register a product' }}</h2>
 
-    <label class="field">
-      <span>Name</span>
-      <input type="text" name="name" [(ngModel)]="model.name" required />
-    </label>
+        <label class="field">
+            <span>Name</span>
+            <input [(ngModel)]="model.name" name="name" required type="text"/>
+        </label>
 
-    <label class="field">
-      <span>Reference / SKU</span>
-      <input type="text" name="reference" [(ngModel)]="model.reference" required />
-    </label>
+        <label class="field">
+            <span>Reference / SKU</span>
+            <input [(ngModel)]="model.reference" name="reference" required type="text"/>
+        </label>
 
-    <label class="field">
-      <span>Category</span>
-      <select name="categoryId" [(ngModel)]="model.categoryId">
-        <option [ngValue]="null">Uncategorized</option>
-        @for (category of categories; track category.id) {
-          <option [ngValue]="category.id">{{ category.name }}</option>
-        }
-      </select>
-    </label>
+        <label class="field">
+            <span>Category</span>
+            <select [(ngModel)]="model.categoryId" name="categoryId">
+                <option [ngValue]="null">Uncategorized</option>
+                @for (category of categories; track category.id) {
+                    <option [ngValue]="category.id">{{ category.name }}</option>
+                }
+            </select>
+        </label>
 
-    <div class="row">
-      <label class="field">
-        <span>Purchase price</span>
-        <input type="number" name="purchasePrice" min="0" step="0.01" [(ngModel)]="model.purchasePrice" required />
-      </label>
+        <div class="row">
+            <label class="field">
+                <span>Purchase price</span>
+                <input [(ngModel)]="model.purchasePrice" min="0" name="purchasePrice" required step="0.01"
+                       type="number"/>
+            </label>
 
-      <label class="field">
-        <span>Selling price</span>
-        <input type="number" name="sellingPrice" min="0" step="0.01" [(ngModel)]="model.sellingPrice" required />
-      </label>
-    </div>
+            <label class="field">
+                <span>Selling price</span>
+                <input [(ngModel)]="model.sellingPrice" min="0" name="sellingPrice" required step="0.01" type="number"/>
+            </label>
+        </div>
 
-    <div class="row">
-      <label class="field">
-        <span>Quantity in stock</span>
-        <input type="number" name="quantityInStock" min="0" step="1" [(ngModel)]="model.quantityInStock" required />
-      </label>
+        <div class="row">
+            <label class="field">
+                <span>Quantity in stock</span>
+                <input [(ngModel)]="model.quantityInStock" min="0" name="quantityInStock" required step="1"
+                       type="number"/>
+            </label>
 
-      <label class="field">
-        <span>Alert threshold</span>
-        <input type="number" name="alertThreshold" min="0" step="1" [(ngModel)]="model.alertThreshold" required />
-      </label>
-    </div>
+            <label class="field">
+                <span>Alert threshold</span>
+                <input [(ngModel)]="model.alertThreshold" min="0" name="alertThreshold" required step="1"
+                       type="number"/>
+            </label>
+        </div>
 
-    <footer>
-      <button type="button" class="ghost" (click)="cancel.emit()">Cancel</button>
-      <button type="submit" class="primary">{{ isEditing ? 'Save changes' : 'Register product' }}</button>
-    </footer>
-  </form>
+        <footer>
+            <button (click)="cancel.emit()" class="ghost" type="button">Cancel</button>
+            <button class="primary" type="submit">{{ isEditing ? 'Save changes' : 'Register product' }}</button>
+        </footer>
+    </form>
 </div>
