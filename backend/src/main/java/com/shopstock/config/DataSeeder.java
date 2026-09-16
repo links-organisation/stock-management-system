@@ -41,8 +41,8 @@ public class DataSeeder implements CommandLineRunner {
         }
 
         if (categoryRepository.count() == 0) {
-            Category beverages = save(categoryRepository, "Beverages", "Drinks and refreshments");
-            Category snacks = save(categoryRepository, "Snacks", "Chips, biscuits and other snacks");
+            Category beverages = save(categoryRepository, "Beverages", "BEV", "Drinks and refreshments");
+            Category snacks = save(categoryRepository, "Snacks", "SNK", "Chips, biscuits and other snacks");
 
             if (productRepository.count() == 0) {
                 createProduct("Mineral Water 1L", "BEV-001", beverages, "250.0", "350.0", 100, 20);
@@ -61,9 +61,10 @@ public class DataSeeder implements CommandLineRunner {
         userRepository.save(user);
     }
 
-    private Category save(CategoryRepository repository, String name, String description) {
+    private Category save(CategoryRepository repository, String name, String prefix, String description) {
         Category category = new Category();
         category.setName(name);
+        category.setPrefix(prefix);
         category.setDescription(description);
         return repository.save(category);
     }

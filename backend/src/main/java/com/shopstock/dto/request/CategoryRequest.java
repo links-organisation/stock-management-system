@@ -9,6 +9,8 @@ public record CategoryRequest(
 
         @NotBlank String name,
 
+        @NotBlank String prefix,
+
         String description,
 
         @NotNull UUID userId

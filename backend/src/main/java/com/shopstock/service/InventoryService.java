@@ -39,7 +39,7 @@ public class InventoryService {
             StockOperation operation = new StockOperation();
             operation.setProduct(product);
             operation.setOperationType(OperationType.ADJUSTMENT);
-            operation.setQuantityChange(delta);
+            operation.setQuantityChange((float) delta);
             operation.setComment(request.comment());
             operation.setPerformedBy(user);
             stockOperationRepository.save(operation);

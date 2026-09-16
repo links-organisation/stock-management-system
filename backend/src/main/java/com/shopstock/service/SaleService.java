@@ -89,7 +89,7 @@ public class SaleService {
             StockOperation operation = new StockOperation();
             operation.setProduct(product);
             operation.setOperationType(OperationType.SALE);
-            operation.setQuantityChange(-itemRequest.quantity());
+            operation.setQuantityChange((float) -itemRequest.quantity());
             operation.setComment("Sold via sale");
             operation.setPerformedBy(user);
             stockOperationRepository.save(operation);

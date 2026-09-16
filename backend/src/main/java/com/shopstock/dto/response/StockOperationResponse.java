@@ -11,13 +11,14 @@ public record StockOperationResponse(
         OperationType operationType,
         UUID productId,
         String productName,
-        Integer quantityChange,
+        Float quantityChange,
         LocalDateTime operationDate,
         String comment,
         UUID performedByUserId,
-        String performedByUsername
+        String performedByUsername,
+        String performedByFullname
 ) {
     public StockOperationResponse(StockOperation operation) {
-        this(operation.getId(), operation.getOperationType(), operation.getProduct().getId(), operation.getProduct().getName(), operation.getQuantityChange(), operation.getOperationDate(), operation.getComment(), operation.getPerformedBy().getId(), operation.getPerformedBy().getUsername());
+        this(operation.getId(), operation.getOperationType(), operation.getProduct().getId(), operation.getProduct().getName(), operation.getQuantityChange(), operation.getOperationDate(), operation.getComment(), operation.getPerformedBy().getId(), operation.getPerformedBy().getUsername(), operation.getPerformedBy().getFullName());
     }
 }

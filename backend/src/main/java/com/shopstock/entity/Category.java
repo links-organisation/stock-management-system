@@ -17,6 +17,10 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @NotBlank
+    @Column(nullable = false, unique = true)
+    private String prefix;
+
     private String description;
 
     public UUID getId() {
@@ -33,6 +37,14 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     public String getDescription() {

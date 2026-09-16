@@ -15,9 +15,10 @@ public record SaleResponse(
         String customerName,
         UUID performedByUserId,
         String performedByUsername,
+        String performedByFullname,
         List<SaleItemResponse> items
 ) {
     public SaleResponse(Sale sale) {
-        this(sale.getId(), sale.getSaleDate(), sale.getTotalAmount(), sale.getCustomerName(), sale.getPerformedBy().getId(), sale.getPerformedBy().getUsername(), sale.getItems().stream().map(SaleItemResponse::new).collect(Collectors.toList()));
+        this(sale.getId(), sale.getSaleDate(), sale.getTotalAmount(), sale.getCustomerName(), sale.getPerformedBy().getId(), sale.getPerformedBy().getUsername(), sale.getPerformedBy().getFullName(), sale.getItems().stream().map(SaleItemResponse::new).collect(Collectors.toList()));
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -45,6 +46,11 @@ public class ProductController {
     @GetMapping("/search")
     public ResponseEntity<List<ProductResponse>> search(@RequestParam(required = false) String query, @RequestParam(required = false) UUID categoryId) {
         return ResponseEntity.ok(productService.search(query, categoryId));
+    }
+
+    @GetMapping("/next-ref")
+    public ResponseEntity<Map<String, String>> getNextRef(@RequestParam String prefix) {
+        return ResponseEntity.ok(Map.of("prefix", productService.findNextRef(prefix)));
     }
 
     @DeleteMapping("/{id}")

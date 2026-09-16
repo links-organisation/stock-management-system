@@ -26,7 +26,7 @@ public class StockOperation {
 
     @NotNull
     @Column(nullable = false)
-    private Integer quantityChange;
+    private Float quantityChange;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime operationDate;
@@ -67,11 +67,11 @@ public class StockOperation {
         this.product = product;
     }
 
-    public Integer getQuantityChange() {
+    public Float getQuantityChange() {
         return quantityChange;
     }
 
-    public void setQuantityChange(Integer quantityChange) {
+    public void setQuantityChange(Float quantityChange) {
         this.quantityChange = quantityChange;
     }
 

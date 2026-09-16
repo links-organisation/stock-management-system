@@ -12,6 +12,9 @@ import com.shopstock.repository.StockOperationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -72,8 +75,7 @@ public class ProductService {
         applyRequest(product, request);
         product = productRepository.save(product);
 
-        logStockOperation(product, OperationType.REGISTRATION, product.getQuantityInStock(),
-                "Initial stock on product registration", user);
+        logStockOperation(product, OperationType.REGISTRATION, product.getQuantityInStock(), "Initial stock on product registration", user);
 
         return new ProductResponse(product);
     }
@@ -84,14 +86,25 @@ public class ProductService {
         Product product = getEntityById(id);
 
         int previousQuantity = product.getQuantityInStock();
+        BigDecimal previousPurchasePrice = product.getPurchasePrice(), previousSellingPrice = product.getSellingPrice();
         applyRequest(product, request);
         product = productRepository.save(product);
 
         int delta = product.getQuantityInStock() - previousQuantity;
         if (delta != 0) {
-            logStockOperation(product, OperationType.REGISTRATION, delta,
-                    "Stock updated via product edit", user);
+            logStockOperation(product, OperationType.REGISTRATION, delta, "Stock updated via product edit", user);
         }
+
+        BigDecimal delta_p = product.getPurchasePrice().subtract(previousPurchasePrice);
+        if (delta_p.compareTo(BigDecimal.ZERO) != 0) {
+            logStockOperation(product, OperationType.REGISTRATION, delta_p.floatValue(), "Purchase Price updated via product edit", user);
+        }
+
+        BigDecimal delta_s = product.getSellingPrice().subtract(previousSellingPrice);
+        if (delta_s.compareTo(BigDecimal.ZERO) != 0) {
+            logStockOperation(product, OperationType.REGISTRATION, delta_s.floatValue(), "Selling Price updated via product edit", user);
+        }
+
 
         return new ProductResponse(product);
     }
@@ -128,7 +141,17 @@ public class ProductService {
         }
     }
 
-    private void logStockOperation(Product product, OperationType type, int quantityChange, String comment, User user) {
+    public String findNextRef(String prefix) {
+        List<Product> products = productRepository.findByRefPrefix(prefix);
+        if (products.isEmpty())
+            return prefix + "-001";
+
+        products.sort(Comparator.comparing(Product::getReference));
+        long nextPrefix = Long.parseLong(Arrays.stream(products.getLast().getReference().split("-")).toList().getLast()) + 1;
+        return prefix + '-' + String.format("%03d", nextPrefix);
+    }
+
+    private void logStockOperation(Product product, OperationType type, float quantityChange, String comment, User user) {
         StockOperation operation = new StockOperation();
         operation.setProduct(product);
         operation.setOperationType(type);

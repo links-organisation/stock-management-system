@@ -33,3 +33,7 @@ build/
 
 ### VS Code ###
 .vscode/
+.env
+dependency-tree.txt
+effective-pom.xml
+log
