@@ -1,26 +1,26 @@
 <div (click)="cancel.emit()" class="backdrop">
-    <form (click)="$event.stopPropagation()" (ngSubmit)="onSubmit()" class="sheet" novalidate>
-        <h2>{{ isEditing ? 'Edit user' : 'Register a user' }}</h2>
+    <form (click)="$event.stopPropagation()" (ngSubmit)="onSubmit()" [formGroup]="form" class="sheet" novalidate>
+        <h2>{{ isEditing() ? 'Edit user' : 'Register a user' }}</h2>
 
         <label class="field">
             <span>Full name</span>
-            <input [(ngModel)]="model.fullName" name="fullName" required type="text"/>
+            <input formControlName="fullName" type="text"/>
         </label>
 
         <label class="field">
             <span>Username</span>
-            <input [(ngModel)]="model.username" name="username" required type="text"/>
+            <input formControlName="username" type="text"/>
         </label>
 
         <label class="field">
-            <span>{{ isEditing ? 'New password (leave blank to keep current)' : 'Password' }}</span>
-            <input [(ngModel)]="model.password" [required]="!isEditing" name="password" type="password"/>
+            <span>{{ isEditing() ? 'New password (leave blank to keep current)' : 'Password' }}</span>
+            <input formControlName="password" type="password"/>
         </label>
 
         <label class="field">
             <span>Role</span>
-            <select [(ngModel)]="model.role" name="role" required>
-                @for (role of assignableRoles; track role.value) {
+            <select formControlName="role">
+                @for (role of assignableRoles(); track role.value) {
                     <option [ngValue]="role.value">{{ role.label }}</option>
                 }
             </select>
@@ -28,7 +28,7 @@
 
         <footer>
             <button (click)="cancel.emit()" class="ghost" type="button">Cancel</button>
-            <button class="primary" type="submit">{{ isEditing ? 'Save changes' : 'Register user' }}</button>
+            <button class="primary" type="submit">{{ isEditing() ? 'Save changes' : 'Register user' }}</button>
         </footer>
     </form>
 </div>

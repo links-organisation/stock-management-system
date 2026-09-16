@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_BASE_URL, API_VERSION } from '../api-config';
+import { API_BASE_URL, API_PREFIX, API_VERSION } from '../api-config';
 import { Sale, SaleItemRequest } from '../models/sale.model';
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class SaleService {
-    private readonly baseUrl = `${API_BASE_URL}/${API_VERSION}/sales`;
+    private readonly baseUrl = `${API_BASE_URL}/${API_PREFIX}/${API_VERSION}/sales`;
 
     constructor(
         private http: HttpClient,

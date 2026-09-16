@@ -4,29 +4,29 @@
     <div class="layout">
         <section class="panel">
             <h2>Add products</h2>
-            <app-product-selector (add)="onAddToCart($event)" [products]="products"></app-product-selector>
+            <app-product-selector (add)="onAddToCart($event)" [products]="products()"></app-product-selector>
 
             <label class="field customer">
                 <span>Customer (optional)</span>
-                <input [(ngModel)]="customerName" name="customerName" placeholder="Walk-in customer" type="text"/>
+                <input [formControl]="customerName" placeholder="Walk-in customer" type="text"/>
             </label>
         </section>
 
         <section class="panel">
             <h2>Current sale</h2>
 
-            @if (errorMessage) {
-                <p class="status status--error">{{ errorMessage }}</p>
+            @if (errorMessage()) {
+                <p class="status status--error">{{ errorMessage() }}</p>
             }
-            @if (successMessage) {
-                <p class="status status--success">{{ successMessage }}</p>
+            @if (successMessage()) {
+                <p class="status status--success">{{ successMessage() }}</p>
             }
 
             <app-cart-summary
                 (checkout)="onCheckout()"
                 (removeLine)="onRemoveLine($event)"
-                [isSubmitting]="isSubmitting"
-                [lines]="cart"
+                [isSubmitting]="isSubmitting()"
+                [lines]="cart()"
             ></app-cart-summary>
         </section>
     </div>

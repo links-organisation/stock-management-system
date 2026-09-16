@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Product } from '../../core/models/product.model';
 import { OperationType, StockOperation } from '../../core/models/stock-operation.model';
 import { ProductService } from '../../core/services/product.service';
@@ -9,54 +10,52 @@ import { StockOperationService } from '../../core/services/stock-operation.servi
 @Component({
     selector: 'app-stock-operation-history',
     standalone: true,
-    imports: [FormsModule, DatePipe],
+    imports: [ReactiveFormsModule, DatePipe],
     templateUrl: './stock-operation-history.html',
     styleUrl: './stock-operation-history.scss',
 })
-export class StockOperationHistory implements OnInit {
-    operations: StockOperation[] = [];
-    products: Product[] = [];
-    isLoading = true;
-    errorMessage = '';
+export class StockOperationHistory {
+    operations = signal<StockOperation[]>([]);
+    products = signal<Product[]>([]);
+    isLoading = signal(true);
+    errorMessage = signal('');
 
-    typeFilter: OperationType | '' = '';
-    productFilter: string | null = null;
-    fromFilter = '';
-    toFilter = '';
+    private fb = inject(FormBuilder);
+    filterForm = this.fb.nonNullable.group({
+        typeFilter: this.fb.nonNullable.control<OperationType | ''>(''),
+        productFilter: this.fb.control<string | null>(null),
+        fromFilter: [''],
+        toFilter: [''],
+    });
 
     constructor(
         private stockOperationService: StockOperationService,
         private productService: ProductService,
-        private cdr: ChangeDetectorRef,
-    ) {}
-
-    ngOnInit(): void {
-        this.productService.getAll().subscribe((products) => {
-            this.products = products;
-            this.cdr.detectChanges();
-        });
+    ) {
+        this.productService.getAll().subscribe((products) => this.products.set(products));
         this.load();
+
+        this.filterForm.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.load());
     }
 
     load(): void {
-        this.isLoading = true;
+        const { typeFilter, productFilter, fromFilter, toFilter } = this.filterForm.getRawValue();
+        this.isLoading.set(true);
         this.stockOperationService
             .getAll({
-                type: this.typeFilter || undefined,
-                productId: this.productFilter,
-                from: this.fromFilter || undefined,
-                to: this.toFilter || undefined,
+                type: typeFilter || undefined,
+                productId: productFilter,
+                from: fromFilter || undefined,
+                to: toFilter || undefined,
             })
             .subscribe({
                 next: (operations) => {
-                    this.operations = operations;
-                    this.isLoading = false;
-                    this.cdr.detectChanges();
+                    this.operations.set(operations);
+                    this.isLoading.set(false);
                 },
                 error: () => {
-                    this.errorMessage = 'Could not load the operations history.';
-                    this.isLoading = false;
-                    this.cdr.detectChanges();
+                    this.errorMessage.set('Could not load the operations history.');
+                    this.isLoading.set(false);
                 },
             });
     }

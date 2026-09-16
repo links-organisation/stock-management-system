@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_BASE_URL, API_VERSION } from '../api-config';
+import { API_BASE_URL, API_PREFIX, API_VERSION } from '../api-config';
 import {
     CreateUserRequest,
     Role,
@@ -16,7 +16,7 @@ export type UpdateUserData = Omit<UpdateUserRequest, 'actorUserId'>;
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-    private readonly baseUrl = `${API_BASE_URL}/${API_VERSION}/users`;
+    private readonly baseUrl = `${API_BASE_URL}/${API_PREFIX}/${API_VERSION}/users`;
 
     constructor(
         private http: HttpClient,

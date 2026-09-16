@@ -1,10 +1,10 @@
 <div class="page">
     <h1>Operations history</h1>
 
-    <div class="filters">
+    <div [formGroup]="filterForm" class="filters">
         <label class="filter">
             <span>Type</span>
-            <select (ngModelChange)="load()" [(ngModel)]="typeFilter">
+            <select formControlName="typeFilter">
                 <option value="">All</option>
                 <option value="REGISTRATION">Registration</option>
                 <option value="SALE">Sale</option>
@@ -14,9 +14,9 @@
 
         <label class="filter">
             <span>Product</span>
-            <select (ngModelChange)="load()" [(ngModel)]="productFilter">
+            <select formControlName="productFilter">
                 <option [ngValue]="null">All</option>
-                @for (product of products; track product.id) {
+                @for (product of products(); track product.id) {
                     <option [ngValue]="product.id">{{ product.name }}</option>
                 }
             </select>
@@ -24,22 +24,22 @@
 
         <label class="filter">
             <span>From</span>
-            <input (ngModelChange)="load()" [(ngModel)]="fromFilter" type="date"/>
+            <input formControlName="fromFilter" type="date"/>
         </label>
 
         <label class="filter">
             <span>To</span>
-            <input (ngModelChange)="load()" [(ngModel)]="toFilter" type="date"/>
+            <input formControlName="toFilter" type="date"/>
         </label>
     </div>
 
-    @if (errorMessage) {
-        <p class="status status--error">{{ errorMessage }}</p>
+    @if (errorMessage()) {
+        <p class="status status--error">{{ errorMessage() }}</p>
     }
 
-    @if (isLoading) {
+    @if (isLoading()) {
         <p class="status">Loading…</p>
-    } @else if (operations.length === 0) {
+    } @else if (operations().length === 0) {
         <p class="empty">No operations match these filters.</p>
     } @else {
         <div class="table-wrap panel">
@@ -55,7 +55,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @for (op of operations; track op.id) {
+                    @for (op of operations(); track op.id) {
                         <tr>
                             <td class="data">{{ op.operationDate | date: 'medium' }}</td>
                             <td><span [class]="'type--' + op.operationType.toLowerCase()"
@@ -65,7 +65,7 @@
                                 class="data">
                                 {{ op.quantityChange > 0 ? '+' : '' }}{{ op.quantityChange }}
                             </td>
-                            <td>{{ op.performedByUsername }}</td>
+                            <td>{{ op.performedByFullname }}</td>
                             <td class="comment">{{ op.comment || '—' }}</td>
                         </tr>
                     }

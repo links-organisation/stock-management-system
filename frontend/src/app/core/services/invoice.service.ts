@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_BASE_URL, API_VERSION } from '../api-config';
+import { API_BASE_URL, API_PREFIX, API_VERSION } from '../api-config';
 import { Invoice } from '../models/invoice.model';
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceService {
-    private readonly baseUrl = `${API_BASE_URL}/${API_VERSION}/invoices`;
+    private readonly baseUrl = `${API_BASE_URL}/${API_PREFIX}/${API_VERSION}/invoices`;
 
     constructor(private http: HttpClient) {}
 

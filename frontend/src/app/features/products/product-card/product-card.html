@@ -1,38 +1,38 @@
-<article [class.card--low]="product.lowStock" class="card">
+<article [class.card--low]="product().lowStock" class="card">
     <header>
-        <h3>{{ product.name }}</h3>
-        <span class="ref data">{{ product.reference }}</span>
+        <h3>{{ product().name }}</h3>
+        <span class="ref data">{{ product().reference }}</span>
     </header>
 
-    <p class="category">{{ product.categoryName || 'Uncategorized' }}</p>
+    <p class="category">{{ product().categoryName || 'Uncategorized' }}</p>
 
     <dl class="stats">
         <div>
             <dt>In stock</dt>
-            <dd [class.stats__danger]="product.lowStock" class="data">{{ product.quantityInStock }}</dd>
+            <dd [class.stats__danger]="product().lowStock" class="data">{{ product().quantityInStock }}</dd>
         </div>
         <div>
             <dt>Alert at</dt>
-            <dd class="data">{{ product.alertThreshold }}</dd>
+            <dd class="data">{{ product().alertThreshold }}</dd>
         </div>
         <div>
             <dt>Sells for</dt>
-            <dd class="data">{{ product.sellingPrice | fcfa }}</dd>
+            <dd class="data">{{ product().sellingPrice | fcfa }}</dd>
         </div>
         <div>
             <dt>Cost</dt>
-            <dd class="data">{{ product.purchasePrice | fcfa }}</dd>
+            <dd class="data">{{ product().purchasePrice | fcfa }}</dd>
         </div>
     </dl>
 
-    @if (product.lowStock) {
+    @if (product().lowStock) {
         <p class="warning">Below alert threshold</p>
     }
 
-    @if (canManage) {
+    @if (canManage()) {
         <footer>
-            <button (click)="edit.emit(product)" type="button">Edit</button>
-            <button (click)="remove.emit(product)" class="danger" type="button">Delete</button>
+            <button (click)="edit.emit(product())" type="button">Edit</button>
+            <button (click)="remove.emit(product())" class="danger" type="button">Delete</button>
         </footer>
     }
 </article>

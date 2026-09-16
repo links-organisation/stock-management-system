@@ -1,71 +1,80 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
 import { formatedRole } from '../../core/models/types';
 
+function passwordsMatchValidator(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+        const newPassword = group.get('newPassword')?.value;
+        const confirmPassword = group.get('confirmPassword')?.value;
+        if (!newPassword) {
+            return null;
+        }
+        return newPassword === confirmPassword ? null : { passwordMismatch: true };
+    };
+}
+
 @Component({
     selector: 'app-account',
     standalone: true,
-    imports: [FormsModule],
+    imports: [ReactiveFormsModule],
     templateUrl: './account.html',
     styleUrl: './account.scss',
 })
 export class Account {
-    username: string;
-    fullName: string;
-    currentPassword = '';
-    newPassword = '';
-    confirmPassword = '';
+    private authService = inject(AuthService);
+    private userService = inject(UserService);
 
-    isSaving = false;
-    errorMessage = '';
-    successMessage = '';
+    isSaving = signal(false);
+    errorMessage = signal('');
+    successMessage = signal('');
 
-    constructor(
-        private authService: AuthService,
-        private userService: UserService,
-        private cdr: ChangeDetectorRef,
-    ) {
-        this.username = authService.currentUser?.username ?? '';
-        this.fullName = authService.currentUser?.fullName ?? '';
-    }
+    private fb = inject(FormBuilder);
+    form = this.fb.nonNullable.group(
+        {
+            fullName: [this.authService.currentUser?.fullName ?? '', Validators.required],
+            username: [this.authService.currentUser?.username ?? '', Validators.required],
+            currentPassword: [''],
+            newPassword: [''],
+            confirmPassword: [''],
+        },
+        { validators: passwordsMatchValidator() },
+    );
 
     get role() {
         return formatedRole[this.authService.currentRole ?? 'SELLER'];
     }
 
     onSubmit(): void {
-        if (this.newPassword && this.newPassword !== this.confirmPassword) {
-            this.errorMessage = 'New password and confirmation do not match.';
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
             return;
         }
 
-        this.isSaving = true;
-        this.errorMessage = '';
-        this.successMessage = '';
+        this.isSaving.set(true);
+        this.errorMessage.set('');
+        this.successMessage.set('');
+
+        const { fullName, username, currentPassword, newPassword } = this.form.getRawValue();
 
         this.userService
             .updateSelf({
-                username: this.username || undefined,
-                fullName: this.fullName || undefined,
-                currentPassword: this.currentPassword || undefined,
-                newPassword: this.newPassword || undefined,
+                username: username || undefined,
+                fullName: fullName || undefined,
+                currentPassword: currentPassword || undefined,
+                newPassword: newPassword || undefined,
             })
             .subscribe({
                 next: (user) => {
-                    this.isSaving = false;
+                    this.isSaving.set(false);
                     this.authService.updateCurrentUser(user);
-                    this.currentPassword = '';
-                    this.newPassword = '';
-                    this.confirmPassword = '';
-                    this.successMessage = 'Account updated.';
-                    this.cdr.detectChanges();
+                    this.form.patchValue({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                    this.successMessage.set('Account updated.');
                 },
                 error: (err) => {
-                    this.isSaving = false;
-                    this.errorMessage = err.error?.message ?? 'Could not update your account.';
-                    this.cdr.detectChanges();
+                    this.isSaving.set(false);
+                    this.errorMessage.set(err.error?.message ?? 'Could not update your account.');
                 },
             });
     }

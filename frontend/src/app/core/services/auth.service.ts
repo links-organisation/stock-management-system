@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { API_BASE_URL, API_VERSION } from '../api-config';
+import { API_BASE_URL, API_PREFIX, API_VERSION } from '../api-config';
 import { LoginRequest, Role, User } from '../models/user.model';
 
 const STORAGE_KEY = 'stock-management.currentUser';
@@ -26,7 +26,7 @@ export class AuthService {
     }
 
     login(request: LoginRequest): Observable<User> {
-        return this.http.post<User>(`${API_BASE_URL}/${API_VERSION}/auth/login`, request).pipe(
+        return this.http.post<User>(`${API_BASE_URL}/${API_PREFIX}/${API_VERSION}/auth/login`, request).pipe(
             tap((user) => {
                 this.currentUserSubject.next(user);
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(user));

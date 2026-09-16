@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Invoice } from '../../../core/models/invoice.model';
 import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
 
@@ -11,5 +11,5 @@ import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
     styleUrl: './invoice-detail.scss',
 })
 export class InvoiceDetail {
-    @Input() invoice: Invoice | null = null;
+    invoice = input<Invoice | null>(null);
 }

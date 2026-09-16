@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_BASE_URL, API_VERSION } from '../api-config';
+import { API_BASE_URL, API_PREFIX, API_VERSION } from '../api-config';
 import { OperationType, StockOperation } from '../models/stock-operation.model';
 
 export interface StockOperationFilter {
@@ -14,7 +14,7 @@ export interface StockOperationFilter {
 
 @Injectable({ providedIn: 'root' })
 export class StockOperationService {
-    private readonly baseUrl = `${API_BASE_URL}/${API_VERSION}/stock-operations`;
+    private readonly baseUrl = `${API_BASE_URL}/${API_PREFIX}/${API_VERSION}/stock-operations`;
 
     constructor(private http: HttpClient) {}
 

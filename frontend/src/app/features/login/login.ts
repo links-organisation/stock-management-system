@@ -1,47 +1,51 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [FormsModule],
+    imports: [ReactiveFormsModule],
     templateUrl: './login.html',
     styleUrl: './login.scss',
 })
 export class Login {
-    username = '';
-    password = '';
-    errorMessage = '';
-    isSubmitting = false;
+    errorMessage = signal('');
+    isSubmitting = signal(false);
+
+    private fb = inject(FormBuilder);
+    form = this.fb.nonNullable.group({
+        username: ['', Validators.required],
+        password: ['', Validators.required],
+    });
 
     constructor(
         private authService: AuthService,
         private router: Router,
-        private cdr: ChangeDetectorRef,
     ) {}
 
     onSubmit(): void {
-        if (!this.username || !this.password) {
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
             return;
         }
 
-        this.isSubmitting = true;
-        this.errorMessage = '';
+        this.isSubmitting.set(true);
+        this.errorMessage.set('');
 
-        this.authService.login({ username: this.username, password: this.password }).subscribe({
+        this.authService.login(this.form.getRawValue()).subscribe({
             next: () => {
-                this.isSubmitting = false;
+                this.isSubmitting.set(false);
                 this.router.navigate(['/dashboard']);
             },
             error: (err) => {
-                this.isSubmitting = false;
-                this.errorMessage =
+                this.isSubmitting.set(false);
+                this.errorMessage.set(
                     err.status === 401
                         ? 'Invalid username or password.'
-                        : 'Unable to reach the server. Please try again.';
-                this.cdr.detectChanges();
+                        : 'Unable to reach the server. Please try again.',
+                );
             },
         });
     }

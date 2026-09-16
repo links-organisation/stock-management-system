@@ -10,6 +10,7 @@ export interface StockOperation {
     comment: string | null;
     performedByUserId: string;
     performedByUsername: string;
+    performedByFullname: string;
 }
 
 export interface AdjustmentRequest {

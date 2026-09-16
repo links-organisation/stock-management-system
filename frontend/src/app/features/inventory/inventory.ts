@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Product } from '../../core/models/product.model';
 import { InventoryService } from '../../core/services/inventory.service';
 import { ProductService } from '../../core/services/product.service';
@@ -8,80 +8,75 @@ import { FcfaPipe } from '../../shared/pipes/fcfa/fcfa-pipe';
 @Component({
     selector: 'app-inventory',
     standalone: true,
-    imports: [FormsModule, FcfaPipe],
+    imports: [ReactiveFormsModule, FcfaPipe],
     templateUrl: './inventory.html',
     styleUrl: './inventory.scss',
 })
-export class Inventory implements OnInit {
-    products: Product[] = [];
-    isLoading = true;
-    errorMessage = '';
-    successMessage = '';
+export class Inventory {
+    products = signal<Product[]>([]);
+    isLoading = signal(true);
+    errorMessage = signal('');
+    successMessage = signal('');
 
-    adjustingProductId: string | null = null;
-    newQuantity = 0;
-    comment = '';
-    isSaving = false;
+    adjustingProductId = signal<string | null>(null);
+    isSaving = signal(false);
+
+    private fb = inject(FormBuilder);
+    adjustForm = this.fb.nonNullable.group({
+        newQuantity: [0, [Validators.required, Validators.min(0)]],
+        comment: [''],
+    });
 
     constructor(
         private productService: ProductService,
         private inventoryService: InventoryService,
-        private cdr: ChangeDetectorRef,
-    ) {}
-
-    ngOnInit(): void {
+    ) {
         this.loadProducts();
     }
 
     loadProducts(): void {
-        this.isLoading = true;
+        this.isLoading.set(true);
         this.productService.getAll().subscribe({
             next: (products) => {
-                this.products = products;
-                this.isLoading = false;
-                this.cdr.detectChanges();
+                this.products.set(products);
+                this.isLoading.set(false);
             },
             error: () => {
-                this.errorMessage = 'Could not load inventory.';
-                this.isLoading = false;
-                this.cdr.detectChanges();
+                this.errorMessage.set('Could not load inventory.');
+                this.isLoading.set(false);
             },
         });
     }
 
     startAdjust(product: Product): void {
-        this.adjustingProductId = product.id;
-        this.newQuantity = product.quantityInStock;
-        this.comment = '';
-        this.cdr.detectChanges();
+        this.adjustingProductId.set(product.id);
+        this.adjustForm.reset({ newQuantity: product.quantityInStock, comment: '' });
     }
 
     cancelAdjust(): void {
-        this.adjustingProductId = null;
-        this.cdr.detectChanges();
+        this.adjustingProductId.set(null);
     }
 
     saveAdjust(product: Product): void {
-        this.isSaving = true;
-        this.inventoryService
-            .adjust(product.id, this.newQuantity, this.comment || undefined)
-            .subscribe({
-                next: (updated) => {
-                    this.isSaving = false;
-                    this.adjustingProductId = null;
-                    this.products = this.products.map((p) => (p.id === updated.id ? updated : p));
-                    this.successMessage = `${updated.name} adjusted to ${updated.quantityInStock}.`;
-                    this.cdr.detectChanges();
-                    setTimeout(() => {
-                        this.successMessage = '';
-                        this.cdr.detectChanges();
-                    }, 3000);
-                },
-                error: () => {
-                    this.isSaving = false;
-                    this.errorMessage = 'Could not save the adjustment.';
-                    this.cdr.detectChanges();
-                },
-            });
+        if (this.adjustForm.invalid) {
+            this.adjustForm.markAllAsTouched();
+            return;
+        }
+
+        const { newQuantity, comment } = this.adjustForm.getRawValue();
+        this.isSaving.set(true);
+        this.inventoryService.adjust(product.id, newQuantity, comment || undefined).subscribe({
+            next: (updated) => {
+                this.isSaving.set(false);
+                this.adjustingProductId.set(null);
+                this.products.update((list) => list.map((p) => (p.id === updated.id ? updated : p)));
+                this.successMessage.set(`${updated.name} adjusted to ${updated.quantityInStock}.`);
+                setTimeout(() => this.successMessage.set(''), 3000);
+            },
+            error: () => {
+                this.isSaving.set(false);
+                this.errorMessage.set('Could not save the adjustment.');
+            },
+        });
     }
 }

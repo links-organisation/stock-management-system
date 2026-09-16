@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, computed, inject, input, output } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Product } from '../../../core/models/product.model';
 import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
 
@@ -11,27 +12,30 @@ export interface ProductPick {
 @Component({
     selector: 'app-product-selector',
     standalone: true,
-    imports: [FormsModule, FcfaPipe],
+    imports: [ReactiveFormsModule, FcfaPipe],
     templateUrl: './product-selector.html',
     styleUrl: './product-selector.scss',
 })
 export class ProductSelector {
-    @Input() products: Product[] = [];
-    @Output() add = new EventEmitter<ProductPick>();
+    products = input<Product[]>([]);
+    add = output<ProductPick>();
 
-    selectedProductId: string | null = null;
-    quantity = 1;
+    private fb = inject(FormBuilder);
+    form = this.fb.group({
+        selectedProductId: this.fb.control<string | null>(null),
+        quantity: this.fb.nonNullable.control(1, [Validators.required, Validators.min(1)]),
+    });
 
-    get selectedProduct(): Product | null {
-        return this.products.find((p) => p.id === this.selectedProductId) ?? null;
-    }
+    private selectedProductId = toSignal(this.form.controls.selectedProductId.valueChanges, { initialValue: null });
+    selectedProduct = computed(() => this.products().find((p) => p.id === this.selectedProductId()) ?? null);
 
     onAdd(): void {
-        const product = this.selectedProduct;
-        if (!product || this.quantity < 1) {
+        const product = this.selectedProduct();
+        const quantity = this.form.controls.quantity.value;
+        if (!product || quantity < 1) {
             return;
         }
-        this.add.emit({ product, quantity: this.quantity });
-        this.quantity = 1;
+        this.add.emit({ product, quantity });
+        this.form.controls.quantity.setValue(1);
     }
 }

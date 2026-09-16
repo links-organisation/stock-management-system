@@ -1,14 +1,14 @@
 <div class="page">
     <h1>Inventory</h1>
 
-    @if (errorMessage) {
-        <p class="status status--error">{{ errorMessage }}</p>
+    @if (errorMessage()) {
+        <p class="status status--error">{{ errorMessage() }}</p>
     }
-    @if (successMessage) {
-        <p class="status status--success">{{ successMessage }}</p>
+    @if (successMessage()) {
+        <p class="status status--success">{{ successMessage() }}</p>
     }
 
-    @if (isLoading) {
+    @if (isLoading()) {
         <p class="status">Loading…</p>
     } @else {
         <div class="table-wrap panel">
@@ -18,17 +18,19 @@
                     <th>Product</th>
                     <th>Reference</th>
                     <th>Category</th>
+                    <th>Unit value</th>
                     <th>Stock value</th>
                     <th>Quantity</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                    @for (product of products; track product.id) {
+                    @for (product of products(); track product.id) {
                         <tr [class.low]="product.lowStock">
                             <td>{{ product.name }}</td>
                             <td class="data">{{ product.reference }}</td>
                             <td>{{ product.categoryName || '—' }}</td>
+                            <td class="data">{{ product.purchasePrice | fcfa }}</td>
                             <td class="data">{{ product.purchasePrice * product.quantityInStock | fcfa }}</td>
                             <td class="data">
                                 {{ product.quantityInStock }}
@@ -37,11 +39,11 @@
                                 }
                             </td>
                             <td class="actions">
-                                @if (adjustingProductId === product.id) {
-                                    <div class="adjust">
-                                        <input [(ngModel)]="newQuantity" min="0" type="number"/>
-                                        <input [(ngModel)]="comment" placeholder="Reason (optional)" type="text"/>
-                                        <button (click)="saveAdjust(product)" [disabled]="isSaving" class="save"
+                                @if (adjustingProductId() === product.id) {
+                                    <div [formGroup]="adjustForm" class="adjust">
+                                        <input formControlName="newQuantity" min="0" type="number"/>
+                                        <input formControlName="comment" placeholder="Reason (optional)" type="text"/>
+                                        <button (click)="saveAdjust(product)" [disabled]="isSaving()" class="save"
                                                 type="button">Save
                                         </button>
                                         <button (click)="cancelAdjust()" class="cancel" type="button">Cancel</button>

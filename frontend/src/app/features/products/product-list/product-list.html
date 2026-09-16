@@ -6,36 +6,34 @@
         }
     </header>
 
-    <div class="search">
+    <div [formGroup]="filterForm" class="search">
         <input
-            (ngModelChange)="applyFilters()"
-            [(ngModel)]="searchQuery"
-            name="search"
+            formControlName="searchQuery"
             placeholder="Search by name or reference…"
             type="search"
         />
-        <select (ngModelChange)="applyFilters()" [(ngModel)]="categoryFilter" name="categoryFilter">
+        <select formControlName="categoryFilter">
             <option [ngValue]="null">All categories</option>
-            @for (category of categories; track category.id) {
+            @for (category of categories(); track category.id) {
                 <option [ngValue]="category.id">{{ category.name }}</option>
             }
         </select>
     </div>
 
-    @if (errorMessage) {
-        <p class="status status--error">{{ errorMessage }}</p>
+    @if (errorMessage()) {
+        <p class="status status--error">{{ errorMessage() }}</p>
     }
-    @if (successMessage) {
-        <p class="status status--success">{{ successMessage }}</p>
+    @if (successMessage()) {
+        <p class="status status--success">{{ successMessage() }}</p>
     }
 
-    @if (isLoading) {
+    @if (isLoading()) {
         <p class="status">Loading products…</p>
-    } @else if (products.length === 0) {
+    } @else if (products().length === 0) {
         <p class="empty">No products match your search.</p>
     } @else {
         <div class="grid">
-            @for (product of products; track product.id) {
+            @for (product of products(); track product.id) {
                 <app-product-card
                     (edit)="openEditForm($event)"
                     (remove)="onDeleteProduct($event)"
@@ -46,12 +44,12 @@
         </div>
     }
 
-    @if (isFormOpen) {
+    @if (isFormOpen()) {
         <app-product-form
             (cancel)="closeForm()"
             (save)="onSaveProduct($event)"
-            [categories]="categories"
-            [product]="editingProduct"
+            [categories]="categories()"
+            [product]="editingProduct()"
         ></app-product-form>
     }
 </div>

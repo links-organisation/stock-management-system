@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Product } from '../../../core/models/product.model';
 import { SaleItemRequest } from '../../../core/models/sale.model';
 import { ProductService } from '../../../core/services/product.service';
@@ -10,46 +10,42 @@ import { ProductPick, ProductSelector } from '../product-selector/product-select
 @Component({
     selector: 'app-sale',
     standalone: true,
-    imports: [FormsModule, ProductSelector, CartSummary],
+    imports: [ReactiveFormsModule, ProductSelector, CartSummary],
     templateUrl: './sale.html',
     styleUrl: './sale.scss',
 })
-export class Sale implements OnInit {
-    products: Product[] = [];
-    cart: CartLine[] = [];
-    customerName = '';
-    isSubmitting = false;
-    errorMessage = '';
-    successMessage = '';
+export class Sale {
+    products = signal<Product[]>([]);
+    cart = signal<CartLine[]>([]);
+    isSubmitting = signal(false);
+    errorMessage = signal('');
+    successMessage = signal('');
+
+    customerName = new FormControl('', { nonNullable: true });
 
     constructor(
         private productService: ProductService,
         private saleService: SaleService,
-        private cdr: ChangeDetectorRef,
-    ) {}
-
-    ngOnInit(): void {
+    ) {
         this.loadProducts();
     }
 
     loadProducts(): void {
-        this.productService.getAll().subscribe((products) => {
-            this.products = products;
-            this.cdr.detectChanges();
-        });
+        this.productService.getAll().subscribe((products) => this.products.set(products));
     }
 
     onAddToCart(pick: ProductPick): void {
-        const existing = this.cart.find((line) => line.productId === pick.product.id);
-        if (existing) {
-            this.cart = this.cart.map((line) =>
-                line.productId === pick.product.id
-                    ? { ...line, quantity: line.quantity + pick.quantity }
-                    : line,
-            );
-        } else {
-            this.cart = [
-                ...this.cart,
+        this.cart.update((cart) => {
+            const existing = cart.find((line) => line.productId === pick.product.id);
+            if (existing) {
+                return cart.map((line) =>
+                    line.productId === pick.product.id
+                        ? { ...line, quantity: line.quantity + pick.quantity }
+                        : line,
+                );
+            }
+            return [
+                ...cart,
                 {
                     productId: pick.product.id,
                     productName: pick.product.name,
@@ -57,42 +53,39 @@ export class Sale implements OnInit {
                     unitPrice: pick.product.sellingPrice,
                 },
             ];
-        }
-        this.cdr.detectChanges();
+        });
     }
 
     onRemoveLine(productId: string): void {
-        this.cart = this.cart.filter((line) => line.productId !== productId);
-        this.cdr.detectChanges();
+        this.cart.update((cart) => cart.filter((line) => line.productId !== productId));
     }
 
     onCheckout(): void {
-        if (this.cart.length === 0) {
+        const cart = this.cart();
+        if (cart.length === 0) {
             return;
         }
 
-        this.isSubmitting = true;
-        this.errorMessage = '';
-        this.successMessage = '';
+        this.isSubmitting.set(true);
+        this.errorMessage.set('');
+        this.successMessage.set('');
 
-        const items: SaleItemRequest[] = this.cart.map((line) => ({
+        const items: SaleItemRequest[] = cart.map((line) => ({
             productId: line.productId,
             quantity: line.quantity,
         }));
 
-        this.saleService.createSale(items, this.customerName || undefined).subscribe({
+        this.saleService.createSale(items, this.customerName.value || undefined).subscribe({
             next: (sale) => {
-                this.isSubmitting = false;
-                this.successMessage = `Sale #${sale.id} completed.`;
-                this.cart = [];
-                this.customerName = '';
+                this.isSubmitting.set(false);
+                this.successMessage.set(`Sale #${sale.id} completed.`);
+                this.cart.set([]);
+                this.customerName.setValue('');
                 this.loadProducts();
-                this.cdr.detectChanges();
             },
             error: (err) => {
-                this.isSubmitting = false;
-                this.errorMessage = err.error?.message ?? 'Could not complete the sale.';
-                this.cdr.detectChanges();
+                this.isSubmitting.set(false);
+                this.errorMessage.set(err.error?.message ?? 'Could not complete the sale.');
             },
         });
     }

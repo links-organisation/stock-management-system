@@ -4,14 +4,14 @@
         <button (click)="openCreateForm()" class="primary" type="button">Register user</button>
     </header>
 
-    @if (errorMessage) {
-        <p class="status status--error">{{ errorMessage }}</p>
+    @if (errorMessage()) {
+        <p class="status status--error">{{ errorMessage() }}</p>
     }
-    @if (successMessage) {
-        <p class="status status--success">{{ successMessage }}</p>
+    @if (successMessage()) {
+        <p class="status status--success">{{ successMessage() }}</p>
     }
 
-    @if (isLoading) {
+    @if (isLoading()) {
         <p class="status">Loading users…</p>
     } @else {
         <div class="table-wrap panel">
@@ -25,7 +25,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    @for (user of users; track user.id) {
+                    @for (user of users(); track user.id) {
                         <tr>
                             <td>{{ user.fullName }}</td>
                             <td class="data">{{ user.username }}</td>
@@ -42,12 +42,12 @@
         </div>
     }
 
-    @if (isFormOpen) {
+    @if (isFormOpen()) {
         <app-user-form
             (cancel)="closeForm()"
             (save)="onSave($event)"
             [assignableRoles]="assignableRoles"
-            [user]="editingUser"
+            [user]="editingUser()"
         ></app-user-form>
     }
 </div>

@@ -1,22 +1,22 @@
 <div (click)="cancel.emit()" class="backdrop">
-    <form (click)="$event.stopPropagation()" (ngSubmit)="onSubmit()" class="sheet" novalidate>
-        <h2>{{ isEditing ? 'Edit product' : 'Register a product' }}</h2>
+    <form (click)="$event.stopPropagation()" (ngSubmit)="onSubmit()" [formGroup]="form" class="sheet" novalidate>
+        <h2>{{ isEditing() ? 'Edit product' : 'Register a product' }}</h2>
 
         <label class="field">
             <span>Name</span>
-            <input [(ngModel)]="model.name" name="name" required type="text"/>
+            <input formControlName="name" type="text"/>
         </label>
 
         <label class="field">
             <span>Reference / SKU</span>
-            <input [(ngModel)]="model.reference" name="reference" required type="text"/>
+            <input formControlName="reference" type="text" [readonly]="form.get('categoryId')?.value"/>
         </label>
 
         <label class="field">
             <span>Category</span>
-            <select [(ngModel)]="model.categoryId" name="categoryId">
+            <select formControlName="categoryId">
                 <option [ngValue]="null">Uncategorized</option>
-                @for (category of categories; track category.id) {
+                @for (category of categories(); track category.id) {
                     <option [ngValue]="category.id">{{ category.name }}</option>
                 }
             </select>
@@ -25,33 +25,30 @@
         <div class="row">
             <label class="field">
                 <span>Purchase price</span>
-                <input [(ngModel)]="model.purchasePrice" min="0" name="purchasePrice" required step="0.01"
-                       type="number"/>
+                <input formControlName="purchasePrice" min="0" step="0.01" type="number"/>
             </label>
 
             <label class="field">
                 <span>Selling price</span>
-                <input [(ngModel)]="model.sellingPrice" min="0" name="sellingPrice" required step="0.01" type="number"/>
+                <input formControlName="sellingPrice" min="0" step="0.01" type="number"/>
             </label>
         </div>
 
         <div class="row">
             <label class="field">
                 <span>Quantity in stock</span>
-                <input [(ngModel)]="model.quantityInStock" min="0" name="quantityInStock" required step="1"
-                       type="number"/>
+                <input formControlName="quantityInStock" min="0" step="1" type="number"/>
             </label>
 
             <label class="field">
                 <span>Alert threshold</span>
-                <input [(ngModel)]="model.alertThreshold" min="0" name="alertThreshold" required step="1"
-                       type="number"/>
+                <input formControlName="alertThreshold" min="0" step="1" type="number"/>
             </label>
         </div>
 
         <footer>
             <button (click)="cancel.emit()" class="ghost" type="button">Cancel</button>
-            <button class="primary" type="submit">{{ isEditing ? 'Save changes' : 'Register product' }}</button>
+            <button class="primary" type="submit">{{ isEditing() ? 'Save changes' : 'Register product' }}</button>
         </footer>
     </form>
 </div>

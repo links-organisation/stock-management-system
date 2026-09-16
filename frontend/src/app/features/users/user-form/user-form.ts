@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, computed, effect, inject, input, output } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Role, User } from '../../../core/models/user.model';
 
 export interface UserFormValue {
@@ -12,49 +12,55 @@ export interface UserFormValue {
 @Component({
     selector: 'app-user-form',
     standalone: true,
-    imports: [FormsModule],
+    imports: [ReactiveFormsModule],
     templateUrl: './user-form.html',
     styleUrl: './user-form.scss',
 })
-export class UserForm implements OnChanges {
-    @Input() user: User | null = null;
-    @Input() assignableRoles: { value: Role; label: string }[] = [];
-    @Output() save = new EventEmitter<UserFormValue>();
-    @Output() cancel = new EventEmitter<void>();
+export class UserForm {
+    user = input<User | null>(null);
+    assignableRoles = input<{ value: Role; label: string }[]>([]);
+    save = output<UserFormValue>();
+    cancel = output<void>();
 
-    model: UserFormValue = this.emptyModel();
+    isEditing = computed(() => this.user() !== null);
 
-    get isEditing(): boolean {
-        return this.user !== null;
-    }
+    private fb = inject(FormBuilder);
+    form = this.fb.nonNullable.group({
+        fullName: ['', Validators.required],
+        username: ['', Validators.required],
+        password: [''],
+        role: this.fb.nonNullable.control<Role>('SELLER', Validators.required),
+    });
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes['user']) {
-            this.model = this.user
-                ? {
-                      username: this.user.username,
-                      fullName: this.user.fullName,
-                      role: this.user.role,
-                      password: '',
-                  }
-                : this.emptyModel();
-        }
+    constructor() {
+        effect(() => {
+            const user = this.user();
+            const editing = user !== null;
+
+            this.form.controls.password.setValidators(editing ? [] : [Validators.required]);
+            this.form.controls.password.updateValueAndValidity({ emitEvent: false });
+
+            this.form.reset(
+                user
+                    ? { username: user.username, fullName: user.fullName, role: user.role, password: '' }
+                    : this.emptyModel(),
+            );
+        });
     }
 
     onSubmit(): void {
-        const value: UserFormValue = { ...this.model };
-        if (this.isEditing && !value.password) {
+        if (this.form.invalid) {
+            this.form.markAllAsTouched();
+            return;
+        }
+        const value: UserFormValue = { ...this.form.getRawValue() };
+        if (this.isEditing() && !value.password) {
             delete value.password;
         }
         this.save.emit(value);
     }
 
-    private emptyModel(): UserFormValue {
-        return {
-            username: '',
-            password: '',
-            fullName: '',
-            role: this.assignableRoles[0]?.value ?? 'SELLER',
-        };
+    private emptyModel(): { username: string; fullName: string; password: string; role: Role } {
+        return { username: '', fullName: '', password: '', role: this.assignableRoles()[0]?.value ?? 'SELLER' };
     }
 }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { API_BASE_URL, API_VERSION } from '../api-config';
+import { API_BASE_URL, API_PREFIX, API_VERSION } from '../api-config';
 import { Product, ProductRequest } from '../models/product.model';
 import { AuthService } from './auth.service';
 
@@ -9,7 +9,7 @@ export type ProductFormData = Omit<ProductRequest, 'userId'>;
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
-    private readonly baseUrl = `${API_BASE_URL}/${API_VERSION}/products`;
+    private readonly baseUrl = `${API_BASE_URL}/${API_PREFIX}/${API_VERSION}/products`;
 
     constructor(
         private http: HttpClient,
@@ -42,6 +42,12 @@ export class ProductService {
     delete(id: string): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`, {
             params: { userId: this.authService.currentUserId! },
+        });
+    }
+
+    getNextRef(prefix: string): Observable<{ prefix: string }> {
+        return this.http.get<{ prefix: string }>(`${this.baseUrl}/next-ref`, {
+            params: { prefix, userId: this.authService.currentUserId! },
         });
     }
 

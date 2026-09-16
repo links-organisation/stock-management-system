@@ -3,7 +3,7 @@
         class="hamburger"
         type="button"
         (click)="toggleSidebar()"
-        [attr.aria-expanded]="isSidebarOpen"
+        [attr.aria-expanded]="isSidebarOpen()"
         aria-label="Open menu"
         aria-controls="mobile-sidebar"
     >
@@ -28,9 +28,9 @@
     }
 </nav>
 
-<div class="backdrop" [class.backdrop--visible]="isSidebarOpen" (click)="closeSidebar()"></div>
+<div class="backdrop" [class.backdrop--visible]="isSidebarOpen()" (click)="closeSidebar()"></div>
 
-<aside class="sidebar" [class.sidebar--open]="isSidebarOpen" id="mobile-sidebar">
+<aside class="sidebar" [class.sidebar--open]="isSidebarOpen()" id="mobile-sidebar">
     <div class="sidebar__header">
         <span class="sidebar__brand">Stockroom</span>
         <button class="sidebar__close" type="button" (click)="closeSidebar()" aria-label="Close menu">

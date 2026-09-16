@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Role, User } from '../../../core/models/user.model';
 import { ASSIGNABLE_ROLES, UserService } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -11,20 +11,21 @@ import { UserForm, UserFormValue } from '../user-form/user-form';
     templateUrl: './user-list.html',
     styleUrl: './user-list.scss',
 })
-export class UserList implements OnInit {
-    users: User[] = [];
-    isLoading = true;
-    errorMessage = '';
-    successMessage = '';
+export class UserList {
+    users = signal<User[]>([]);
+    isLoading = signal(true);
+    errorMessage = signal('');
+    successMessage = signal('');
 
-    isFormOpen = false;
-    editingUser: User | null = null;
+    isFormOpen = signal(false);
+    editingUser = signal<User | null>(null);
 
     constructor(
         private userService: UserService,
         private authService: AuthService,
-        private cdr: ChangeDetectorRef,
-    ) {}
+    ) {
+        this.load();
+    }
 
     get currentRole(): Role | null {
         return this.authService.currentRole;
@@ -38,22 +39,16 @@ export class UserList implements OnInit {
         return ASSIGNABLE_ROLES.filter((r) => r.value === 'SELLER' || r.value === 'COMPTA');
     }
 
-    ngOnInit(): void {
-        this.load();
-    }
-
     load(): void {
-        this.isLoading = true;
+        this.isLoading.set(true);
         this.userService.getAll().subscribe({
             next: (users) => {
-                this.users = users;
-                this.isLoading = false;
-                this.cdr.detectChanges();
+                this.users.set(users);
+                this.isLoading.set(false);
             },
             error: () => {
-                this.errorMessage = 'Could not load users.';
-                this.isLoading = false;
-                this.cdr.detectChanges();
+                this.errorMessage.set('Could not load users.');
+                this.isLoading.set(false);
             },
         });
     }
@@ -73,45 +68,38 @@ export class UserList implements OnInit {
     }
 
     openCreateForm(): void {
-        this.editingUser = null;
-        this.isFormOpen = true;
-        this.cdr.detectChanges();
+        this.editingUser.set(null);
+        this.isFormOpen.set(true);
     }
 
     openEditForm(user: User): void {
-        this.editingUser = user;
-        this.isFormOpen = true;
-        this.cdr.detectChanges();
+        this.editingUser.set(user);
+        this.isFormOpen.set(true);
     }
 
     closeForm(): void {
-        this.isFormOpen = false;
-        this.editingUser = null;
-        this.cdr.detectChanges();
+        this.isFormOpen.set(false);
+        this.editingUser.set(null);
     }
 
     onSave(value: UserFormValue): void {
-        this.errorMessage = '';
-        const wasEditing = this.editingUser !== null;
+        this.errorMessage.set('');
+        const editingUser = this.editingUser();
+        const wasEditing = editingUser !== null;
 
-        const request = this.editingUser
-            ? this.userService.update(this.editingUser.id, value)
+        const request = editingUser
+            ? this.userService.update(editingUser.id, value)
             : this.userService.create({ ...value, password: value.password ?? '' });
 
         request.subscribe({
             next: () => {
                 this.closeForm();
                 this.load();
-                this.successMessage = wasEditing ? 'User updated.' : 'User registered.';
-                this.cdr.detectChanges();
-                setTimeout(() => {
-                    this.successMessage = '';
-                    this.cdr.detectChanges();
-                }, 3000);
+                this.successMessage.set(wasEditing ? 'User updated.' : 'User registered.');
+                setTimeout(() => this.successMessage.set(''), 3000);
             },
             error: (err) => {
-                this.errorMessage = err.error?.message ?? 'Could not save the user.';
-                this.cdr.detectChanges();
+                this.errorMessage.set(err.error?.message ?? 'Could not save the user.');
             },
         });
     }

@@ -1,5 +1,6 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { Category } from '../../../core/models/category.model';
 import { Product } from '../../../core/models/product.model';
 import { AuthService } from '../../../core/services/auth.service';
@@ -11,100 +12,92 @@ import { ProductForm } from '../product-form/product-form';
 @Component({
     selector: 'app-product-list',
     standalone: true,
-    imports: [FormsModule, ProductCard, ProductForm],
+    imports: [ReactiveFormsModule, ProductCard, ProductForm],
     templateUrl: './product-list.html',
     styleUrl: './product-list.scss',
 })
-export class ProductList implements OnInit {
-    products: Product[] = [];
-    categories: Category[] = [];
-    searchQuery = '';
-    categoryFilter: string | null = null;
-    isLoading = true;
-    errorMessage = '';
-    successMessage = '';
+export class ProductList {
+    products = signal<Product[]>([]);
+    categories = signal<Category[]>([]);
+    isLoading = signal(true);
+    errorMessage = signal('');
+    successMessage = signal('');
 
-    isFormOpen = false;
-    editingProduct: Product | null = null;
+    isFormOpen = signal(false);
+    editingProduct = signal<Product | null>(null);
+
+    private fb = inject(FormBuilder);
+    filterForm = this.fb.nonNullable.group({
+        searchQuery: [''],
+        categoryFilter: this.fb.control<string | null>(null),
+    });
 
     constructor(
         private productService: ProductService,
         private categoryService: CategoryService,
         public authService: AuthService,
-        private cdr: ChangeDetectorRef,
-    ) {}
-
-    ngOnInit(): void {
-        this.categoryService.getAll().subscribe((categories) => {
-            this.categories = categories;
-            this.cdr.detectChanges();
-        });
+    ) {
+        this.categoryService.getAll().subscribe((categories) => this.categories.set(categories));
         this.loadProducts();
+
+        this.filterForm.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.applyFilters());
     }
 
     loadProducts(): void {
-        this.isLoading = true;
+        this.isLoading.set(true);
         this.productService.getAll().subscribe({
             next: (products) => {
-                this.products = products;
-                this.isLoading = false;
-                this.cdr.detectChanges();
+                this.products.set(products);
+                this.isLoading.set(false);
             },
             error: () => {
-                this.errorMessage = 'Could not load products.';
-                this.isLoading = false;
-                this.cdr.detectChanges();
+                this.errorMessage.set('Could not load products.');
+                this.isLoading.set(false);
             },
         });
     }
 
     applyFilters(): void {
-        const query = this.searchQuery.trim();
-        if (!query && this.categoryFilter == null) {
+        const { searchQuery, categoryFilter } = this.filterForm.getRawValue();
+        const query = (searchQuery ?? '').trim();
+        if (!query && categoryFilter == null) {
             this.loadProducts();
             return;
         }
-        this.productService.search(query, this.categoryFilter).subscribe((products) => {
-            this.products = products;
-            this.cdr.detectChanges();
-        });
+        this.productService.search(query, categoryFilter).subscribe((products) => this.products.set(products));
     }
 
     openCreateForm(): void {
-        this.editingProduct = null;
-        this.isFormOpen = true;
-        this.cdr.detectChanges();
+        this.editingProduct.set(null);
+        this.isFormOpen.set(true);
     }
 
     openEditForm(product: Product): void {
-        this.editingProduct = product;
-        this.isFormOpen = true;
-        this.cdr.detectChanges();
+        this.editingProduct.set(product);
+        this.isFormOpen.set(true);
     }
 
     closeForm(): void {
-        this.isFormOpen = false;
-        this.editingProduct = null;
-        this.cdr.detectChanges();
+        this.isFormOpen.set(false);
+        this.editingProduct.set(null);
     }
 
     onSaveProduct(data: ProductFormData): void {
-        const wasEditing = this.editingProduct !== null;
-        const request = this.editingProduct
-            ? this.productService.update(this.editingProduct.id, data)
+        const editingProduct = this.editingProduct();
+        const wasEditing = editingProduct !== null;
+        const request = editingProduct
+            ? this.productService.update(editingProduct.id, data)
             : this.productService.create(data);
 
         request.subscribe({
             next: () => {
                 this.closeForm();
                 this.applyFilters();
-                this.successMessage = wasEditing ? 'Product updated.' : 'Product registered.';
-                this.cdr.detectChanges();
+                this.successMessage.set(wasEditing ? 'Product updated.' : 'Product registered.');
                 this.clearSuccessMessageSoon();
             },
             error: () => {
-                this.errorMessage = 'Could not save the product. Check the reference is unique.';
-                this.cdr.detectChanges();
+                this.errorMessage.set('Could not save the product. Check the reference is unique.');
             },
         });
     }
@@ -113,25 +106,20 @@ export class ProductList implements OnInit {
         if (!confirm(`Delete "${product.name}"? This cannot be undone.`)) {
             return;
         }
-        this.errorMessage = '';
+        this.errorMessage.set('');
         this.productService.delete(product.id).subscribe({
             next: () => {
                 this.applyFilters();
-                this.successMessage = `"${product.name}" deleted.`;
-                this.cdr.detectChanges();
+                this.successMessage.set(`"${product.name}" deleted.`);
                 this.clearSuccessMessageSoon();
             },
             error: (err) => {
-                this.errorMessage = err.error?.message ?? `Could not delete "${product.name}".`;
-                this.cdr.detectChanges();
+                this.errorMessage.set(err.error?.message ?? `Could not delete "${product.name}".`);
             },
         });
     }
 
     private clearSuccessMessageSoon(): void {
-        setTimeout(() => {
-            this.successMessage = '';
-            this.cdr.detectChanges();
-        }, 3000);
+        setTimeout(() => this.successMessage.set(''), 3000);
     }
 }

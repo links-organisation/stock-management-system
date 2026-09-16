@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 
@@ -16,7 +16,7 @@ interface NavItem {
     styleUrl: './navbar.scss',
 })
 export class Navbar {
-    isSidebarOpen = false;
+    isSidebarOpen = signal(false);
 
     constructor(
         public authService: AuthService,
@@ -34,6 +34,7 @@ export class Navbar {
         }
         if (this.authService.isAdminOrAbove()) {
             items.push({ path: '/inventory', label: 'Inventory' });
+            items.push({ path: '/categories', label: 'Categories' });
         }
         items.push({ path: '/history', label: 'History' });
         items.push({ path: '/invoices', label: 'Invoices' });
@@ -44,7 +45,7 @@ export class Navbar {
     }
 
     toggleSidebar(): void {
-        this.setSidebarOpen(!this.isSidebarOpen);
+        this.setSidebarOpen(!this.isSidebarOpen());
     }
 
     closeSidebar(): void {
@@ -58,7 +59,7 @@ export class Navbar {
     }
 
     private setSidebarOpen(open: boolean): void {
-        this.isSidebarOpen = open;
+        this.isSidebarOpen.set(open);
         this.document.body.classList.toggle('no-scroll', open);
     }
 }

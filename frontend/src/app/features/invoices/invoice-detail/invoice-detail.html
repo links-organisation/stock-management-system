@@ -1,6 +1,4 @@
-@if (!invoice) {
-    <p class="empty">Select an invoice to see its detail.</p>
-} @else {
+@if (invoice(); as invoice) {
     <div class="detail">
         <header>
             <h2 class="data">{{ invoice.invoiceNumber }}</h2>
@@ -9,7 +7,7 @@
 
         @if (invoice.sale) {
             <p class="meta">
-                Sold by <strong>{{ invoice.sale.performedByUsername }}</strong>
+                Sold by <strong>{{ invoice.sale.performedByFullname }}</strong>
                 @if (invoice.sale.customerName) {
                     to <strong>{{ invoice.sale.customerName }}</strong>
                 }
@@ -31,4 +29,6 @@
             <span class="data">{{ invoice.totalAmount | fcfa }}</span>
         </div>
     </div>
+} @else {
+    <p class="empty">Select an invoice to see its detail.</p>
 }

@@ -14,6 +14,7 @@ export interface Sale {
     customerName: string | null;
     performedByUserId: string;
     performedByUsername: string;
+    performedByFullname: string;
     items: SaleItem[];
 }
 

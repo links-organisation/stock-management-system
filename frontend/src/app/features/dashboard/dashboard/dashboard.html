@@ -1,11 +1,11 @@
 <div class="page">
     <h1>Dashboard</h1>
 
-    @if (isLoading) {
+    @if (isLoading()) {
         <p class="status">Loading…</p>
-    } @else if (errorMessage) {
-        <p class="status status--error">{{ errorMessage }}</p>
-    } @else if (summary) {
+    } @else if (errorMessage()) {
+        <p class="status status--error">{{ errorMessage() }}</p>
+    } @else if (summary(); as summary) {
         <div class="kpis">
             <app-kpi-card [value]="summary.totalStockValue | fcfa" label="Stock value"></app-kpi-card>
             <app-kpi-card [value]="summary.totalSalesCount | number" label="Total sales"></app-kpi-card>

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { Invoice } from '../../../core/models/invoice.model';
 import { InvoiceService } from '../../../core/services/invoice.service';
 import { InvoiceDetail } from '../invoice-detail/invoice-detail';
@@ -12,36 +12,26 @@ import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
     templateUrl: './invoice-list.html',
     styleUrl: './invoice-list.scss',
 })
-export class InvoiceList implements OnInit {
-    invoices: Invoice[] = [];
-    selectedInvoice: Invoice | null = null;
-    isLoading = true;
-    errorMessage = '';
+export class InvoiceList {
+    invoices = signal<Invoice[]>([]);
+    selectedInvoice = signal<Invoice | null>(null);
+    isLoading = signal(true);
+    errorMessage = signal('');
 
-    constructor(
-        private invoiceService: InvoiceService,
-        private cdr: ChangeDetectorRef,
-    ) {}
-
-    ngOnInit(): void {
+    constructor(private invoiceService: InvoiceService) {
         this.invoiceService.getAll().subscribe({
             next: (invoices) => {
-                this.invoices = invoices;
-                this.isLoading = false;
-                this.cdr.detectChanges();
+                this.invoices.set(invoices);
+                this.isLoading.set(false);
             },
             error: () => {
-                this.errorMessage = 'Could not load invoices.';
-                this.isLoading = false;
-                this.cdr.detectChanges();
+                this.errorMessage.set('Could not load invoices.');
+                this.isLoading.set(false);
             },
         });
     }
 
     selectInvoice(invoice: Invoice): void {
-        this.invoiceService.getById(invoice.id).subscribe((detail) => {
-            this.selectedInvoice = detail;
-            this.cdr.detectChanges();
-        });
+        this.invoiceService.getById(invoice.id).subscribe((detail) => this.selectedInvoice.set(detail));
     }
 }

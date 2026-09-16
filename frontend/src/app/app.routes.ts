@@ -28,6 +28,14 @@ export const routes: Routes = [
         loadComponent: () => import('./features/inventory/inventory').then((m) => m.Inventory),
     },
     {
+        path: 'categories',
+        canActivate: [authGuard, adminGuard],
+        loadComponent: () =>
+            import('./features/categories/category-list/category-list').then(
+                (m) => m.CategoryList,
+            ),
+    },
+    {
         path: 'history',
         canActivate: [authGuard],
         loadComponent: () =>

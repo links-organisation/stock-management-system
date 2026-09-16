@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
 
 export interface CartLine {
@@ -16,12 +16,10 @@ export interface CartLine {
     styleUrl: './cart-summary.scss',
 })
 export class CartSummary {
-    @Input() lines: CartLine[] = [];
-    @Input() isSubmitting = false;
-    @Output() removeLine = new EventEmitter<string>();
-    @Output() checkout = new EventEmitter<void>();
+    lines = input<CartLine[]>([]);
+    isSubmitting = input(false);
+    removeLine = output<string>();
+    checkout = output<void>();
 
-    get total(): number {
-        return this.lines.reduce((sum, line) => sum + line.quantity * line.unitPrice, 0);
-    }
+    total = computed(() => this.lines().reduce((sum, line) => sum + line.quantity * line.unitPrice, 0));
 }

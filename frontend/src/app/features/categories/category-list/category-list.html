@@ -1,0 +1,66 @@
+<div class="page">
+    <header class="page-head">
+        <h1>Categories</h1>
+    </header>
+
+    <form (ngSubmit)="onSubmit()" [formGroup]="form" class="panel create" novalidate>
+        <h2>New category</h2>
+        <div class="row">
+            <label class="field">
+                <span>Name</span>
+                <input formControlName="name" type="text"/>
+            </label>
+            <label class="field">
+                <span>Prefix</span>
+                <input formControlName="prefix" type="text"/>
+            </label>
+            <label class="field">
+                <span>Description (optional)</span>
+                <input formControlName="description" type="text"/>
+            </label>
+        </div>
+        <button [disabled]="isSaving()" class="primary" type="submit">
+            {{ isSaving() ? 'Creating…' : 'Create category' }}
+        </button>
+    </form>
+
+    @if (errorMessage()) {
+        <p class="status status--error">{{ errorMessage() }}</p>
+    }
+    @if (successMessage()) {
+        <p class="status status--success">{{ successMessage() }}</p>
+    }
+
+    @if (isLoading()) {
+        <p class="status">Loading…</p>
+    } @else if (categories().length === 0) {
+        <p class="empty">No categories yet.</p>
+    } @else {
+        <div class="table-wrap panel">
+            <table>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Prefix</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    @for (category of categories(); track category.id) {
+                        <tr>
+                            <td>{{ category.name }}</td>
+                            <td>{{ category.prefix }}</td>
+                            <td>{{ category.description || '—' }}</td>
+                            <td class="actions">
+                                <button (click)="onDeleteCategory(category)" class="danger" type="button">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

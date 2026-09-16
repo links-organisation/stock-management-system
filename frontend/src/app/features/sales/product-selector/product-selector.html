@@ -1,9 +1,9 @@
-<div class="selector">
+<div [formGroup]="form" class="selector">
     <label class="field">
         <span>Product</span>
-        <select [(ngModel)]="selectedProductId" name="product">
+        <select formControlName="selectedProductId">
             <option [ngValue]="null">Choose a product…</option>
-            @for (product of products; track product.id) {
+            @for (product of products(); track product.id) {
                 <option [disabled]="product.quantityInStock === 0" [ngValue]="product.id">
                     {{ product.name }} ({{ product.quantityInStock }} in stock)
                 </option>
@@ -13,12 +13,12 @@
 
     <label class="field field--qty">
         <span>Qty</span>
-        <input [(ngModel)]="quantity" min="1" name="quantity" type="number"/>
+        <input formControlName="quantity" min="1" type="number"/>
     </label>
 
-    <button (click)="onAdd()" [disabled]="!selectedProduct" type="button">Add to sale</button>
+    <button (click)="onAdd()" [disabled]="!selectedProduct()" type="button">Add to sale</button>
 </div>
 
-@if (selectedProduct) {
-    <p class="price-hint">{{ selectedProduct.sellingPrice | fcfa }} each</p>
+@if (selectedProduct(); as product) {
+    <p class="price-hint">{{ product.sellingPrice | fcfa }} each</p>
 }

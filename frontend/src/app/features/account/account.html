@@ -2,15 +2,15 @@
     <h1>My account</h1>
     <p class="role-hint">Signed in as <strong>{{ role }}</strong></p>
 
-    <form (ngSubmit)="onSubmit()" class="panel" novalidate>
+    <form (ngSubmit)="onSubmit()" [formGroup]="form" class="panel" novalidate>
         <label class="field">
             <span>Full name</span>
-            <input [(ngModel)]="fullName" name="fullName" required type="text"/>
+            <input formControlName="fullName" type="text"/>
         </label>
 
         <label class="field">
             <span>Username</span>
-            <input [(ngModel)]="username" name="username" required type="text"/>
+            <input formControlName="username" type="text"/>
         </label>
 
         <h2>Change password</h2>
@@ -18,31 +18,32 @@
 
         <label class="field">
             <span>Current password</span>
-            <input [(ngModel)]="currentPassword" autocomplete="current-password" name="currentPassword"
-                   type="password"/>
+            <input autocomplete="current-password" formControlName="currentPassword" type="password"/>
         </label>
 
         <div class="row">
             <label class="field">
                 <span>New password</span>
-                <input [(ngModel)]="newPassword" autocomplete="new-password" name="newPassword" type="password"/>
+                <input autocomplete="new-password" formControlName="newPassword" type="password"/>
             </label>
             <label class="field">
                 <span>Confirm new password</span>
-                <input [(ngModel)]="confirmPassword" autocomplete="new-password" name="confirmPassword"
-                       type="password"/>
+                <input autocomplete="new-password" formControlName="confirmPassword" type="password"/>
             </label>
         </div>
 
-        @if (errorMessage) {
-            <p class="status status--error">{{ errorMessage }}</p>
+        @if (form.errors?.['passwordMismatch'] && form.controls.confirmPassword.touched) {
+            <p class="status status--error">New password and confirmation do not match.</p>
         }
-        @if (successMessage) {
-            <p class="status status--success">{{ successMessage }}</p>
+        @if (errorMessage()) {
+            <p class="status status--error">{{ errorMessage() }}</p>
+        }
+        @if (successMessage()) {
+            <p class="status status--success">{{ successMessage() }}</p>
         }
 
-        <button [disabled]="isSaving" class="primary" type="submit">
-            {{ isSaving ? 'Saving…' : 'Save changes' }}
+        <button [disabled]="isSaving()" class="primary" type="submit">
+            {{ isSaving() ? 'Saving…' : 'Save changes' }}
         </button>
     </form>
 </div>
