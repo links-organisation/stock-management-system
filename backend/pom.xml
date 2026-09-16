@@ -143,4 +143,23 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>native</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.graalvm.buildtools</groupId>
+						<artifactId>native-maven-plugin</artifactId>
+						<configuration>
+							<buildArgs>
+								<buildArg>--initialize-at-build-time=org.apache.logging,ch.qos.logback,org.apache.commons.logging,org.slf4j,org.springframework.core.SpringProperties,org.springframework.data.core.SerializableLambdaReader,org.springframework.boot.logging.log4j2.SpringBootPropertySource</buildArg>
+							</buildArgs>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>
