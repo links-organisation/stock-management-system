@@ -1,7 +1,7 @@
 <div class="page">
     <header class="page-head">
-        <h1>Users</h1>
-        <button (click)="openCreateForm()" class="primary" type="button">Register user</button>
+        <h1>{{ 'users.title' | transloco }}</h1>
+        <button (click)="openCreateForm()" class="primary" type="button">{{ 'users.registerUser' | transloco }}</button>
     </header>
 
     @if (errorMessage()) {
@@ -12,15 +12,15 @@
     }
 
     @if (isLoading()) {
-        <p class="status">Loading users…</p>
+        <p class="status">{{ 'users.loading' | transloco }}</p>
     } @else {
         <div class="table-wrap panel">
             <table>
                 <thead>
                 <tr>
-                    <th>Full name</th>
-                    <th>Username</th>
-                    <th>Role</th>
+                    <th>{{ 'users.fullName' | transloco }}</th>
+                    <th>{{ 'users.username' | transloco }}</th>
+                    <th>{{ 'users.role' | transloco }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -29,10 +29,10 @@
                         <tr>
                             <td>{{ user.fullName }}</td>
                             <td class="data">{{ user.username }}</td>
-                            <td><span [class]="'role--' + user.role.toLowerCase()" class="role">{{ user.role }}</span></td>
+                            <td><span [class]="'role--' + user.role.toLowerCase()" class="role">{{ roleLabelKey[user.role] | transloco }}</span></td>
                             <td class="actions">
                                 @if (canManage(user)) {
-                                    <button (click)="openEditForm(user)" type="button">Edit</button>
+                                    <button (click)="openEditForm(user)" type="button">{{ 'common.edit' | transloco }}</button>
                                 }
                             </td>
                         </tr>

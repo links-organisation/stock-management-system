@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Product } from '../../../core/models/product.model';
 import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
 
@@ -12,7 +13,7 @@ export interface ProductPick {
 @Component({
     selector: 'app-product-selector',
     standalone: true,
-    imports: [ReactiveFormsModule, FcfaPipe],
+    imports: [ReactiveFormsModule, FcfaPipe, TranslocoPipe],
     templateUrl: './product-selector.html',
     styleUrl: './product-selector.scss',
 })

@@ -1,19 +1,19 @@
 <div class="page">
-    <h1>New sale</h1>
+    <h1>{{ 'sales.newSale' | transloco }}</h1>
 
     <div class="layout">
         <section class="panel">
-            <h2>Add products</h2>
+            <h2>{{ 'sales.addProducts' | transloco }}</h2>
             <app-product-selector (add)="onAddToCart($event)" [products]="products()"></app-product-selector>
 
             <label class="field customer">
-                <span>Customer (optional)</span>
-                <input [formControl]="customerName" placeholder="Walk-in customer" type="text"/>
+                <span>{{ 'sales.customerOptional' | transloco }}</span>
+                <input [formControl]="customerName" [placeholder]="'sales.walkInCustomer' | transloco" type="text"/>
             </label>
         </section>
 
         <section class="panel">
-            <h2>Current sale</h2>
+            <h2>{{ 'sales.currentSale' | transloco }}</h2>
 
             @if (errorMessage()) {
                 <p class="status status--error">{{ errorMessage() }}</p>

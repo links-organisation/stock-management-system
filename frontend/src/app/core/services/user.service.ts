@@ -51,8 +51,8 @@ export class UserService {
     }
 }
 
-export const ASSIGNABLE_ROLES: { value: Role; label: string }[] = [
-    { value: 'ADMIN', label: 'Shop Admin' },
-    { value: 'SELLER', label: 'Seller' },
-    { value: 'COMPTA', label: 'Compta' },
+export const ASSIGNABLE_ROLES: { value: Role; labelKey: string }[] = [
+    { value: 'ADMIN', labelKey: 'userRole.shopAdmin' },
+    { value: 'SELLER', labelKey: 'userRole.seller' },
+    { value: 'COMPTA', labelKey: 'userRole.compta' },
 ];

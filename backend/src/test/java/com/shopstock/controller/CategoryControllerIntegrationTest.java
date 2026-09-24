@@ -127,4 +127,85 @@ class CategoryControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categoryId").value(nullValue()));
     }
+
+    @Test
+    void getById_returns200WithBody_whenCategoryExists() throws Exception {
+        Category category = new Category();
+        category.setName("Frozen Foods");
+        category.setPrefix("FRZ");
+        category = categoryRepository.save(category);
+
+        mockMvc.perform(get("/api/v1/categories/{id}", category.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Frozen Foods"))
+                .andExpect(jsonPath("$.prefix").value("FRZ"));
+    }
+
+    @Test
+    void getById_returns404_whenCategoryMissing() throws Exception {
+        mockMvc.perform(get("/api/v1/categories/{id}", UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void update_returns200WithUpdatedFields_whenCategoryExists() throws Exception {
+        Category category = new Category();
+        category.setName("Frozen Foods");
+        category.setPrefix("FRZ");
+        category = categoryRepository.save(category);
+        CategoryRequest request = new CategoryRequest("Frozen & Chilled", "FRZ2", "Updated", adminId);
+
+        mockMvc.perform(put("/api/v1/categories/{id}", category.getId()).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Frozen & Chilled"))
+                .andExpect(jsonPath("$.prefix").value("FRZ2"));
+    }
+
+    @Test
+    void update_returns404_whenCategoryMissing() throws Exception {
+        CategoryRequest request = new CategoryRequest("Anything", "ANY", null, adminId);
+
+        mockMvc.perform(put("/api/v1/categories/{id}", UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void update_succeeds_evenWhenActorIsSeller_documentedGap() throws Exception {
+        // Current behavior: the update endpoint (unlike create/delete) performs no
+        // role check at all, so a Seller actor can rename any category. This pins
+        // down the gap at the HTTP layer, not a fix.
+        Category category = new Category();
+        category.setName("Frozen Foods");
+        category.setPrefix("FRZ");
+        category = categoryRepository.save(category);
+        CategoryRequest request = new CategoryRequest("Renamed By Seller", "SEL", null, sellerId);
+
+        mockMvc.perform(put("/api/v1/categories/{id}", category.getId()).contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Renamed By Seller"));
+    }
+
+    @Test
+    void checkAvailability_name_returnsAvailableTrue_whenNameUnused() throws Exception {
+        mockMvc.perform(get("/api/v1/categories/check-availability").param("column", "name").param("value", "Brand New Category"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.available").value(true));
+    }
+
+    @Test
+    void checkAvailability_name_returnsAvailableFalse_whenNameAlreadyUsed() throws Exception {
+        mockMvc.perform(get("/api/v1/categories/check-availability").param("column", "name").param("value", "Beverages"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.available").value(false));
+    }
+
+    @Test
+    void checkAvailability_prefix_returnsAvailableFalse_whenPrefixAlreadyUsed() throws Exception {
+        mockMvc.perform(get("/api/v1/categories/check-availability").param("column", "prefix").param("value", "BEV"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.available").value(false));
+    }
 }

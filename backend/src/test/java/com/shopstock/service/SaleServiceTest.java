@@ -159,6 +159,6 @@ class SaleServiceTest {
         ArgumentCaptor<Invoice> captor = ArgumentCaptor.forClass(Invoice.class);
         verify(invoiceRepository).save(captor.capture());
         assertThat(captor.getValue().getInvoiceNumber())
-                .matches("INV-\\d{4}-00005");
+                .matches("INV-\\d{4}-000005");
     }
 }

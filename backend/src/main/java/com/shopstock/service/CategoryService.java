@@ -9,10 +9,12 @@ import com.shopstock.exception.DuplicateResourceException;
 import com.shopstock.exception.ResourceNotFoundException;
 import com.shopstock.repository.CategoryRepository;
 import com.shopstock.repository.ProductRepository;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -29,10 +31,25 @@ public class CategoryService {
         this.authorizationService = authorizationService;
     }
 
+    public CategoryResponse update(UUID id, CategoryRequest request) {
+        Category category = getEntityById(id);
+        // Update category fields based on request
+        if (request.name().isBlank()) throw new IllegalArgumentException("Category name cannot be blank");
+        if (request.prefix().isBlank()) throw new IllegalArgumentException("Category prefix cannot be blank");
+        category.setName(request.name());
+        category.setPrefix(request.prefix());
+        category.setDescription(request.description());
+        return new CategoryResponse(categoryRepository.save(category));
+    }
+
     public List<CategoryResponse> findAll() {
         return categoryRepository.findAll().stream()
                 .map(CategoryResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    public CategoryResponse findById(UUID id) {
+        return new CategoryResponse(getEntityById(id));
     }
 
     public CategoryResponse create(CategoryRequest request) {
@@ -68,5 +85,13 @@ public class CategoryService {
     public Category getEntityById(UUID id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with id " + id));
+    }
+
+    public Boolean checkAvailability(String column, String value) {
+        if (Objects.equals(column, "name"))
+            return categoryRepository.findByNameIgnoreCase(value).isEmpty();
+        if (Objects.equals(column, "prefix"))
+            return categoryRepository.findByPrefixIgnoreCase(value).isEmpty();
+        return false;
     }
 }

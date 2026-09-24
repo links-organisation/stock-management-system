@@ -29,7 +29,7 @@ export class AuthService {
         return this.http.post<User>(`${API_BASE_URL}/${API_PREFIX}/${API_VERSION}/auth/login`, request).pipe(
             tap((user) => {
                 this.currentUserSubject.next(user);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+                sessionStorage.setItem(STORAGE_KEY, JSON.stringify(user));
             }),
         );
     }
@@ -37,12 +37,12 @@ export class AuthService {
     /** Reflects a profile edit (username/fullName/role) back into the stored session. */
     updateCurrentUser(user: User): void {
         this.currentUserSubject.next(user);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(user));
     }
 
     logout(): void {
         this.currentUserSubject.next(null);
-        localStorage.removeItem(STORAGE_KEY);
+        sessionStorage.removeItem(STORAGE_KEY);
     }
 
     isLoggedIn(): boolean {
@@ -55,6 +55,11 @@ export class AuthService {
         return role === 'SUPER_ADMIN' || role === 'ADMIN';
     }
 
+    /** Super Admin only: can perform whole-app actions like shutting the server down. */
+    isSuperAdmin(): boolean {
+        return this.currentRole === 'SUPER_ADMIN';
+    }
+
     /** Super Admin, Admin, and Seller: can create sales. */
     canSell(): boolean {
         const role = this.currentRole;
@@ -63,7 +68,7 @@ export class AuthService {
 
     private readStoredUser(): User | null {
         try {
-            const raw = localStorage.getItem(STORAGE_KEY);
+            const raw = sessionStorage.getItem(STORAGE_KEY);
             return raw ? (JSON.parse(raw) as User) : null;
         } catch {
             return null;

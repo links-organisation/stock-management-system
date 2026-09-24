@@ -32,10 +32,10 @@ public class DataSeeder implements CommandLineRunner {
     public void run(String... args) {
         if (userRepository.count() == 0) {
             // The one and only Super Admin. No API path can create another.
-            createUser("admin", "admin123", "Shop Administrator", Role.SUPER_ADMIN);
+            createUser("superadmin", "superadmin123", "Shop Administrator", Role.SUPER_ADMIN);
 
             // Demo accounts for each other role, for convenience while testing.
-            createUser("shopadmin", "admin123", "Store Admin", Role.ADMIN);
+            createUser("admin", "admin123", "Store Admin", Role.ADMIN);
             createUser("seller", "seller123", "Front Desk Seller", Role.SELLER);
             createUser("compta", "compta123", "Accountant", Role.COMPTA);
         }

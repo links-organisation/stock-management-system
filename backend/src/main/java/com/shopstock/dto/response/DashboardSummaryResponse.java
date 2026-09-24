@@ -9,5 +9,5 @@ public record DashboardSummaryResponse(
         BigDecimal revenueThisWeek, BigDecimal revenueThisMonth,
         List<TopProduct> topSellingProducts, List<ProductResponse> lowStockProducts
 ) {
-    public record TopProduct(UUID productId, String productName, long quantitySold) { }
+    public record TopProduct(UUID productId, String productName, BigDecimal productUnitPrice, long quantitySold) { }
 }

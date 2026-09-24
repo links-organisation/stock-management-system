@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Product } from '../../../core/models/product.model';
 import { SaleItemRequest } from '../../../core/models/sale.model';
 import { ProductService } from '../../../core/services/product.service';
@@ -10,7 +11,7 @@ import { ProductPick, ProductSelector } from '../product-selector/product-select
 @Component({
     selector: 'app-sale',
     standalone: true,
-    imports: [ReactiveFormsModule, ProductSelector, CartSummary],
+    imports: [ReactiveFormsModule, ProductSelector, CartSummary, TranslocoPipe],
     templateUrl: './sale.html',
     styleUrl: './sale.scss',
 })
@@ -22,6 +23,8 @@ export class Sale {
     successMessage = signal('');
 
     customerName = new FormControl('', { nonNullable: true });
+
+    private transloco = inject(TranslocoService);
 
     constructor(
         private productService: ProductService,
@@ -78,14 +81,14 @@ export class Sale {
         this.saleService.createSale(items, this.customerName.value || undefined).subscribe({
             next: (sale) => {
                 this.isSubmitting.set(false);
-                this.successMessage.set(`Sale #${sale.id} completed.`);
+                this.successMessage.set(this.transloco.translate('sales.completed', { id: sale.id }));
                 this.cart.set([]);
                 this.customerName.setValue('');
                 this.loadProducts();
             },
             error: (err) => {
                 this.isSubmitting.set(false);
-                this.errorMessage.set(err.error?.message ?? 'Could not complete the sale.');
+                this.errorMessage.set(err.error?.message ?? this.transloco.translate('sales.completeError'));
             },
         });
     }

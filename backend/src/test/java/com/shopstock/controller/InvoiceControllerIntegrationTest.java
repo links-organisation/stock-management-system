@@ -65,7 +65,7 @@ class InvoiceControllerIntegrationTest {
                         .content(objectMapper.writeValueAsString(saleRequest)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
-        UUID saleId = UUID.fromString(objectMapper.readTree(saleBody).get("id").asText());
+        UUID saleId = UUID.fromString(objectMapper.readTree(saleBody).get("id").asString());
 
         mockMvc.perform(get("/api/v1/invoices"))
                 .andExpect(status().isOk());
@@ -77,8 +77,8 @@ class InvoiceControllerIntegrationTest {
         var invoices = objectMapper.readTree(listBody);
         UUID invoiceId = null;
         for (var node : invoices) {
-            if (node.get("saleId").asText().equals(saleId.toString())) {
-                invoiceId = UUID.fromString(node.get("id").asText());
+            if (node.get("saleId").asString().equals(saleId.toString())) {
+                invoiceId = UUID.fromString(node.get("id").asString());
             }
         }
 

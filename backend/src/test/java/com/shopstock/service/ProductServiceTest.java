@@ -326,4 +326,20 @@ class ProductServiceTest {
 
         assertThat(productService.search("  ", null)).hasSize(2);
     }
+
+    // --- checkRefAvailability ---
+
+    @Test
+    void checkRefAvailability_returnsTrue_whenReferenceNotInUse() {
+        when(productRepository.existsByReference("BEV-999")).thenReturn(false);
+
+        assertThat(productService.checkRefAvailability("BEV-999")).isTrue();
+    }
+
+    @Test
+    void checkRefAvailability_returnsFalse_whenReferenceAlreadyInUse() {
+        when(productRepository.existsByReference("BEV-001")).thenReturn(true);
+
+        assertThat(productService.checkRefAvailability("BEV-001")).isFalse();
+    }
 }

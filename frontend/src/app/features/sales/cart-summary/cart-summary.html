@@ -1,6 +1,6 @@
 <div class="cart">
     @if (lines().length === 0) {
-        <p class="empty">Add products to build up the sale.</p>
+        <p class="empty">{{ 'sales.addProductsHint' | transloco }}</p>
     } @else {
         <ul class="lines">
             @for (line of lines(); track line.productId) {
@@ -8,7 +8,7 @@
                     <span class="lines__name">{{ line.productName }}</span>
                     <span class="data">{{ line.quantity }} × {{ line.unitPrice | fcfa }}</span>
                     <span class="data lines__subtotal">{{ line.quantity * line.unitPrice | fcfa }}</span>
-                    <button (click)="removeLine.emit(line.productId)" aria-label="Remove" class="lines__remove"
+                    <button (click)="removeLine.emit(line.productId)" [attr.aria-label]="'common.remove' | transloco" class="lines__remove"
                             type="button">×
                     </button>
                 </li>
@@ -16,12 +16,12 @@
         </ul>
 
         <div class="total">
-            <span>Total</span>
+            <span>{{ 'sales.total' | transloco }}</span>
             <span class="data total__amount">{{ total() | fcfa }}</span>
         </div>
 
         <button (click)="checkout.emit()" [disabled]="isSubmitting()" class="checkout" type="button">
-            {{ isSubmitting() ? 'Completing sale…' : 'Complete sale' }}
+            {{ isSubmitting() ? ('sales.completingSale' | transloco) : ('sales.completeSale' | transloco) }}
         </button>
     }
 </div>

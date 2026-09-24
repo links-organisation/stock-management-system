@@ -1,5 +1,6 @@
 import { Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Role, User } from '../../../core/models/user.model';
 
 export interface UserFormValue {
@@ -12,13 +13,13 @@ export interface UserFormValue {
 @Component({
     selector: 'app-user-form',
     standalone: true,
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, TranslocoPipe],
     templateUrl: './user-form.html',
     styleUrl: './user-form.scss',
 })
 export class UserForm {
     user = input<User | null>(null);
-    assignableRoles = input<{ value: Role; label: string }[]>([]);
+    assignableRoles = input<{ value: Role; labelKey: string }[]>([]);
     save = output<UserFormValue>();
     cancel = output<void>();
 

@@ -1,34 +1,34 @@
 <div (click)="cancel.emit()" class="backdrop">
     <form (click)="$event.stopPropagation()" (ngSubmit)="onSubmit()" [formGroup]="form" class="sheet" novalidate>
-        <h2>{{ isEditing() ? 'Edit user' : 'Register a user' }}</h2>
+        <h2>{{ isEditing() ? ('users.editUser' | transloco) : ('users.registerUser' | transloco) }}</h2>
 
         <label class="field">
-            <span>Full name</span>
+            <span>{{ 'users.fullName' | transloco }}</span>
             <input formControlName="fullName" type="text"/>
         </label>
 
         <label class="field">
-            <span>Username</span>
+            <span>{{ 'users.username' | transloco }}</span>
             <input formControlName="username" type="text"/>
         </label>
 
         <label class="field">
-            <span>{{ isEditing() ? 'New password (leave blank to keep current)' : 'Password' }}</span>
+            <span>{{ isEditing() ? ('users.newPasswordHint' | transloco) : ('users.password' | transloco) }}</span>
             <input formControlName="password" type="password"/>
         </label>
 
         <label class="field">
-            <span>Role</span>
+            <span>{{ 'users.role' | transloco }}</span>
             <select formControlName="role">
                 @for (role of assignableRoles(); track role.value) {
-                    <option [ngValue]="role.value">{{ role.label }}</option>
+                    <option [ngValue]="role.value">{{ role.labelKey | transloco }}</option>
                 }
             </select>
         </label>
 
         <footer>
-            <button (click)="cancel.emit()" class="ghost" type="button">Cancel</button>
-            <button class="primary" type="submit">{{ isEditing() ? 'Save changes' : 'Register user' }}</button>
+            <button (click)="cancel.emit()" class="ghost" type="button">{{ 'common.cancel' | transloco }}</button>
+            <button class="primary" type="submit">{{ isEditing() ? ('users.saveChanges' | transloco) : ('users.registerUser' | transloco) }}</button>
         </footer>
     </form>
 </div>

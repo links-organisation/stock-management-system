@@ -1,0 +1,37 @@
+<div class="page">
+    <header class="page-head">
+        <h1>{{ 'network.title' | transloco }}</h1>
+    </header>
+
+    <p class="hint">{{ 'network.description' | transloco }}</p>
+
+    @if (isLoading()) {
+        <p class="status">{{ 'network.loading' | transloco }}</p>
+    } @else if (errorMessage()) {
+        <p class="status status--error">{{ errorMessage() }}</p>
+    } @else if (networkInfo(); as info) {
+        @if (!info.enabled) {
+            <p class="empty">{{ 'network.empty' | transloco }}</p>
+        } @else {
+            <div class="table-wrap panel">
+                <table>
+                    <tbody>
+                        @for (address of info.addresses; track address.url) {
+                            <tr>
+                                <td>{{ address.interfaceName }}</td>
+                                <td class="data">{{ address.url }}</td>
+                                <td class="actions">
+                                    <button (click)="copy(address.url)" type="button">
+                                        {{ copiedUrl() === address.url ? ('network.copied' | transloco) : ('network.copy' | transloco) }}
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        <button (click)="load()" class="ghost" type="button">{{ 'network.refresh' | transloco }}</button>
+    }
+</div>

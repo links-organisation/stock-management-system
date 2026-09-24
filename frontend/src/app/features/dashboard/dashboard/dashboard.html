@@ -1,31 +1,34 @@
 <div class="page">
-    <h1>Dashboard</h1>
+    <h1>{{ 'dashboard.title' | transloco }}</h1>
 
     @if (isLoading()) {
-        <p class="status">Loading…</p>
+        <p class="status">{{ 'common.loading' | transloco }}</p>
     } @else if (errorMessage()) {
         <p class="status status--error">{{ errorMessage() }}</p>
     } @else if (summary(); as summary) {
         <div class="kpis">
-            <app-kpi-card [value]="summary.totalStockValue | fcfa" label="Stock value"></app-kpi-card>
-            <app-kpi-card [value]="summary.totalSalesCount | number" label="Total sales"></app-kpi-card>
-            <app-kpi-card [value]="summary.revenueToday | fcfa" label="Revenue today"></app-kpi-card>
-            <app-kpi-card [value]="summary.revenueThisWeek | fcfa" label="Revenue this week"></app-kpi-card>
-            <app-kpi-card [value]="summary.revenueThisMonth | fcfa" label="Revenue this month"></app-kpi-card>
+            <app-kpi-card [value]="summary.totalStockValue | fcfa" [label]="'dashboard.stockValue' | transloco"></app-kpi-card>
+            <app-kpi-card [value]="summary.totalSalesCount | number" [label]="'dashboard.totalSales' | transloco"></app-kpi-card>
+            <app-kpi-card [value]="summary.revenueToday | fcfa" [label]="'dashboard.revenueToday' | transloco"></app-kpi-card>
+            <app-kpi-card [value]="summary.revenueThisWeek | fcfa" [label]="'dashboard.revenueThisWeek' | transloco"></app-kpi-card>
+            <app-kpi-card [value]="summary.revenueThisMonth | fcfa" [label]="'dashboard.revenueThisMonth' | transloco"></app-kpi-card>
         </div>
 
         <div class="columns">
             <section class="panel">
-                <h2>Top-selling products</h2>
+                <h2>{{ 'dashboard.topSelling' | transloco }}</h2>
                 @if (summary.topSellingProducts.length === 0) {
-                    <p class="empty">No sales recorded yet.</p>
+                    <p class="empty">{{ 'dashboard.noSalesYet' | transloco }}</p>
                 } @else {
                     <ol class="ranked">
                         @for (item of summary.topSellingProducts; track item.productId) {
                             <li>
-                                <div>
+                                <div class="ranked__item">
                                     <span>{{ item.productName }}</span>
-                                    <span class="ranked__count">{{ item.quantitySold }} sold</span>
+                                    <div>
+                                        <span class="ranked__count ranked__price">{{ (item.productUnitPrice * item.quantitySold) | fcfa }}</span>
+                                        <span class="ranked__count ranked__count_r">{{ item.quantitySold }} {{ 'dashboard.sold' | transloco }}</span>
+                                    </div>
                                 </div>
                             </li>
                         }
@@ -34,19 +37,19 @@
             </section>
 
             <section class="panel">
-                <h2>Low stock alerts</h2>
+                <h2>{{ 'dashboard.lowStockAlerts' | transloco }}</h2>
                 @if (summary.lowStockProducts.length === 0) {
-                    <p class="empty">Every product is above its alert threshold.</p>
+                    <p class="empty">{{ 'dashboard.aboveThreshold' | transloco }}</p>
                 } @else {
                     <ul class="alerts">
                         @for (product of summary.lowStockProducts; track product.id) {
                             <li>
                                 <span>{{ product.name }}</span>
-                                <span class="alerts__qty">{{ product.quantityInStock }} left</span>
+                                <span class="alerts__qty">{{ product.quantityInStock }} {{ 'dashboard.left' | transloco }}</span>
                             </li>
                         }
                     </ul>
-                    <a class="panel__link" routerLink="/inventory">Go to inventory</a>
+                    <a class="panel__link" routerLink="/inventory">{{ 'dashboard.goToInventory' | transloco }}</a>
                 }
             </section>
         </div>

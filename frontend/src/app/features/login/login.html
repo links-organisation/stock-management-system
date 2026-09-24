@@ -1,17 +1,17 @@
 <div class="screen">
     <section class="brand">
         <div class="brand__mark">Stockroom</div>
-        <p class="brand__tagline">Track what's on the shelf, who sold it, and what it's worth.</p>
+        <p class="brand__tagline">{{ 'login.tagline' | transloco }}</p>
         <div class="brand__bar"></div>
     </section>
 
     <section class="panel">
         <form (ngSubmit)="onSubmit()" [formGroup]="form" class="form" novalidate>
-            <h1>Sign in</h1>
-            <p class="form__hint">Use your shop account to continue.</p>
+            <h1>{{ 'login.title' | transloco }}</h1>
+            <p class="form__hint">{{ 'login.hint' | transloco }}</p>
 
             <label class="field">
-                <span>Username</span>
+                <span>{{ 'login.username' | transloco }}</span>
                 <input
                     autocomplete="username"
                     autofocus
@@ -21,7 +21,7 @@
             </label>
 
             <label class="field">
-                <span>Password</span>
+                <span>{{ 'login.password' | transloco }}</span>
                 <input
                     autocomplete="current-password"
                     formControlName="password"
@@ -34,7 +34,7 @@
             }
 
             <button [disabled]="isSubmitting()" class="form__submit" type="submit">
-                {{ isSubmitting() ? 'Signing in…' : 'Sign in' }}
+                {{ isSubmitting() ? ('login.signingIn' | transloco) : ('login.signIn' | transloco) }}
             </button>
         </form>
     </section>

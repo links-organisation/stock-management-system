@@ -112,6 +112,6 @@ public class SaleService {
     private String generateInvoiceNumber() {
         String prefix = "INV-" + Year.now().getValue() + "-";
         long count = invoiceRepository.countByInvoiceNumberStartingWith(prefix);
-        return prefix + String.format("%05d", count + 1);
+        return prefix + String.format("%06d", count + 1);
     }
 }

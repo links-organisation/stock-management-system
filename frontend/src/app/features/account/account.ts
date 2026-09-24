@@ -1,8 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
-import { formatedRole } from '../../core/models/types';
+import { roleLabelKey } from '../../core/models/types';
 
 function passwordsMatchValidator(): ValidatorFn {
     return (group: AbstractControl): ValidationErrors | null => {
@@ -18,13 +19,14 @@ function passwordsMatchValidator(): ValidatorFn {
 @Component({
     selector: 'app-account',
     standalone: true,
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, TranslocoPipe],
     templateUrl: './account.html',
     styleUrl: './account.scss',
 })
 export class Account {
     private authService = inject(AuthService);
     private userService = inject(UserService);
+    private transloco = inject(TranslocoService);
 
     isSaving = signal(false);
     errorMessage = signal('');
@@ -43,7 +45,7 @@ export class Account {
     );
 
     get role() {
-        return formatedRole[this.authService.currentRole ?? 'SELLER'];
+        return this.transloco.translate(roleLabelKey[this.authService.currentRole ?? 'SELLER']);
     }
 
     onSubmit(): void {
@@ -70,11 +72,11 @@ export class Account {
                     this.isSaving.set(false);
                     this.authService.updateCurrentUser(user);
                     this.form.patchValue({ currentPassword: '', newPassword: '', confirmPassword: '' });
-                    this.successMessage.set('Account updated.');
+                    this.successMessage.set(this.transloco.translate('account.updated'));
                 },
                 error: (err) => {
                     this.isSaving.set(false);
-                    this.errorMessage.set(err.error?.message ?? 'Could not update your account.');
+                    this.errorMessage.set(err.error?.message ?? this.transloco.translate('account.updateFailed'));
                 },
             });
     }

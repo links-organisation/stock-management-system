@@ -1,21 +1,30 @@
 <div (click)="cancel.emit()" class="backdrop">
     <form (click)="$event.stopPropagation()" (ngSubmit)="onSubmit()" [formGroup]="form" class="sheet" novalidate>
-        <h2>{{ isEditing() ? 'Edit product' : 'Register a product' }}</h2>
+        <h2>{{ isEditing() ? ('products.editProduct' | transloco) : ('products.registerProduct' | transloco) }}</h2>
 
         <label class="field">
-            <span>Name</span>
-            <input formControlName="name" type="text"/>
+            <span>{{ 'products.name' | transloco }}</span>
+            <input formControlName="name" type="text" [placeholder]="'products.namePlaceholder' | transloco"/>
+            @if (form.get('name')?.touched && form.get('name')?.hasError('required')) {
+                <span class="error">{{ 'products.nameRequired' | transloco }}</span>
+            }
         </label>
 
         <label class="field">
-            <span>Reference / SKU</span>
-            <input formControlName="reference" type="text" [readonly]="form.get('categoryId')?.value"/>
+            <span>{{ 'products.referenceSku' | transloco }}</span>
+            <input formControlName="reference" type="text" [placeholder]="'products.referencePlaceholder' | transloco" [readonly]="form.get('categoryId')?.value"/>
+            @if (form.get('reference')?.touched && form.get('reference')?.hasError('required')) {
+                <span class="error">{{ 'products.referenceRequired' | transloco }}</span>
+            }
+            @if (form.get('reference')?.touched && form.get('reference')?.hasError('notUnique')) {
+                <span class="error">{{ 'products.referenceNotUnique' | transloco }} <strong>{{ form.get('reference')?.value }}</strong> {{ 'categories.alreadyInUse' | transloco }}</span>
+            }
         </label>
 
         <label class="field">
-            <span>Category</span>
+            <span>{{ 'products.category' | transloco }}</span>
             <select formControlName="categoryId">
-                <option [ngValue]="null">Uncategorized</option>
+                <option [ngValue]="null">{{ 'products.uncategorized' | transloco }}</option>
                 @for (category of categories(); track category.id) {
                     <option [ngValue]="category.id">{{ category.name }}</option>
                 }
@@ -24,31 +33,43 @@
 
         <div class="row">
             <label class="field">
-                <span>Purchase price</span>
-                <input formControlName="purchasePrice" min="0" step="0.01" type="number"/>
+                <span>{{ 'products.purchasePrice' | transloco }}</span>
+                <input formControlName="purchasePrice" min="0" step="0.01" type="number" [placeholder]="'products.purchasePricePlaceholder' | transloco"/>
+                @if (form.get('purchasePrice')?.touched && form.get('purchasePrice')?.hasError('required')) {
+                    <span class="error">{{ 'products.purchasePriceRequired' | transloco }}</span>
+                }
             </label>
 
             <label class="field">
-                <span>Selling price</span>
-                <input formControlName="sellingPrice" min="0" step="0.01" type="number"/>
+                <span>{{ 'products.sellingPrice' | transloco }}</span>
+                <input formControlName="sellingPrice" min="0" step="0.01" type="number" [placeholder]="'products.sellingPricePlaceholder' | transloco"/>
+                @if (form.get('sellingPrice')?.touched && form.get('sellingPrice')?.hasError('required')) {
+                    <span class="error">{{ 'products.sellingPriceRequired' | transloco }}</span>
+                }
             </label>
         </div>
 
         <div class="row">
             <label class="field">
-                <span>Quantity in stock</span>
-                <input formControlName="quantityInStock" min="0" step="1" type="number"/>
+                <span>{{ 'products.quantityInStock' | transloco }}</span>
+                <input formControlName="quantityInStock" min="0" step="1" type="number" [placeholder]="'products.quantityInStockPlaceholder' | transloco"/>
+                @if (form.get('quantityInStock')?.touched && form.get('quantityInStock')?.hasError('required')) {
+                    <span class="error">{{ 'products.quantityInStockRequired' | transloco }}</span>
+                }
             </label>
 
             <label class="field">
-                <span>Alert threshold</span>
-                <input formControlName="alertThreshold" min="0" step="1" type="number"/>
+                <span>{{ 'products.alertThreshold' | transloco }}</span>
+                <input formControlName="alertThreshold" min="0" step="1" type="number" [placeholder]="'products.alertThresholdPlaceholder' | transloco"/>
+                @if (form.get('alertThreshold')?.touched && form.get('alertThreshold')?.hasError('required')) {
+                    <span class="error">{{ 'products.alertThresholdRequired' | transloco }}</span>
+                }
             </label>
         </div>
 
         <footer>
-            <button (click)="cancel.emit()" class="ghost" type="button">Cancel</button>
-            <button class="primary" type="submit">{{ isEditing() ? 'Save changes' : 'Register product' }}</button>
+            <button (click)="cancel.emit()" class="ghost" type="button">{{ 'common.cancel' | transloco }}</button>
+            <button class="primary" type="submit">{{ isEditing() ? ('products.saveChanges' | transloco) : ('products.registerProduct' | transloco) }}</button>
         </footer>
     </form>
 </div>

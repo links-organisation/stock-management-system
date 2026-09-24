@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { DashboardSummary } from '../../../core/models/dashboard.model';
 import { KpiCard } from '../kpi-card/kpi-card';
@@ -9,7 +10,7 @@ import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
 @Component({
     selector: 'app-dashboard',
     standalone: true,
-    imports: [DecimalPipe, RouterLink, KpiCard, FcfaPipe],
+    imports: [DecimalPipe, RouterLink, KpiCard, FcfaPipe, TranslocoPipe],
     templateUrl: './dashboard.html',
     styleUrl: './dashboard.scss',
 })
@@ -18,6 +19,8 @@ export class Dashboard {
     isLoading = signal(true);
     errorMessage = signal('');
 
+    private transloco = inject(TranslocoService);
+
     constructor(private dashboardService: DashboardService) {
         this.dashboardService.getSummary().subscribe({
             next: (summary) => {
@@ -25,7 +28,7 @@ export class Dashboard {
                 this.isLoading.set(false);
             },
             error: () => {
-                this.errorMessage.set('Could not load dashboard data.');
+                this.errorMessage.set(this.transloco.translate('dashboard.loadError'));
                 this.isLoading.set(false);
             },
         });

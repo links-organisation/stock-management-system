@@ -1,0 +1,12 @@
+.shutdown-screen {
+    height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-ink);
+    color: var(--color-paper);
+    font-family: var(--font-display), system-ui;
+    font-size: 1.25rem;
+    text-align: center;
+    padding: 2rem;
+}

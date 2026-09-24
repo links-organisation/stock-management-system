@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -26,10 +27,25 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponse> getById(@PathVariable UUID id) {
+        return ResponseEntity.ok(categoryService.findById(id));
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryResponse create(@Valid @RequestBody CategoryRequest request) {
         return categoryService.create(request);
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<CategoryResponse> update(@RequestBody CategoryRequest request, @PathVariable UUID id) {
+        return ResponseEntity.ok(categoryService.update(id, request));
+    }
+
+    @GetMapping(value = "/check-availability")
+    public Map<String, Boolean> checkAvailability(@RequestParam String column, @RequestParam String value) {
+        return Map.of("available", categoryService.checkAvailability(column, value));
     }
 
     @DeleteMapping("/{id}")

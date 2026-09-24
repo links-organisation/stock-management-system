@@ -20,14 +20,29 @@ export class CategoryService {
         return this.http.get<Category[]>(this.baseUrl);
     }
 
+    getById(id: string): Observable<Category> {
+        return this.http.get<Category>(`${this.baseUrl}/${id}`);
+    }
+
     create(data: CategoryFormData): Observable<Category> {
         const request: CategoryRequest = { ...data, userId: this.authService.currentUserId! };
         return this.http.post<Category>(this.baseUrl, request);
     }
 
+    update(id: string, data: CategoryFormData): Observable<Category> {
+        const request: CategoryRequest = { ...data, userId: this.authService.currentUserId! };
+        return this.http.put<Category>(`${this.baseUrl}/${id}`, request);
+    }
+
+    checkAvailability(column: string, value: string): Observable<{ available: boolean }> {
+        return this.http.get<{ available: boolean }>(`${this.baseUrl}/check-availability`, {
+            params: { column, value, userId: this.authService.currentUserId! }
+        });
+    }
+
     delete(id: string): Observable<void> {
         return this.http.delete<void>(`${this.baseUrl}/${id}`, {
-            params: { userId: this.authService.currentUserId! },
+            params: { userId: this.authService.currentUserId! }
         });
     }
 }

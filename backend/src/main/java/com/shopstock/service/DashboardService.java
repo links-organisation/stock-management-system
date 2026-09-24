@@ -55,7 +55,7 @@ public class DashboardService {
                 .limit(5)
                 .map(e -> {
                     Product product = productRepository.findById(e.getKey()).orElseThrow();
-                    return new DashboardSummaryResponse.TopProduct(product.getId(), product.getName(), e.getValue());
+                    return new DashboardSummaryResponse.TopProduct(product.getId(), product.getName(), product.getSellingPrice(), e.getValue());
                 })
                 .collect(Collectors.toList());
 

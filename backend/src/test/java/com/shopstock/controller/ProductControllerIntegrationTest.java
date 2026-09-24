@@ -123,7 +123,8 @@ class ProductControllerIntegrationTest {
     void nextRef_returnsIncrementedReference_forSeededPrefix() throws Exception {
         mockMvc.perform(get("/api/v1/products/next-ref").param("prefix", "BEV"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.prefix").value("BEV-003"));
+                .andExpect(content().string("BEV-003"));
+                //.andExpect(jsonPath("$.prefix").value("BEV-003"));
     }
 
     @Test
@@ -133,7 +134,7 @@ class ProductControllerIntegrationTest {
         String created = mockMvc.perform(post("/api/v1/products").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
-        UUID productId = UUID.fromString(objectMapper.readTree(created).get("id").asText());
+        UUID productId = UUID.fromString(objectMapper.readTree(created).get("id").asString());
 
         mockMvc.perform(delete("/api/v1/products/{id}", productId).param("userId", adminId.toString()))
                 .andExpect(status().isConflict())
@@ -147,6 +148,38 @@ class ProductControllerIntegrationTest {
 
         mockMvc.perform(delete("/api/v1/products/{id}", clean.getId()).param("userId", adminId.toString()))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void create_returns201WithCategoryPrefix_whenCategorySet() throws Exception {
+        com.shopstock.entity.Category category = new com.shopstock.entity.Category();
+        category.setName("Frozen Foods");
+        category.setPrefix("FRZ");
+        category = categoryRepository.save(category);
+        ProductRequest request = new ProductRequest("Frozen Peas", "FRZ-001", category.getId(),
+                new BigDecimal("5.00"), new BigDecimal("9.00"), 10, 2, adminId);
+
+        mockMvc.perform(post("/api/v1/products").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.categoryName").value("Frozen Foods"))
+                .andExpect(jsonPath("$.categoryPrefix").value("FRZ"));
+    }
+
+    @Test
+    void checkAvailability_returnsAvailableTrue_whenReferenceUnused() throws Exception {
+        mockMvc.perform(get("/api/v1/products/check-availability").param("reference", "BEV-UNUSED-999"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.available").value(true));
+    }
+
+    @Test
+    void checkAvailability_returnsAvailableFalse_whenReferenceAlreadyUsed() throws Exception {
+        productRepository.save(TestProduct.clean("Existing Product", "BEV-993"));
+
+        mockMvc.perform(get("/api/v1/products/check-availability").param("reference", "BEV-993"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.available").value(false));
     }
 
     /** Inserts a product directly via the repository, bypassing ProductService.create

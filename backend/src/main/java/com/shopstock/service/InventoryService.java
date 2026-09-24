@@ -6,6 +6,7 @@ import com.shopstock.entity.*;
 import com.shopstock.exception.ResourceNotFoundException;
 import com.shopstock.repository.ProductRepository;
 import com.shopstock.repository.StockOperationRepository;
+import com.shopstock.utils.Coalesce;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,7 @@ public class InventoryService {
             operation.setProduct(product);
             operation.setOperationType(OperationType.ADJUSTMENT);
             operation.setQuantityChange((float) delta);
-            operation.setComment(request.comment());
+            operation.setComment(Coalesce.of(request.comment(), "Stock adjusted by " + delta));
             operation.setPerformedBy(user);
             stockOperationRepository.save(operation);
         }

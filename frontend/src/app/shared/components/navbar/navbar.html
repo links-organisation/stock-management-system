@@ -16,14 +16,22 @@
 
     <div class="links">
         @for (item of navItems; track item.path) {
-            <a [routerLink]="item.path" routerLinkActive="active">{{ item.label }}</a>
+            <a [routerLink]="item.path" routerLinkActive="active">{{ item.labelKey | transloco }}</a>
         }
+    </div>
+
+    <div class="lang-switch lang-switch--navbar">
+        <button (click)="setLanguage('en')" [class.active]="activeLang() === 'en'" type="button">EN</button>
+        <button (click)="setLanguage('fr')" [class.active]="activeLang() === 'fr'" type="button">FR</button>
     </div>
 
     @if (authService.currentUser; as user) {
         <div class="account">
             <a class="account__name" routerLink="/account" routerLinkActive="active">{{ user.fullName }}</a>
-            <button (click)="logout()" class="account__logout" type="button">Sign out</button>
+            @if (authService.isSuperAdmin()) {
+                <button (click)="turnOff()" class="account__turn-off" type="button">{{ 'system.turnOff' | transloco }}</button>
+            }
+            <button (click)="logout()" class="account__logout" type="button">{{ 'nav.signOut' | transloco }}</button>
         </div>
     }
 </nav>
@@ -41,14 +49,22 @@
 
     <nav class="sidebar__links">
         @for (item of navItems; track item.path) {
-            <a [routerLink]="item.path" routerLinkActive="active" (click)="closeSidebar()">{{ item.label }}</a>
+            <a [routerLink]="item.path" routerLinkActive="active" (click)="closeSidebar()">{{ item.labelKey | transloco }}</a>
         }
     </nav>
+
+    <div class="lang-switch lang-switch--sidebar">
+        <button (click)="setLanguage('en')" [class.active]="activeLang() === 'en'" type="button">EN</button>
+        <button (click)="setLanguage('fr')" [class.active]="activeLang() === 'fr'" type="button">FR</button>
+    </div>
 
     @if (authService.currentUser; as user) {
         <div class="sidebar__account">
             <a routerLink="/account" routerLinkActive="active" (click)="closeSidebar()">{{ user.fullName }}</a>
-            <button (click)="logout()" type="button">Sign out</button>
+            @if (authService.isSuperAdmin()) {
+                <button (click)="turnOff()" class="account__turn-off" type="button">{{ 'system.turnOff' | transloco }}</button>
+            }
+            <button (click)="logout()" type="button">{{ 'nav.signOut' | transloco }}</button>
         </div>
     }
 </aside>

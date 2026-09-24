@@ -26,9 +26,9 @@ class AuthControllerIntegrationTest {
     @Test
     void login_returns200WithUser_andNeverLeaksPassword() throws Exception {
         mockMvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new LoginRequest("admin", "admin123"))))
+                        .content(objectMapper.writeValueAsString(new LoginRequest("superadmin", "superadmin123"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.username").value("admin"))
+                .andExpect(jsonPath("$.username").value("superadmin"))
                 .andExpect(jsonPath("$.role").value("SUPER_ADMIN"))
                 .andExpect(jsonPath("$.password").doesNotExist());
     }
@@ -46,7 +46,7 @@ class AuthControllerIntegrationTest {
     @Test
     void login_returns401WithErrorResponseShape_whenCredentialsWrong() throws Exception {
         mockMvc.perform(post("/api/v1/auth/login").contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new LoginRequest("admin", "wrongpassword"))))
+                        .content(objectMapper.writeValueAsString(new LoginRequest("superadmin", "wrongpassword"))))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.status").value(401))
                 .andExpect(jsonPath("$.error").value("Unauthorized"));

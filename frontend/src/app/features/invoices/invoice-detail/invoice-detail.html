@@ -7,9 +7,9 @@
 
         @if (invoice.sale) {
             <p class="meta">
-                Sold by <strong>{{ invoice.sale.performedByFullname }}</strong>
+                {{ 'invoices.soldBy' | transloco }} <strong>{{ invoice.sale.performedByFullname }}</strong>
                 @if (invoice.sale.customerName) {
-                    to <strong>{{ invoice.sale.customerName }}</strong>
+                    {{ 'invoices.soldTo' | transloco }} <strong>{{ invoice.sale.customerName }}</strong>
                 }
             </p>
 
@@ -25,10 +25,10 @@
         }
 
         <div class="total">
-            <span>Total</span>
+            <span>{{ 'invoices.total' | transloco }}</span>
             <span class="data">{{ invoice.totalAmount | fcfa }}</span>
         </div>
     </div>
 } @else {
-    <p class="empty">Select an invoice to see its detail.</p>
+    <p class="empty">{{ 'invoices.selectPrompt' | transloco }}</p>
 }

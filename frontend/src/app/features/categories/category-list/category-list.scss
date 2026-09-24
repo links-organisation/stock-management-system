@@ -57,6 +57,12 @@
     border-color: var(--color-accent);
 }
 
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
 button.primary {
     background: var(--color-accent);
     color: var(--color-accent-ink);
@@ -76,6 +82,21 @@ button.primary:hover:not(:disabled) {
 button.primary:disabled {
     opacity: 0.6;
     cursor: default;
+}
+
+button.ghost {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 0.625rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    cursor: pointer;
+}
+
+button.ghost:hover {
+    border-color: var(--color-ink-muted);
 }
 
 table {
@@ -120,11 +141,6 @@ tr:last-child td {
     border-color: var(--color-ink-muted);
 }
 
-.actions button.danger {
-    color: var(--color-danger);
-    border-color: var(--color-danger-bg);
-}
-
-.actions button.danger:hover {
-    border-color: var(--color-danger);
+.actions button.danger-outline {
+    margin: 0 0 0 0.5rem;
 }

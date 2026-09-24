@@ -4,35 +4,35 @@
         <span class="ref data">{{ product().reference }}</span>
     </header>
 
-    <p class="category">{{ product().categoryName || 'Uncategorized' }}</p>
+    <p class="category">{{ product().categoryName || ('products.uncategorized' | transloco) }}</p>
 
     <dl class="stats">
         <div>
-            <dt>In stock</dt>
+            <dt>{{ 'products.inStock' | transloco }}</dt>
             <dd [class.stats__danger]="product().lowStock" class="data">{{ product().quantityInStock }}</dd>
         </div>
         <div>
-            <dt>Alert at</dt>
+            <dt>{{ 'products.alertAt' | transloco }}</dt>
             <dd class="data">{{ product().alertThreshold }}</dd>
         </div>
         <div>
-            <dt>Sells for</dt>
+            <dt>{{ 'products.sellsFor' | transloco }}</dt>
             <dd class="data">{{ product().sellingPrice | fcfa }}</dd>
         </div>
         <div>
-            <dt>Cost</dt>
+            <dt>{{ 'products.cost' | transloco }}</dt>
             <dd class="data">{{ product().purchasePrice | fcfa }}</dd>
         </div>
     </dl>
 
     @if (product().lowStock) {
-        <p class="warning">Below alert threshold</p>
+        <p class="warning">{{ 'products.belowThreshold' | transloco }}</p>
     }
 
     @if (canManage()) {
         <footer>
-            <button (click)="edit.emit(product())" type="button">Edit</button>
-            <button (click)="remove.emit(product())" class="danger" type="button">Delete</button>
+            <button (click)="edit.emit(product())" type="button">{{ 'common.edit' | transloco }}</button>
+            <button (click)="remove.emit(product())" class="danger" type="button">{{ 'common.delete' | transloco }}</button>
         </footer>
     }
 </article>

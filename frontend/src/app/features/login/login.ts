@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, TranslocoPipe],
     templateUrl: './login.html',
     styleUrl: './login.scss',
 })
@@ -15,6 +16,7 @@ export class Login {
     isSubmitting = signal(false);
 
     private fb = inject(FormBuilder);
+    private transloco = inject(TranslocoService);
     form = this.fb.nonNullable.group({
         username: ['', Validators.required],
         password: ['', Validators.required],
@@ -42,9 +44,9 @@ export class Login {
             error: (err) => {
                 this.isSubmitting.set(false);
                 this.errorMessage.set(
-                    err.status === 401
-                        ? 'Invalid username or password.'
-                        : 'Unable to reach the server. Please try again.',
+                    this.transloco.translate(
+                        err.status === 401 ? 'login.invalidCredentials' : 'login.serverError',
+                    ),
                 );
             },
         });
