@@ -1,5 +1,5 @@
 <div class="page">
-    <h1>Inventory</h1>
+    <h1>{{ 'inventory.title' | transloco }}</h1>
 
     @if (errorMessage()) {
         <p class="status status--error">{{ errorMessage() }}</p>
@@ -9,47 +9,82 @@
     }
 
     @if (isLoading()) {
-        <p class="status">Loading…</p>
+        <p class="status">{{ 'common.loading' | transloco }}</p>
     } @else {
         <div class="table-wrap panel">
             <table>
                 <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Reference</th>
-                    <th>Category</th>
-                    <th>Unit value</th>
-                    <th>Stock value</th>
-                    <th>Quantity</th>
+                    <th class="table-sort-header" (click)="sortData({active: 'name'})">
+                        <span>{{ 'inventory.product' | transloco }}</span>
+                        @if (sort().active === 'name') {
+                            <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
+                        }
+                    </th>
+                    <th class="table-sort-header" (click)="sortData({active: 'reference'})">
+                        <span>{{ 'inventory.reference' | transloco }}</span>
+                        @if (sort().active === 'reference') {
+                            <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
+                        }
+                    </th>
+                    <th class="table-sort-header" (click)="sortData({active: 'category'})">
+                        <span>{{ 'inventory.category' | transloco }}</span>
+                        @if (sort().active === 'category') {
+                            <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
+                        }
+                    </th>
+                    <th class="table-sort-header" (click)="sortData({active: 'unitValue'})">
+                        <span>{{ 'inventory.unitValue' | transloco }}</span>
+                        @if (sort().active === 'unitValue') {
+                            <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
+                        }
+                    </th>
+                    <th class="table-sort-header" (click)="sortData({active: 'stockValue'})">
+                        <span>{{ 'inventory.stockValue' | transloco }}</span>
+                        @if (sort().active === 'stockValue') {
+                            <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
+                        }
+                    </th>
+                    <th class="table-sort-header" (click)="sortData({active: 'quantity'})">
+                        <span>{{ 'inventory.quantity' | transloco }}</span>
+                        @if (sort().active === 'quantity') {
+                            <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
+                        }
+                    </th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                    @for (product of products(); track product.id) {
+                    @for (product of sortedProducts(); track product.id) {
                         <tr [class.low]="product.lowStock">
                             <td>{{ product.name }}</td>
                             <td class="data">{{ product.reference }}</td>
-                            <td>{{ product.categoryName || '—' }}</td>
+                            <td>{{ product.categoryName || '-' }}</td>
                             <td class="data">{{ product.purchasePrice | fcfa }}</td>
                             <td class="data">{{ product.purchasePrice * product.quantityInStock | fcfa }}</td>
                             <td class="data">
                                 {{ product.quantityInStock }}
                                 @if (product.lowStock) {
-                                    <span class="tag">low</span>
+                                    <span class="tag">{{ 'inventory.low' | transloco }}</span>
                                 }
                             </td>
                             <td class="actions">
                                 @if (adjustingProductId() === product.id) {
                                     <div [formGroup]="adjustForm" class="adjust">
                                         <input formControlName="newQuantity" min="0" type="number"/>
-                                        <input formControlName="comment" placeholder="Reason (optional)" type="text"/>
+                                        <input formControlName="comment"
+                                               [placeholder]="'inventory.reasonOptional' | transloco" type="text"/>
                                         <button (click)="saveAdjust(product)" [disabled]="isSaving()" class="save"
-                                                type="button">Save
+                                                type="button">{{ 'common.save' | transloco }}
                                         </button>
-                                        <button (click)="cancelAdjust()" class="cancel" type="button">Cancel</button>
+                                        <button (click)="cancelAdjust()" class="cancel"
+                                                type="button">{{ 'common.cancel' | transloco }}
+                                        </button>
                                     </div>
                                 } @else {
-                                    <button (click)="startAdjust(product)" type="button">Adjust</button>
+                                    <button (click)="startAdjust(product)"
+                                            type="button">{{ 'inventory.adjust' | transloco }}
+                                    </button>
                                 }
                             </td>
                         </tr>

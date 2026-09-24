@@ -1,39 +1,39 @@
 <div class="page narrow">
-    <h1>My account</h1>
-    <p class="role-hint">Signed in as <strong>{{ role }}</strong></p>
+    <h1>{{ 'account.title' | transloco }}</h1>
+    <p class="role-hint">{{ 'account.signedInAs' | transloco }} <strong>{{ role }}</strong></p>
 
     <form (ngSubmit)="onSubmit()" [formGroup]="form" class="panel" novalidate>
         <label class="field">
-            <span>Full name</span>
+            <span>{{ 'account.fullName' | transloco }}</span>
             <input formControlName="fullName" type="text"/>
         </label>
 
         <label class="field">
-            <span>Username</span>
+            <span>{{ 'account.username' | transloco }}</span>
             <input formControlName="username" type="text"/>
         </label>
 
-        <h2>Change password</h2>
-        <p class="hint">Leave blank to keep your current password.</p>
+        <h2>{{ 'account.changePassword' | transloco }}</h2>
+        <p class="hint">{{ 'account.changePasswordHint' | transloco }}</p>
 
         <label class="field">
-            <span>Current password</span>
+            <span>{{ 'account.currentPassword' | transloco }}</span>
             <input autocomplete="current-password" formControlName="currentPassword" type="password"/>
         </label>
 
         <div class="row">
             <label class="field">
-                <span>New password</span>
+                <span>{{ 'account.newPassword' | transloco }}</span>
                 <input autocomplete="new-password" formControlName="newPassword" type="password"/>
             </label>
             <label class="field">
-                <span>Confirm new password</span>
+                <span>{{ 'account.confirmNewPassword' | transloco }}</span>
                 <input autocomplete="new-password" formControlName="confirmPassword" type="password"/>
             </label>
         </div>
 
         @if (form.errors?.['passwordMismatch'] && form.controls.confirmPassword.touched) {
-            <p class="status status--error">New password and confirmation do not match.</p>
+            <p class="status status--error">{{ 'account.passwordMismatch' | transloco }}</p>
         }
         @if (errorMessage()) {
             <p class="status status--error">{{ errorMessage() }}</p>
@@ -43,7 +43,7 @@
         }
 
         <button [disabled]="isSaving()" class="primary" type="submit">
-            {{ isSaving() ? 'Saving…' : 'Save changes' }}
+            {{ isSaving() ? ('account.saving' | transloco) : ('account.saveChanges' | transloco) }}
         </button>
     </form>
 </div>

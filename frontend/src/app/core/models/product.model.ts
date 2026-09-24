@@ -4,6 +4,7 @@ export interface Product {
     reference: string;
     categoryId: string | null;
     categoryName: string | null;
+    categoryPrefix: string | null;
     purchasePrice: number;
     sellingPrice: number;
     quantityInStock: number;

@@ -1,23 +1,23 @@
 <div class="page">
-    <h1>Invoices</h1>
+    <h1>{{ 'invoices.title' | transloco }}</h1>
 
     @if (errorMessage()) {
         <p class="status status--error">{{ errorMessage() }}</p>
     }
 
     @if (isLoading()) {
-        <p class="status">Loading…</p>
+        <p class="status">{{ 'common.loading' | transloco }}</p>
     } @else if (invoices().length === 0) {
-        <p class="empty">No invoices yet — invoices are generated automatically on sale.</p>
+        <p class="empty">{{ 'invoices.empty' | transloco }}</p>
     } @else {
         <div class="layout">
             <div class="table-wrap panel list">
                 <table>
                     <thead>
                     <tr>
-                        <th>Number</th>
-                        <th>Date</th>
-                        <th>Amount</th>
+                        <th>{{ 'invoices.number' | transloco }}</th>
+                        <th>{{ 'invoices.date' | transloco }}</th>
+                        <th>{{ 'invoices.amount' | transloco }}</th>
                     </tr>
                     </thead>
                     <tbody>

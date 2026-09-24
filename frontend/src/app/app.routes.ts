@@ -55,6 +55,12 @@ export const routes: Routes = [
         loadComponent: () => import('./features/users/user-list/user-list').then((m) => m.UserList),
     },
     {
+        path: 'network',
+        canActivate: [authGuard, adminGuard],
+        loadComponent: () =>
+            import('./features/network-sharing/network-sharing').then((m) => m.NetworkSharing),
+    },
+    {
         path: 'account',
         canActivate: [authGuard],
         loadComponent: () => import('./features/account/account').then((m) => m.Account),

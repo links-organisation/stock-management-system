@@ -20,4 +20,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> findByQuantityInStockLessThan(Integer threshold);
 
     List<Product> findByNameContainingIgnoreCaseOrReferenceContainingIgnoreCase(String name, String reference);
+
+    boolean existsByReference(String reference);
 }

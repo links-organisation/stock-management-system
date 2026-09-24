@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Category } from '../../../core/models/category.model';
 import { Product } from '../../../core/models/product.model';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,7 +13,7 @@ import { ProductForm } from '../product-form/product-form';
 @Component({
     selector: 'app-product-list',
     standalone: true,
-    imports: [ReactiveFormsModule, ProductCard, ProductForm],
+    imports: [ReactiveFormsModule, ProductCard, ProductForm, TranslocoPipe],
     templateUrl: './product-list.html',
     styleUrl: './product-list.scss',
 })
@@ -26,6 +27,7 @@ export class ProductList {
     isFormOpen = signal(false);
     editingProduct = signal<Product | null>(null);
 
+    private transloco = inject(TranslocoService);
     private fb = inject(FormBuilder);
     filterForm = this.fb.nonNullable.group({
         searchQuery: [''],
@@ -51,7 +53,7 @@ export class ProductList {
                 this.isLoading.set(false);
             },
             error: () => {
-                this.errorMessage.set('Could not load products.');
+                this.errorMessage.set(this.transloco.translate('products.loadError'));
                 this.isLoading.set(false);
             },
         });
@@ -93,28 +95,32 @@ export class ProductList {
             next: () => {
                 this.closeForm();
                 this.applyFilters();
-                this.successMessage.set(wasEditing ? 'Product updated.' : 'Product registered.');
+                this.successMessage.set(
+                    this.transloco.translate(wasEditing ? 'products.updated' : 'products.registered'),
+                );
                 this.clearSuccessMessageSoon();
             },
             error: () => {
-                this.errorMessage.set('Could not save the product. Check the reference is unique.');
+                this.errorMessage.set(this.transloco.translate('products.saveError'));
             },
         });
     }
 
     onDeleteProduct(product: Product): void {
-        if (!confirm(`Delete "${product.name}"? This cannot be undone.`)) {
+        if (!confirm(this.transloco.translate('products.confirmDelete', { name: product.name }))) {
             return;
         }
         this.errorMessage.set('');
         this.productService.delete(product.id).subscribe({
             next: () => {
                 this.applyFilters();
-                this.successMessage.set(`"${product.name}" deleted.`);
+                this.successMessage.set(this.transloco.translate('products.deleted', { name: product.name }));
                 this.clearSuccessMessageSoon();
             },
             error: (err) => {
-                this.errorMessage.set(err.error?.message ?? `Could not delete "${product.name}".`);
+                this.errorMessage.set(
+                    err.error?.message ?? this.transloco.translate('products.deleteError', { name: product.name }),
+                );
             },
         });
     }

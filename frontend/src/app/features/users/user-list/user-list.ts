@@ -1,5 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { Role, User } from '../../../core/models/user.model';
+import { roleLabelKey } from '../../../core/models/types';
 import { ASSIGNABLE_ROLES, UserService } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserForm, UserFormValue } from '../user-form/user-form';
@@ -7,7 +9,7 @@ import { UserForm, UserFormValue } from '../user-form/user-form';
 @Component({
     selector: 'app-user-list',
     standalone: true,
-    imports: [UserForm],
+    imports: [UserForm, TranslocoPipe],
     templateUrl: './user-list.html',
     styleUrl: './user-list.scss',
 })
@@ -19,6 +21,9 @@ export class UserList {
 
     isFormOpen = signal(false);
     editingUser = signal<User | null>(null);
+    readonly roleLabelKey = roleLabelKey;
+
+    private transloco = inject(TranslocoService);
 
     constructor(
         private userService: UserService,
@@ -32,7 +37,7 @@ export class UserList {
     }
 
     /** Roles the logged-in actor is allowed to assign, per the backend hierarchy. */
-    get assignableRoles(): { value: Role; label: string }[] {
+    get assignableRoles(): { value: Role; labelKey: string }[] {
         if (this.currentRole === 'SUPER_ADMIN') {
             return ASSIGNABLE_ROLES;
         }
@@ -47,7 +52,7 @@ export class UserList {
                 this.isLoading.set(false);
             },
             error: () => {
-                this.errorMessage.set('Could not load users.');
+                this.errorMessage.set(this.transloco.translate('users.loadError'));
                 this.isLoading.set(false);
             },
         });
@@ -95,11 +100,11 @@ export class UserList {
             next: () => {
                 this.closeForm();
                 this.load();
-                this.successMessage.set(wasEditing ? 'User updated.' : 'User registered.');
+                this.successMessage.set(this.transloco.translate(wasEditing ? 'users.updated' : 'users.registered'));
                 setTimeout(() => this.successMessage.set(''), 3000);
             },
             error: (err) => {
-                this.errorMessage.set(err.error?.message ?? 'Could not save the user.');
+                this.errorMessage.set(err.error?.message ?? this.transloco.translate('users.saveError'));
             },
         });
     }

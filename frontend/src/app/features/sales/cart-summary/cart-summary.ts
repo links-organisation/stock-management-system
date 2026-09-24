@@ -1,4 +1,5 @@
 import { Component, computed, input, output } from '@angular/core';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
 
 export interface CartLine {
@@ -11,7 +12,7 @@ export interface CartLine {
 @Component({
     selector: 'app-cart-summary',
     standalone: true,
-    imports: [FcfaPipe],
+    imports: [FcfaPipe, TranslocoPipe],
     templateUrl: './cart-summary.html',
     styleUrl: './cart-summary.scss',
 })

@@ -1,19 +1,19 @@
 <div class="page">
     <header class="page-head">
-        <h1>Products</h1>
+        <h1>{{ 'products.title' | transloco }}</h1>
         @if (authService.isAdminOrAbove()) {
-            <button (click)="openCreateForm()" class="primary" type="button">Register product</button>
+            <button (click)="openCreateForm()" class="primary" type="button">{{ 'products.registerProduct' | transloco }}</button>
         }
     </header>
 
     <div [formGroup]="filterForm" class="search">
         <input
             formControlName="searchQuery"
-            placeholder="Search by name or reference…"
+            [placeholder]="'products.searchPlaceholder' | transloco"
             type="search"
         />
         <select formControlName="categoryFilter">
-            <option [ngValue]="null">All categories</option>
+            <option [ngValue]="null">{{ 'products.allCategories' | transloco }}</option>
             @for (category of categories(); track category.id) {
                 <option [ngValue]="category.id">{{ category.name }}</option>
             }
@@ -28,9 +28,9 @@
     }
 
     @if (isLoading()) {
-        <p class="status">Loading products…</p>
+        <p class="status">{{ 'products.loading' | transloco }}</p>
     } @else if (products().length === 0) {
-        <p class="empty">No products match your search.</p>
+        <p class="empty">{{ 'products.empty' | transloco }}</p>
     } @else {
         <div class="grid">
             @for (product of products(); track product.id) {

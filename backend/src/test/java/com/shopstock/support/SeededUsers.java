@@ -14,11 +14,11 @@ public final class SeededUsers {
     }
 
     public static User superAdmin(UserRepository repo) {
-        return get(repo, "admin");
+        return get(repo, "superadmin");
     }
 
     public static User admin(UserRepository repo) {
-        return get(repo, "shopadmin");
+        return get(repo, "admin");
     }
 
     public static User seller(UserRepository repo) {

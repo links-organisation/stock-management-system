@@ -3,6 +3,7 @@ import { Product } from './product.model';
 export interface TopProduct {
     productId: string;
     productName: string;
+    productUnitPrice: number;
     quantitySold: number;
 }
 

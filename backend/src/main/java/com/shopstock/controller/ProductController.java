@@ -5,6 +5,7 @@ import com.shopstock.dto.response.ProductResponse;
 import com.shopstock.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,9 +49,14 @@ public class ProductController {
         return ResponseEntity.ok(productService.search(query, categoryId));
     }
 
-    @GetMapping("/next-ref")
-    public ResponseEntity<Map<String, String>> getNextRef(@RequestParam String prefix) {
-        return ResponseEntity.ok(Map.of("prefix", productService.findNextRef(prefix)));
+    @GetMapping(value = "/next-ref", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getNextRef(@RequestParam String prefix) {
+        return ResponseEntity.ok(productService.findNextRef(prefix));
+    }
+
+    @GetMapping(value = "/check-availability")
+    public Map<String, Boolean> checkRefAvailability(@RequestParam String reference) {
+        return Map.of("available", productService.checkRefAvailability(reference));
     }
 
     @DeleteMapping("/{id}")

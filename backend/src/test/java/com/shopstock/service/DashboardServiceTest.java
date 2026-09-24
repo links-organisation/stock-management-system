@@ -110,6 +110,7 @@ class DashboardServiceTest {
     @Test
     void getSummary_topSellingProducts_rankedByTotalQuantitySold() {
         Product popular = product("Popular", BigDecimal.ONE, 100, 1);
+        popular.setSellingPrice(new BigDecimal("15.00"));
         Product rare = product("Rare", BigDecimal.ONE, 100, 1);
         when(productRepository.findAll()).thenReturn(List.of(popular, rare));
         when(productRepository.findById(popular.getId())).thenReturn(java.util.Optional.of(popular));
@@ -132,6 +133,7 @@ class DashboardServiceTest {
         assertThat(summary.topSellingProducts()).hasSize(2);
         assertThat(summary.topSellingProducts().get(0).productName()).isEqualTo("Popular");
         assertThat(summary.topSellingProducts().get(0).quantitySold()).isEqualTo(9);
+        assertThat(summary.topSellingProducts().get(0).productUnitPrice()).isEqualByComparingTo("15.00");
     }
 
     @Test

@@ -1,27 +1,46 @@
 <div class="page">
     <header class="page-head">
-        <h1>Categories</h1>
+        <h1>{{ 'categories.title' | transloco }}</h1>
     </header>
 
     <form (ngSubmit)="onSubmit()" [formGroup]="form" class="panel create" novalidate>
-        <h2>New category</h2>
+        <h2>{{ editingCategory() ? ('categories.editCategory' | transloco) : ('categories.newCategory' | transloco) }}</h2>
         <div class="row">
             <label class="field">
-                <span>Name</span>
-                <input formControlName="name" type="text"/>
+                <span>{{ 'categories.name' | transloco }}</span>
+                <input formControlName="name" type="text" [placeholder]="'categories.namePlaceholder' | transloco"/>
+                @if (form.get('name')?.touched && form.get('name')?.hasError('required')) {
+                    <span class="error">{{ 'categories.nameRequired' | transloco }}</span>
+                }
+                @if (form.get('name')?.touched && form.get('name')?.hasError('notUnique')) {
+                    <span class="error">{{ 'categories.nameNotUnique' | transloco }} <strong>{{ form.get('name')?.value }}</strong> {{ 'categories.alreadyInUse' | transloco }}</span>
+                }
             </label>
             <label class="field">
-                <span>Prefix</span>
-                <input formControlName="prefix" type="text"/>
+                <span>{{ 'categories.prefix' | transloco }}</span>
+                <input formControlName="prefix" type="text" [placeholder]="'categories.prefixPlaceholder' | transloco"/>
+                @if (form.get('prefix')?.touched && form.get('prefix')?.hasError('required')) {
+                    <span class="error">{{ 'categories.prefixRequired' | transloco }}</span>
+                }
+                @if (form.get('prefix')?.touched && form.get('prefix')?.hasError('notUnique')) {
+                    <span class="error">{{ 'categories.prefixNotUnique' | transloco }} <strong>{{ form.get('prefix')?.value }}</strong> {{ 'categories.alreadyInUse' | transloco }}</span>
+                }
             </label>
             <label class="field">
-                <span>Description (optional)</span>
-                <input formControlName="description" type="text"/>
+                <span>{{ 'categories.descriptionOptional' | transloco }}</span>
+                <input formControlName="description" type="text" [placeholder]="'categories.descriptionPlaceholder' | transloco"/>
             </label>
         </div>
-        <button [disabled]="isSaving()" class="primary" type="submit">
-            {{ isSaving() ? 'Creating…' : 'Create category' }}
-        </button>
+        <div class="form-actions">
+            <button [disabled]="isSaving()" class="primary" type="submit">
+                {{ isSaving() ? (editingCategory() ? ('categories.saving' | transloco) : ('categories.creating' | transloco)) : (editingCategory() ? ('categories.saveChanges' | transloco) : ('categories.createCategory' | transloco)) }}
+            </button>
+            @if (editingCategory()) {
+                <button (click)="cancelEdit()" class="ghost" type="button">
+                    {{ 'common.cancel' | transloco }}
+                </button>
+            }
+        </div>
     </form>
 
     @if (errorMessage()) {
@@ -32,17 +51,17 @@
     }
 
     @if (isLoading()) {
-        <p class="status">Loading…</p>
+        <p class="status">{{ 'common.loading' | transloco }}</p>
     } @else if (categories().length === 0) {
-        <p class="empty">No categories yet.</p>
+        <p class="empty">{{ 'categories.empty' | transloco }}</p>
     } @else {
         <div class="table-wrap panel">
             <table>
                 <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Prefix</th>
-                    <th>Description</th>
+                    <th>{{ 'categories.name' | transloco }}</th>
+                    <th>{{ 'categories.prefix' | transloco }}</th>
+                    <th>{{ 'categories.description' | transloco }}</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -51,10 +70,13 @@
                         <tr>
                             <td>{{ category.name }}</td>
                             <td>{{ category.prefix }}</td>
-                            <td>{{ category.description || '—' }}</td>
+                            <td>{{ category.description || '-' }}</td>
                             <td class="actions">
-                                <button (click)="onDeleteCategory(category)" class="danger" type="button">
-                                    Delete
+                                <button (click)="onEdit(category)" class="secondary-outline" type="button">
+                                    {{ 'common.edit' | transloco }}
+                                </button>
+                                <button (click)="onDeleteCategory(category)" class="danger-outline" type="button">
+                                    {{ 'common.delete' | transloco }}
                                 </button>
                             </td>
                         </tr>

@@ -1,6 +1,12 @@
-@if (authService.isLoggedIn()) {
-    <app-navbar></app-navbar>
+@if (systemService.isShutdown()) {
+    <div class="shutdown-screen">
+        <p>{{ 'system.stopped' | transloco }}</p>
+    </div>
+} @else {
+    @if (authService.isLoggedIn()) {
+        <app-navbar></app-navbar>
+    }
+    <main>
+        <router-outlet></router-outlet>
+    </main>
 }
-<main>
-    <router-outlet></router-outlet>
-</main>

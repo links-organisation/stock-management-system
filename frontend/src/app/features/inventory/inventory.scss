@@ -87,3 +87,17 @@ tr.low td:first-child {
 .adjust .cancel {
     color: var(--color-ink-muted);
 }
+
+th.table-sort-header {
+
+    cursor: pointer;
+
+    img.sort-arrow {
+        height: 13px;
+        margin: 0;
+        padding: 0;
+
+        transform: translateY(2.5px) translateX(2px);
+    }
+
+}

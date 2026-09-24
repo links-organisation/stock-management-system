@@ -1,24 +1,24 @@
 <div [formGroup]="form" class="selector">
     <label class="field">
-        <span>Product</span>
+        <span>{{ 'sales.product' | transloco }}</span>
         <select formControlName="selectedProductId">
-            <option [ngValue]="null">Choose a product…</option>
+            <option [ngValue]="null">{{ 'sales.chooseProduct' | transloco }}</option>
             @for (product of products(); track product.id) {
                 <option [disabled]="product.quantityInStock === 0" [ngValue]="product.id">
-                    {{ product.name }} ({{ product.quantityInStock }} in stock)
+                    {{ product.name }} ({{ product.quantityInStock }} {{ 'sales.inStock' | transloco }})
                 </option>
             }
         </select>
     </label>
 
     <label class="field field--qty">
-        <span>Qty</span>
+        <span>{{ 'sales.qty' | transloco }}</span>
         <input formControlName="quantity" min="1" type="number"/>
     </label>
 
-    <button (click)="onAdd()" [disabled]="!selectedProduct()" type="button">Add to sale</button>
+    <button (click)="onAdd()" [disabled]="!selectedProduct()" type="button">{{ 'sales.addToSale' | transloco }}</button>
 </div>
 
 @if (selectedProduct(); as product) {
-    <p class="price-hint">{{ product.sellingPrice | fcfa }} each</p>
+    <p class="price-hint">{{ product.sellingPrice | fcfa }} {{ 'sales.each' | transloco }}</p>
 }

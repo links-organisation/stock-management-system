@@ -45,9 +45,16 @@ export class ProductService {
         });
     }
 
-    getNextRef(prefix: string): Observable<{ prefix: string }> {
-        return this.http.get<{ prefix: string }>(`${this.baseUrl}/next-ref`, {
+    getNextRef(prefix: string): Observable<string> {
+        return this.http.get<string>(`${this.baseUrl}/next-ref`, {
+            responseType: 'text' as 'json',
             params: { prefix, userId: this.authService.currentUserId! },
+        });
+    }
+
+    checkRefAvailability(reference: string): Observable<{ available: boolean }> {
+        return this.http.get<{ available: boolean }>(`${this.baseUrl}/check-availability`, {
+            params: { reference, userId: this.authService.currentUserId! },
         });
     }
 

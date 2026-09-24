@@ -1,5 +1,6 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslocoPipe } from '@jsverse/transloco';
 import { Category } from '../../../core/models/category.model';
 import { Product } from '../../../core/models/product.model';
 import { ProductFormData, ProductService } from '../../../core/services/product.service';
@@ -7,7 +8,7 @@ import { ProductFormData, ProductService } from '../../../core/services/product.
 @Component({
     selector: 'app-product-form',
     standalone: true,
-    imports: [ReactiveFormsModule],
+    imports: [ReactiveFormsModule, TranslocoPipe],
     templateUrl: './product-form.html',
     styleUrl: './product-form.scss',
 })
@@ -49,22 +50,49 @@ export class ProductForm {
         });
         this.form.get('categoryId')?.valueChanges?.subscribe({
             next: (value) => {
-                const cat = this.categories().find((c) => c.id === value);
-                let nextRef = signal<string | undefined>(undefined);
-                if (cat?.prefix)
-                    this.productService.getNextRef(cat?.prefix).subscribe({
-                        next: (response) => {
-                            console.log('next pref: ' + response);
-                            this.form.patchValue({
-                                reference: response.prefix,
-                            });
-                        },
-                        error: (response) =>{
-                            console.error('next pref: ' + JSON.stringify(response));
-                            this.form.patchValue({
-                                reference: '',
-                            })}
-                    });
+                if (this.product()?.categoryId === value)
+                    this.form.patchValue({ reference: this.product()?.reference });
+                else {
+                    const cat = this.categories().find((c) => c.id === value);
+                    if (cat?.prefix)
+                        this.productService.getNextRef(cat?.prefix).subscribe({
+                            next: (response) => {
+                                this.form.patchValue({
+                                    reference: response,
+                                });
+                            },
+                            error: () => {
+                                console.error();
+                                this.form.patchValue({
+                                    reference: '',
+                                });
+                            },
+                        });
+                }
+            },
+        });
+        this.form.get('reference')?.valueChanges.subscribe({
+            next: (reference) => {
+                this.productService.checkRefAvailability(reference).subscribe({
+                    next: (response) => {
+                        if (!response.available) {
+                            if (this.product()?.categoryId !== this.form.value.categoryId)
+                                this.form.get('reference')?.setErrors({ notUnique: true });
+                        } else {
+                            const errors = this.form.get('reference')?.errors;
+                            if (errors) {
+                                delete errors['notUnique'];
+                                if (Object.keys(errors).length === 0) {
+                                    this.form.get('reference')?.setErrors(null);
+                                }
+                            }
+                        }
+                    },
+                    error: () => {
+                        if (this.product()?.categoryId !== this.form.value.categoryId)
+                            this.form.get('reference')?.setErrors({ notUnique: true });
+                    },
+                });
             },
         });
     }

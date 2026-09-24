@@ -106,6 +106,48 @@ class InventoryServiceTest {
     }
 
     @Test
+    void adjust_defaultsComment_toStockAdjustedByDelta_whenCommentIsNull() {
+        UUID productId = UUID.randomUUID();
+        Product product = product(productId, 10);
+        when(authorizationService.requireRole(actorId, Role.SUPER_ADMIN, Role.ADMIN)).thenReturn(adminUser());
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        inventoryService.adjust(new AdjustmentRequest(productId, 25, null, actorId));
+
+        ArgumentCaptor<StockOperation> captor = ArgumentCaptor.forClass(StockOperation.class);
+        verify(stockOperationRepository).save(captor.capture());
+        assertThat(captor.getValue().getComment()).isEqualTo("Stock adjusted by 15");
+    }
+
+    @Test
+    void adjust_defaultsComment_toStockAdjustedByDelta_whenCommentIsBlank() {
+        UUID productId = UUID.randomUUID();
+        Product product = product(productId, 10);
+        when(authorizationService.requireRole(actorId, Role.SUPER_ADMIN, Role.ADMIN)).thenReturn(adminUser());
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        inventoryService.adjust(new AdjustmentRequest(productId, 5, "   ", actorId));
+
+        ArgumentCaptor<StockOperation> captor = ArgumentCaptor.forClass(StockOperation.class);
+        verify(stockOperationRepository).save(captor.capture());
+        assertThat(captor.getValue().getComment()).isEqualTo("Stock adjusted by -5");
+    }
+
+    @Test
+    void adjust_keepsProvidedComment_whenCommentNonBlank() {
+        UUID productId = UUID.randomUUID();
+        Product product = product(productId, 10);
+        when(authorizationService.requireRole(actorId, Role.SUPER_ADMIN, Role.ADMIN)).thenReturn(adminUser());
+        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+
+        inventoryService.adjust(new AdjustmentRequest(productId, 25, "recount", actorId));
+
+        ArgumentCaptor<StockOperation> captor = ArgumentCaptor.forClass(StockOperation.class);
+        verify(stockOperationRepository).save(captor.capture());
+        assertThat(captor.getValue().getComment()).isEqualTo("recount");
+    }
+
+    @Test
     void adjust_acceptsNegativeQuantity_documentedGap_noGuard() {
         // Current behavior: InventoryService.adjust has no guard against a negative
         // newQuantity, unlike other stock-affecting paths. This pins down the gap.

@@ -26,14 +26,32 @@
     counter-increment: rank;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 0.625rem 0;
     border-bottom: 1px solid var(--color-border);
     font-size: 0.875rem;
 
-    div {
-        width: 95%;
+    div.ranked__item {
+        flex: 1;
         display: flex;
         justify-content: space-between;
+        align-items: center;
+
+        div {
+            display: flex;
+            justify-content: flex-end;
+            gap: 2rem;
+
+            span.ranked__price {
+                text-align: right;
+                min-width: 7.5rem;
+            }
+
+            span.ranked__count_r {
+                text-align: right;
+                min-width: 5rem;
+            }
+        }
     }
 }
 

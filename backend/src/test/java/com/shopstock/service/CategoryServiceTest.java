@@ -132,4 +132,147 @@ class CategoryServiceTest {
         assertThat(captor.getValue()).hasSize(2).allSatisfy(p -> assertThat(p.getCategory()).isNull());
         verify(categoryRepository).delete(category);
     }
+
+    // --- findById ---
+
+    @Test
+    void findById_returnsCategory_whenExists() {
+        UUID categoryId = UUID.randomUUID();
+        Category category = new Category();
+        category.setId(categoryId);
+        category.setName("Beverages");
+        category.setPrefix("BEV");
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
+
+        CategoryResponse response = categoryService.findById(categoryId);
+
+        assertThat(response.id()).isEqualTo(categoryId);
+        assertThat(response.name()).isEqualTo("Beverages");
+    }
+
+    @Test
+    void findById_throwsNotFound_whenMissing() {
+        UUID missingId = UUID.randomUUID();
+        when(categoryRepository.findById(missingId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> categoryService.findById(missingId))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    // --- update ---
+
+    @Test
+    void update_savesChangedFields_whenCategoryExists() {
+        UUID categoryId = UUID.randomUUID();
+        Category existing = new Category();
+        existing.setId(categoryId);
+        existing.setName("Old Name");
+        existing.setPrefix("OLD");
+        existing.setDescription("Old description");
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(existing));
+        when(categoryRepository.save(any(Category.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        CategoryResponse response = categoryService.update(categoryId,
+                new CategoryRequest("New Name", "NEW", "New description", actorId));
+
+        assertThat(response.name()).isEqualTo("New Name");
+        assertThat(response.prefix()).isEqualTo("NEW");
+        assertThat(response.description()).isEqualTo("New description");
+    }
+
+    @Test
+    void update_throwsNotFound_whenCategoryMissing() {
+        UUID missingId = UUID.randomUUID();
+        when(categoryRepository.findById(missingId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> categoryService.update(missingId,
+                new CategoryRequest("New Name", "NEW", null, actorId)))
+                .isInstanceOf(ResourceNotFoundException.class);
+        verify(categoryRepository, never()).save(any());
+    }
+
+    @Test
+    void update_throwsIllegalArgument_whenNameBlank() {
+        UUID categoryId = UUID.randomUUID();
+        Category existing = new Category();
+        existing.setId(categoryId);
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(existing));
+
+        assertThatThrownBy(() -> categoryService.update(categoryId,
+                new CategoryRequest(" ", "NEW", null, actorId)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("name");
+        verify(categoryRepository, never()).save(any());
+    }
+
+    @Test
+    void update_throwsIllegalArgument_whenPrefixBlank() {
+        UUID categoryId = UUID.randomUUID();
+        Category existing = new Category();
+        existing.setId(categoryId);
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(existing));
+
+        assertThatThrownBy(() -> categoryService.update(categoryId,
+                new CategoryRequest("New Name", " ", null, actorId)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("prefix");
+        verify(categoryRepository, never()).save(any());
+    }
+
+    @Test
+    void update_succeeds_regardlessOfActorRole_documentedGap() {
+        // Current behavior: unlike create() and delete(), update() never calls
+        // authorizationService.requireRole at all, so any actor - including one
+        // that would be rejected for create/delete - can rename any category.
+        // This test pins down that gap, not a fix.
+        UUID categoryId = UUID.randomUUID();
+        Category existing = new Category();
+        existing.setId(categoryId);
+        existing.setName("Old Name");
+        existing.setPrefix("OLD");
+        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(existing));
+        when(categoryRepository.save(any(Category.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        CategoryResponse response = categoryService.update(categoryId,
+                new CategoryRequest("New Name", "NEW", null, actorId));
+
+        assertThat(response.name()).isEqualTo("New Name");
+        verifyNoInteractions(authorizationService);
+    }
+
+    // --- checkAvailability ---
+
+    @Test
+    void checkAvailability_name_returnsTrue_whenNameNotTaken() {
+        when(categoryRepository.findByNameIgnoreCase("Dairy")).thenReturn(Optional.empty());
+
+        assertThat(categoryService.checkAvailability("name", "Dairy")).isTrue();
+    }
+
+    @Test
+    void checkAvailability_name_returnsFalse_whenNameTaken() {
+        when(categoryRepository.findByNameIgnoreCase("Beverages")).thenReturn(Optional.of(new Category()));
+
+        assertThat(categoryService.checkAvailability("name", "Beverages")).isFalse();
+    }
+
+    @Test
+    void checkAvailability_prefix_returnsTrue_whenPrefixNotTaken() {
+        when(categoryRepository.findByPrefixIgnoreCase("DRY")).thenReturn(Optional.empty());
+
+        assertThat(categoryService.checkAvailability("prefix", "DRY")).isTrue();
+    }
+
+    @Test
+    void checkAvailability_prefix_returnsFalse_whenPrefixTaken() {
+        when(categoryRepository.findByPrefixIgnoreCase("BEV")).thenReturn(Optional.of(new Category()));
+
+        assertThat(categoryService.checkAvailability("prefix", "BEV")).isFalse();
+    }
+
+    @Test
+    void checkAvailability_returnsFalse_whenColumnUnrecognized() {
+        assertThat(categoryService.checkAvailability("description", "anything")).isFalse();
+        verifyNoInteractions(categoryRepository);
+    }
 }

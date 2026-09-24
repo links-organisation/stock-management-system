@@ -1,4 +1,4 @@
-/* Design tokens — "Stockroom" visual identity.
+/* Design tokens - "Stockroom" visual identity.
    Sage-paper ledger surfaces, mustard signage accent, monospace data. */
 :root {
     --color-paper: #f1f4ec;
@@ -10,9 +10,12 @@
     --color-accent: #d9a62e;
     --color-accent-ink: #4a3a0a;
     --color-accent-hover: #c1911f;
+    --color-secondary: #1b4bce;
+    --color-secondary-hover: #004aff;
     --color-success: #2f6f5e;
     --color-success-bg: #e4efe9;
     --color-danger: #b5432f;
+    --color-danger-hover: #9a3825;
     --color-danger-bg: #f7e7e1;
 
     --font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
@@ -37,14 +40,14 @@ html, body {
 body {
     background: var(--color-paper);
     color: var(--color-ink);
-    font-family: var(--font-body);
+    font-family: var(--font-body), system-ui;
     font-size: 0.9375rem;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3 {
-    font-family: var(--font-display);
+    font-family: var(--font-display), system-ui;
     font-weight: 600;
     margin: 0;
     color: var(--color-ink);
@@ -133,7 +136,7 @@ table {
 }
 
 .data {
-    font-family: var(--font-mono);
+    font-family: var(--font-mono), system-ui;
     font-variant-numeric: tabular-nums;
 }
 
@@ -146,3 +149,88 @@ table {
     -webkit-overflow-scrolling: touch;
 }
 
+.primary {
+    color: var(--color-ink) !important;
+    background-color: var(--color-accent) !important;
+    border-color: var(--color-accent-hover) !important;
+}
+
+.primary:hover {
+    background-color: var(--color-accent-hover) !important;
+}
+
+.primary-outline {
+    color: var(--color-accent) !important;
+    border-color: var(--color-accent) !important;
+    background-color: var(--color-surface) !important;
+}
+
+.primary-outline:hover {
+    color: var(--color-paper) !important;
+    border-color: var(--color-accent-hover) !important;
+    background-color: var(--color-accent-hover) !important;
+}
+
+.secondary {
+    color: var(--color-paper) !important;
+    background-color: var(--color-secondary) !important;
+    border-color: var(--color-secondary-hover) !important;
+}
+
+.secondary:hover {
+    background-color: var(--color-secondary-hover) !important;
+}
+
+.secondary-outline {
+    color: var(--color-secondary) !important;
+    border-color: var(--color-secondary) !important;
+    background-color: var(--color-surface) !important;
+}
+
+.secondary-outline:hover {
+    color: var(--color-paper) !important;
+    border-color: var(--color-secondary-hover) !important;
+    background-color: var(--color-secondary-hover) !important;
+}
+
+.danger {
+    color: var(--color-paper) !important;
+    background-color: var(--color-danger) !important;
+    border-color: var(--color-danger-bg) !important;
+}
+
+.danger:hover {
+    background-color: var(--color-danger-hover) !important;
+}
+
+.danger-outline {
+    color: var(--color-danger) !important;
+    border-color: var(--color-danger) !important;
+    background-color: var(--color-surface) !important;
+}
+
+.danger-outline:hover {
+    color: var(--color-paper) !important;
+    border-color: var(--color-danger-hover) !important;
+    background-color: var(--color-danger-hover) !important;
+}
+
+.error {
+    color: var(--color-danger);
+    font-size: 0.75rem;
+    //margin-top: 0.25rem;
+}
+
+.custom-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    padding-right: 40px;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 14px;
+}

@@ -151,6 +151,10 @@ public class ProductService {
         return prefix + '-' + String.format("%03d", nextPrefix);
     }
 
+    public Boolean checkRefAvailability(String reference) {
+        return !productRepository.existsByReference(reference);
+    }
+
     private void logStockOperation(Product product, OperationType type, float quantityChange, String comment, User user) {
         StockOperation operation = new StockOperation();
         operation.setProduct(product);

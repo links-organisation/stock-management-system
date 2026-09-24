@@ -1,21 +1,21 @@
 <div class="page">
-    <h1>Operations history</h1>
+    <h1>{{ 'history.title' | transloco }}</h1>
 
     <div [formGroup]="filterForm" class="filters">
         <label class="filter">
-            <span>Type</span>
+            <span>{{ 'history.type' | transloco }}</span>
             <select formControlName="typeFilter">
-                <option value="">All</option>
-                <option value="REGISTRATION">Registration</option>
-                <option value="SALE">Sale</option>
-                <option value="ADJUSTMENT">Adjustment</option>
+                <option value="">{{ 'common.all' | transloco }}</option>
+                <option value="REGISTRATION">{{ 'operationType.registration' | transloco }}</option>
+                <option value="SALE">{{ 'operationType.sale' | transloco }}</option>
+                <option value="ADJUSTMENT">{{ 'operationType.adjustment' | transloco }}</option>
             </select>
         </label>
 
         <label class="filter">
-            <span>Product</span>
+            <span>{{ 'history.product' | transloco }}</span>
             <select formControlName="productFilter">
-                <option [ngValue]="null">All</option>
+                <option [ngValue]="null">{{ 'common.all' | transloco }}</option>
                 @for (product of products(); track product.id) {
                     <option [ngValue]="product.id">{{ product.name }}</option>
                 }
@@ -23,12 +23,12 @@
         </label>
 
         <label class="filter">
-            <span>From</span>
+            <span>{{ 'history.from' | transloco }}</span>
             <input formControlName="fromFilter" type="date"/>
         </label>
 
         <label class="filter">
-            <span>To</span>
+            <span>{{ 'history.to' | transloco }}</span>
             <input formControlName="toFilter" type="date"/>
         </label>
     </div>
@@ -38,20 +38,20 @@
     }
 
     @if (isLoading()) {
-        <p class="status">Loading…</p>
+        <p class="status">{{ 'common.loading' | transloco }}</p>
     } @else if (operations().length === 0) {
-        <p class="empty">No operations match these filters.</p>
+        <p class="empty">{{ 'history.empty' | transloco }}</p>
     } @else {
         <div class="table-wrap panel">
             <table>
                 <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Product</th>
-                    <th>Change</th>
-                    <th>Performed by</th>
-                    <th>Comment</th>
+                    <th>{{ 'history.date' | transloco }}</th>
+                    <th>{{ 'history.type' | transloco }}</th>
+                    <th>{{ 'history.product' | transloco }}</th>
+                    <th>{{ 'history.change' | transloco }}</th>
+                    <th>{{ 'history.performedBy' | transloco }}</th>
+                    <th>{{ 'history.comment' | transloco }}</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -59,14 +59,14 @@
                         <tr>
                             <td class="data">{{ op.operationDate | date: 'medium' }}</td>
                             <td><span [class]="'type--' + op.operationType.toLowerCase()"
-                                      class="type">{{ op.operationType }}</span></td>
+                                      class="type">{{ operationTypeLabelKey[op.operationType] | transloco }}</span></td>
                             <td>{{ op.productName }}</td>
                             <td [class.negative]="op.quantityChange < 0" [class.positive]="op.quantityChange > 0"
                                 class="data">
                                 {{ op.quantityChange > 0 ? '+' : '' }}{{ op.quantityChange }}
                             </td>
                             <td>{{ op.performedByFullname }}</td>
-                            <td class="comment">{{ op.comment || '—' }}</td>
+                            <td class="comment">{{ op.comment || '-' }}</td>
                         </tr>
                     }
                 </tbody>
