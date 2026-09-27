@@ -15,7 +15,6 @@ export const en: Translation = {
         history: 'History',
         invoices: 'Invoices',
         users: 'Users',
-        network: 'Network sharing',
         signOut: 'Sign out',
     },
     common: {
@@ -26,6 +25,7 @@ export const en: Translation = {
         edit: 'Edit',
         delete: 'Delete',
         remove: 'Remove',
+        close: 'Close',
     },
     role: {
         superAdmin: 'Super Administrator',
@@ -86,6 +86,38 @@ export const en: Translation = {
         left: 'left',
         goToInventory: 'Go to inventory',
         loadError: 'Could not load dashboard data.',
+        sortOptions: 'Sort options',
+        sortBy: 'Sort by:',
+        sortByColumn: 'Sort by column',
+        productName: 'Product name',
+        quantitySold: 'Quantity sold',
+        totalPrice: 'Total price',
+        unitPrice: 'Unit price',
+        direction: 'Direction',
+        ascending: 'Ascending',
+        descending: 'Descending',
+        apply: 'Apply',
+        salesTrend: 'Sales trend (7 days)',
+        salesTrendSubtitle: 'Daily revenue & transaction volume',
+        categoryDistribution: 'Stock by category',
+        categorySubtitle: 'Capital allocation across categories',
+        productProfitability: 'Product benefits & margins',
+        profitabilitySubtitle: 'Gross profit from sales',
+        inventoryHealth: 'Inventory health',
+        healthSubtitle: 'Stock status and risk levels',
+        optimalStock: 'Optimal stock',
+        lowStock: 'Low stock',
+        outOfStock: 'Out of stock',
+        totalProducts: 'Total products',
+        margin: 'margin',
+        revenue: 'Revenue',
+        cost: 'Cost',
+        profit: 'Profit',
+        orders: 'orders',
+        noData: 'No data available yet.',
+        noCategoryData: 'No products categorized yet.',
+        noProfitData: 'No sales profit data recorded yet.',
+        uncategorized: 'Uncategorized',
     },
     categories: {
         title: 'Categories',
@@ -129,6 +161,7 @@ export const en: Translation = {
         performedBy: 'Performed by',
         comment: 'Comment',
         loadError: 'Could not load the operations history.',
+        details: 'Operation details',
     },
     inventory: {
         title: 'Inventory',
@@ -246,12 +279,51 @@ export const en: Translation = {
     },
     network: {
         title: 'Network sharing',
-        description: 'Other devices on the same network can reach this app using one of the addresses below.',
+        shareButton: 'Share app on the network?',
         loading: 'Detecting network addresses…',
         loadError: 'Could not detect network addresses.',
         empty: 'No network address was detected. This device may not be connected to a network.',
         copy: 'Copy',
         copied: 'Copied',
-        refresh: 'Refresh',
+        showQr: 'Show QR code',
+        hideQr: 'Hide QR code',
+        qrCodeAlt: 'QR code for this network address',
+        downloadCertificate: 'Download certificate',
+        certificateTrustHint:
+            'Install this certificate on other devices to avoid browser security warnings when they connect.',
+        certificateInstall: {
+            toggleShow: 'How to install this certificate',
+            toggleHide: 'Hide install instructions',
+            platformWindows: 'Windows',
+            platformMacos: 'macOS',
+            platformLinux: 'Linux',
+            platformAndroid: 'Android',
+            platformIos: 'iOS',
+            windows:
+                '1. Double-click the downloaded stockroom-cert.pem file.\n' +
+                '2. Click "Install Certificate…".\n' +
+                '3. Choose "Local Machine" (needs admin) or "Current User", then click Next.\n' +
+                '4. Select "Place all certificates in the following store", click Browse, and choose "Trusted Root Certification Authorities".\n' +
+                '5. Click Finish, then confirm the security warning.',
+            macos:
+                '1. Double-click the downloaded stockroom-cert.pem file to open it in Keychain Access.\n' +
+                '2. Find "Stockroom Local Network" in the keychain it was added to (usually "login").\n' +
+                '3. Double-click the certificate, expand "Trust", and set "When using this certificate" to "Always Trust".\n' +
+                '4. Close the window and enter your password to confirm.',
+            linux:
+                '1. Copy the certificate: sudo cp stockroom-cert.pem /usr/local/share/ca-certificates/stockroom.crt\n' +
+                '2. Update the trust store: sudo update-ca-certificates (Debian/Ubuntu) or sudo trust anchor stockroom-cert.pem (Fedora/Arch).\n' +
+                '3. Restart your browser so it picks up the updated trust store.',
+            android:
+                '1. Transfer the downloaded stockroom-cert.pem file to your device.\n' +
+                '2. Open Settings → Security → Encryption & credentials → Install a certificate → CA certificate.\n' +
+                '3. Select the file and confirm the warning.\n' +
+                '4. Some apps and Android versions may still show a warning for user-installed CAs.',
+            ios:
+                '1. Open the certificate download link in Safari on the device.\n' +
+                '2. Allow the "This website is trying to download a configuration profile" prompt.\n' +
+                '3. Go to Settings → General → VPN & Device Management, and install the downloaded profile.\n' +
+                '4. Then go to Settings → General → About → Certificate Trust Settings, and enable full trust for "Stockroom Local Network".',
+        },
     },
 };

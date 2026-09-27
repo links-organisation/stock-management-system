@@ -3,8 +3,8 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from '../../core/i18n/transloco-loader';
-import { AuthService } from '../../core/services/auth.service';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
+import { AuthService } from '@core/services/auth/auth.service';
 import { Account } from './account';
 
 function transloco() {

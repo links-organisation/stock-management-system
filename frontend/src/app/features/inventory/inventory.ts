@@ -1,17 +1,18 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Product } from '../../core/models/product.model';
-import { InventoryService } from '../../core/services/inventory.service';
-import { ProductService } from '../../core/services/product.service';
-import { FcfaPipe } from '../../shared/pipes/fcfa/fcfa-pipe';
-import { ArrowDown, ArrowUp, compare, sortData } from '../../shared/global.functions';
-import {Sort} from "../../core/models/types";
+import { Product } from '@core/models/product.model';
+import { InventoryService } from '@core/services/inventory/inventory.service';
+import { ProductService } from '@core/services/product/product.service';
+import { FcfaPipe } from '@shared/pipes/fcfa/fcfa-pipe';
+import { ArrowDown, ArrowUp, compare, sortData } from '@shared/global.functions';
+import {Sort} from "@core/models/types";
+import { DetailsSheet } from '@shared/components/details-sheet/details-sheet';
 
 @Component({
     selector: 'app-inventory',
     standalone: true,
-    imports: [ReactiveFormsModule, FcfaPipe, TranslocoPipe],
+    imports: [ReactiveFormsModule, FcfaPipe, TranslocoPipe, DetailsSheet],
     templateUrl: './inventory.html',
     styleUrl: './inventory.scss',
 })
@@ -23,6 +24,7 @@ export class Inventory {
 
     adjustingProductId = signal<string | null>(null);
     isSaving = signal(false);
+    selectedProduct = signal<Product | null>(null);
 
     ArrowUp = (outline: boolean = false) => ArrowUp(outline);
     ArrowDown = (outline: boolean = false) => ArrowDown(outline);
@@ -126,6 +128,14 @@ export class Inventory {
                 this.errorMessage.set(this.transloco.translate('inventory.adjustError'));
             },
         });
+    }
+
+    openDetails(product: Product): void {
+        this.selectedProduct.set(product);
+    }
+
+    closeDetails(): void {
+        this.selectedProduct.set(null);
     }
 
     protected sortData(sort: { active: string; direction?: 'asc' | 'desc' }) {

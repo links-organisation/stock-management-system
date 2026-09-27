@@ -1,0 +1,88 @@
+<div class="network-widget">
+    @if (!isSharing()) {
+        <button (click)="share()" class="network-widget__toggle" type="button">
+            {{ 'network.shareButton' | transloco }}
+        </button>
+    } @else {
+        <div class="network-widget__panel">
+            <div class="network-widget__header">
+                <span>{{ 'network.title' | transloco }}</span>
+                <button (click)="collapse()" class="network-widget__close" type="button" aria-label="Close">
+                    ×
+                </button>
+            </div>
+
+            @if (isLoading()) {
+                <p class="status">{{ 'network.loading' | transloco }}</p>
+            } @else if (errorMessage()) {
+                <p class="status status--error">{{ errorMessage() }}</p>
+            } @else if (networkInfo(); as info) {
+                @if (!info.enabled) {
+                    <p class="empty">{{ 'network.empty' | transloco }}</p>
+                } @else {
+                    <ul class="network-widget__addresses">
+                        @for (address of info.addresses; track address.url) {
+                            <li>
+                                <div class="network-widget__address-row">
+                                    <span class="data">{{ address.url }}</span>
+                                    <button (click)="copy(address.url)" type="button">
+                                        {{ copiedUrl() === address.url ? ('network.copied' | transloco) : ('network.copy' | transloco) }}
+                                    </button>
+                                    <button (click)="toggleQr(address.url)" type="button">
+                                        {{ expandedQrUrl() === address.url ? ('network.hideQr' | transloco) : ('network.showQr' | transloco) }}
+                                    </button>
+                                </div>
+                                @if (expandedQrUrl() === address.url) {
+                                    <div class="network-widget__qr">
+                                        <img
+                                            [src]="qrCodeUrl(address.url)"
+                                            width="220"
+                                            height="220"
+                                            [attr.alt]="'network.qrCodeAlt' | transloco"
+                                        />
+                                    </div>
+                                }
+                            </li>
+                        }
+                    </ul>
+
+                    @if (info.https && info.certificateValid) {
+                        <div class="network-widget__certificate">
+                            <a [href]="certificateDownloadUrl" download="stockroom-cert.pem">
+                                {{ 'network.downloadCertificate' | transloco }}
+                            </a>
+                            <p class="hint">{{ 'network.certificateTrustHint' | transloco }}</p>
+
+                            <button (click)="toggleCertificateHelp()" class="network-widget__cert-help-toggle" type="button">
+                                {{
+                                    showCertificateHelp()
+                                        ? ('network.certificateInstall.toggleHide' | transloco)
+                                        : ('network.certificateInstall.toggleShow' | transloco)
+                                }}
+                            </button>
+
+                            @if (showCertificateHelp()) {
+                                <div class="network-widget__cert-help">
+                                    <div class="network-widget__cert-platforms">
+                                        @for (platform of certificatePlatforms; track platform) {
+                                            <button
+                                                (click)="selectCertificatePlatform(platform)"
+                                                [class.is-active]="certificatePlatform() === platform"
+                                                type="button"
+                                            >
+                                                {{ certificatePlatformLabelKey(platform) | transloco }}
+                                            </button>
+                                        }
+                                    </div>
+                                    <p class="network-widget__cert-steps">
+                                        {{ certificatePlatformStepsKey(certificatePlatform()) | transloco }}
+                                    </p>
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+            }
+        </div>
+    }
+</div>

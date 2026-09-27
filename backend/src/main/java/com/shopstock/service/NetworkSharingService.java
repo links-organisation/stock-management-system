@@ -2,66 +2,53 @@ package com.shopstock.service;
 
 import com.shopstock.dto.response.NetworkAddress;
 import com.shopstock.dto.response.NetworkInfo;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Service
 public class NetworkSharingService {
 
-    private final NetworkInterfaceProvider networkInterfaceProvider;
+    private final LanAddressResolver lanAddressResolver;
+    private final CertificateService certificateService;
     private final int serverPort;
+    private final int httpsPort;
 
-    public NetworkSharingService(NetworkInterfaceProvider networkInterfaceProvider,
-                                  @Value("${server.port:8080}") int serverPort) {
-        this.networkInterfaceProvider = networkInterfaceProvider;
+    public NetworkSharingService(LanAddressResolver lanAddressResolver,
+                                  CertificateService certificateService,
+                                  @Value("${server.port:8080}") int serverPort,
+                                  @Value("${application.https.port:8443}") int httpsPort) {
+        this.lanAddressResolver = lanAddressResolver;
+        this.certificateService = certificateService;
         this.serverPort = serverPort;
+        this.httpsPort = httpsPort;
     }
 
     public NetworkInfo getNetworkInfo() {
+        boolean https = certificateService.hasCertificate();
+        boolean certificateValid = https && certificateService.certificateCoversCurrentAddresses();
+        boolean useHttps = https && certificateValid;
+        String scheme = useHttps ? "https" : "http";
+        int effectivePort = useHttps ? httpsPort : serverPort;
+
+        List<NetworkAddress> addresses = createAddresses(scheme, effectivePort);
+
+        return new NetworkInfo(!addresses.isEmpty(), https, certificateValid, effectivePort, addresses);
+    }
+
+    private @NonNull List<NetworkAddress> createAddresses(String scheme, int effectivePort) {
         List<NetworkAddress> addresses = new ArrayList<>();
+        for (LanAddressResolver.LanAddress address : lanAddressResolver.getEligibleAddresses()) {
+            String url = scheme + "://" + address.ip() + ":" + effectivePort;
+            String url2 = "http://" + address.ip() + ":" + serverPort;
 
-        try {
-            for (NetworkInterface networkInterface : networkInterfaceProvider.getNetworkInterfaces()) {
-                if (!isEligible(networkInterface)) {
-                    continue;
-                }
-                for (InetAddress address : Collections.list(networkInterface.getInetAddresses())) {
-                    if (!isEligibleAddress(address)) {
-                        continue;
-                    }
-                    String ip = address.getHostAddress();
-                    String url = "http://" + ip + ":" + serverPort;
-                    addresses.add(new NetworkAddress(networkInterface.getDisplayName(), ip, url));
-                }
-            }
-        } catch (SocketException e) {
-            throw new IllegalStateException("Unable to enumerate network interfaces", e);
+            addresses.add(new NetworkAddress(address.interfaceName(), address.ip(), url));
+            if (serverPort != effectivePort)
+                addresses.add(new NetworkAddress(address.interfaceName(), address.ip(), url2));
         }
-
-        return new NetworkInfo(!addresses.isEmpty(), false, serverPort, addresses);
-    }
-
-    private boolean isEligible(NetworkInterface networkInterface) {
-        try {
-            return networkInterface.isUp()
-                    && !networkInterface.isLoopback()
-                    && !networkInterface.isVirtual();
-        } catch (SocketException e) {
-            return false;
-        }
-    }
-
-    private boolean isEligibleAddress(InetAddress address) {
-        return address instanceof Inet4Address
-                && !address.isLoopbackAddress()
-                && !address.isLinkLocalAddress();
+        return addresses;
     }
 }

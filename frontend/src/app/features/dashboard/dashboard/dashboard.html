@@ -14,14 +14,342 @@
             <app-kpi-card [value]="summary.revenueThisMonth | fcfa" [label]="'dashboard.revenueThisMonth' | transloco"></app-kpi-card>
         </div>
 
+        <!-- DIAGRAMS ROW 1: Sales Velocity Timeline & Category Stock Donut -->
+        <div class="charts-grid">
+            <!-- 1. Sales Trend (Column Chart) -->
+            <section class="panel chart-panel">
+                <div class="panel__head">
+                    <div>
+                        <h2>{{ 'dashboard.salesTrend' | transloco }}</h2>
+                        <span class="panel__subtitle">{{ 'dashboard.salesTrendSubtitle' | transloco }}</span>
+                    </div>
+                    <div class="chart-summary-badge">
+                        <span class="badge-revenue">{{ timelineTotalRevenue() | fcfa }}</span>
+                        <span class="badge-orders">{{ timelineTotalOrders() }} {{ 'dashboard.orders' | transloco }}</span>
+                    </div>
+                </div>
+
+                @if (timelineBars().length === 0) {
+                    <p class="empty">{{ 'dashboard.noData' | transloco }}</p>
+                } @else {
+                    <div class="timeline-chart-container">
+                        <svg class="chart-svg timeline-svg" viewBox="0 0 460 185" preserveAspectRatio="xMidYMid meet">
+                            <!-- Grid lines -->
+                            <line x1="45" y1="30" x2="445" y2="30" class="grid-line" />
+                            <line x1="45" y1="85" x2="445" y2="85" class="grid-line" />
+                            <line x1="45" y1="140" x2="445" y2="140" class="axis-line" />
+
+                            <!-- Y-axis labels -->
+                            <text x="40" y="34" class="y-label" text-anchor="end">{{ timelineMaxRevenue() | number }}</text>
+                            <text x="40" y="89" class="y-label" text-anchor="end">{{ (timelineMaxRevenue() / 2) | number:'1.0-0' }}</text>
+                            <text x="40" y="144" class="y-label" text-anchor="end">0</text>
+
+                            <!-- Bars -->
+                            @for (bar of timelineBars(); track bar.date; let i = $index) {
+                                <g class="bar-group" (mouseenter)="setHoveredTimeline(i)" (mouseleave)="setHoveredTimeline(null)">
+                                    <rect
+                                        [attr.x]="bar.x - 4"
+                                        y="20"
+                                        [attr.width]="bar.width + 8"
+                                        height="120"
+                                        rx="4"
+                                        class="bar-hover-bg"
+                                        [class.is-hovered]="hoveredTimelineIndex() === i"
+                                    />
+                                    @if (bar.height > 0) {
+                                        <rect
+                                            [attr.x]="bar.x"
+                                            [attr.y]="bar.y"
+                                            [attr.width]="bar.width"
+                                            [attr.height]="bar.height"
+                                            rx="4"
+                                            class="bar-rect"
+                                            [class.is-active]="hoveredTimelineIndex() === i"
+                                        />
+                                    } @else {
+                                        <rect
+                                            [attr.x]="bar.x"
+                                            y="138"
+                                            [attr.width]="bar.width"
+                                            height="2"
+                                            rx="1"
+                                            class="bar-rect-zero"
+                                        />
+                                    }
+
+                                    <!-- Day label -->
+                                    <text [attr.x]="bar.x + bar.width / 2" y="157" class="axis-label" text-anchor="middle">
+                                        {{ bar.label }}
+                                    </text>
+
+                                    <!-- Orders count -->
+                                    <text [attr.x]="bar.x + bar.width / 2" y="173" class="axis-sublabel" text-anchor="middle">
+                                        {{ bar.orderCount }}
+                                    </text>
+
+                                    <!-- Hover Tooltip -->
+                                    @if (hoveredTimelineIndex() === i) {
+                                        <g class="tooltip-group" [attr.transform]="'translate(' + (bar.x + bar.width / 2) + ', ' + (bar.y - 12) + ')'">
+                                            <rect x="-45" y="-22" width="90" height="20" rx="3" class="tooltip-bg" />
+                                            <text x="0" y="-8" text-anchor="middle" class="tooltip-text">
+                                                {{ bar.revenue | fcfa }}
+                                            </text>
+                                        </g>
+                                    }
+                                </g>
+                            }
+                        </svg>
+                    </div>
+                }
+            </section>
+
+            <!-- 2. Category Stock Allocation (Donut Chart) -->
+            <section class="panel chart-panel">
+                <div class="panel__head">
+                    <div>
+                        <h2>{{ 'dashboard.categoryDistribution' | transloco }}</h2>
+                        <span class="panel__subtitle">{{ 'dashboard.categorySubtitle' | transloco }}</span>
+                    </div>
+                </div>
+
+                @if (donutSlices().length === 0) {
+                    <p class="empty">{{ 'dashboard.noCategoryData' | transloco }}</p>
+                } @else {
+                    <div class="donut-container">
+                        <div class="donut-chart-wrapper">
+                            <svg class="donut-svg" viewBox="0 0 200 200">
+                                <!-- Background Track -->
+                                <circle cx="100" cy="100" r="70" class="donut-track" />
+
+                                <!-- Category Slices -->
+                                @for (slice of donutSlices(); track slice.categoryName) {
+                                    <circle
+                                        cx="100"
+                                        cy="100"
+                                        r="70"
+                                        [attr.stroke]="slice.color"
+                                        [attr.stroke-dasharray]="slice.strokeDasharray"
+                                        [attr.stroke-dashoffset]="slice.strokeDashoffset"
+                                        transform="rotate(-90 100 100)"
+                                        class="donut-slice"
+                                    />
+                                }
+
+                                <!-- Center text -->
+                                <text x="100" y="93" text-anchor="middle" class="donut-center-label">
+                                    {{ 'dashboard.stockValue' | transloco }}
+                                </text>
+                                <text x="100" y="114" text-anchor="middle" class="donut-center-value">
+                                    {{ summary.totalStockValue | fcfa }}
+                                </text>
+                            </svg>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="donut-legend">
+                            @for (slice of donutSlices(); track slice.categoryName) {
+                                <div class="legend-item">
+                                    <div class="legend-header">
+                                        <span class="legend-dot" [style.background-color]="slice.color"></span>
+                                        <span class="legend-name" [title]="slice.categoryName">{{ slice.categoryName }}</span>
+                                    </div>
+                                    <div class="legend-values">
+                                        <span class="legend-amount">{{ slice.stockValue | fcfa }}</span>
+                                        <span class="legend-pct">{{ slice.percentage }}%</span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </section>
+        </div>
+
+        <!-- DIAGRAMS ROW 2: Product Profitability & Inventory Health -->
+        <div class="charts-grid">
+            <!-- 3. Product Profitability & Margins (Horizontal Bar Chart) -->
+            <section class="panel chart-panel">
+                <div class="panel__head">
+                    <div>
+                        <h2>{{ 'dashboard.productProfitability' | transloco }}</h2>
+                        <span class="panel__subtitle">{{ 'dashboard.profitabilitySubtitle' | transloco }}</span>
+                    </div>
+                </div>
+
+                @if (productProfits().length === 0) {
+                    <p class="empty">{{ 'dashboard.noProfitData' | transloco }}</p>
+                } @else {
+                    <div class="profit-list">
+                        @for (item of productProfits(); track item.productId) {
+                            <div class="profit-item">
+                                <div class="profit-item__header">
+                                    <span class="profit-item__name">{{ item.productName }}</span>
+                                    <div class="profit-item__metrics">
+                                        <span class="profit-badge profit-badge--amount">+{{ item.totalProfit | fcfa }}</span>
+                                        <span class="profit-badge profit-badge--margin">{{ item.profitMarginPercentage }}% {{ 'dashboard.margin' | transloco }}</span>
+                                    </div>
+                                </div>
+                                <div class="profit-bar-container">
+                                    <div class="profit-bar-track">
+                                        <div
+                                            class="profit-bar-fill profit-bar-fill--revenue"
+                                            [style.width.%]="(item.totalRevenue / maxProfitRevenue()) * 100"
+                                        >
+                                            <div
+                                                class="profit-bar-fill profit-bar-fill--profit"
+                                                [style.width.%]="item.totalRevenue > 0 ? (item.totalProfit / item.totalRevenue) * 100 : 0"
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="profit-item__details">
+                                    <span>{{ 'dashboard.revenue' | transloco }}: {{ item.totalRevenue | fcfa }}</span>
+                                    <span>{{ 'dashboard.cost' | transloco }}: {{ item.totalCost | fcfa }}</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </section>
+
+            <!-- 4. Inventory Health & Risk Status (Segmented Ring Gauge & Status Cards) -->
+            <section class="panel chart-panel">
+                <div class="panel__head">
+                    <div>
+                        <h2>{{ 'dashboard.inventoryHealth' | transloco }}</h2>
+                        <span class="panel__subtitle">{{ 'dashboard.healthSubtitle' | transloco }}</span>
+                    </div>
+                </div>
+
+                <div class="health-container">
+                    <div class="health-ring-wrapper">
+                        <svg class="health-ring-svg" viewBox="0 0 140 140">
+                            <!-- Background Track -->
+                            <circle cx="70" cy="70" r="52" class="health-track" />
+
+                            <!-- Optimal Stock Slice (Green) -->
+                            <circle
+                                cx="70"
+                                cy="70"
+                                r="52"
+                                class="health-slice health-slice--optimal"
+                                [attr.stroke-dasharray]="stockHealth().inStockDash"
+                                [attr.stroke-dashoffset]="stockHealth().inStockOffset"
+                                transform="rotate(-90 70 70)"
+                            />
+
+                            <!-- Low Stock Slice (Mustard/Orange) -->
+                            <circle
+                                cx="70"
+                                cy="70"
+                                r="52"
+                                class="health-slice health-slice--low"
+                                [attr.stroke-dasharray]="stockHealth().lowStockDash"
+                                [attr.stroke-dashoffset]="stockHealth().lowStockOffset"
+                                transform="rotate(-90 70 70)"
+                            />
+
+                            <!-- Out of Stock Slice (Red) -->
+                            <circle
+                                cx="70"
+                                cy="70"
+                                r="52"
+                                class="health-slice health-slice--out"
+                                [attr.stroke-dasharray]="stockHealth().outOfStockDash"
+                                [attr.stroke-dashoffset]="stockHealth().outOfStockOffset"
+                                transform="rotate(-90 70 70)"
+                            />
+
+                            <!-- Center label -->
+                            <text x="70" y="66" text-anchor="middle" class="health-center-num">
+                                {{ stockHealth().totalProducts }}
+                            </text>
+                            <text x="70" y="82" text-anchor="middle" class="health-center-lbl">
+                                {{ 'dashboard.totalProducts' | transloco }}
+                            </text>
+                        </svg>
+                    </div>
+
+                    <div class="health-cards">
+                        <div class="health-card health-card--optimal">
+                            <div class="health-card__dot"></div>
+                            <div class="health-card__info">
+                                <span class="health-card__title">{{ 'dashboard.optimalStock' | transloco }}</span>
+                                <span class="health-card__count">{{ stockHealth().inStockCount }} ({{ stockHealth().inStockPercent }}%)</span>
+                            </div>
+                        </div>
+
+                        <div class="health-card health-card--low">
+                            <div class="health-card__dot"></div>
+                            <div class="health-card__info">
+                                <span class="health-card__title">{{ 'dashboard.lowStock' | transloco }}</span>
+                                <span class="health-card__count">{{ stockHealth().lowStockCount }} ({{ stockHealth().lowStockPercent }}%)</span>
+                            </div>
+                        </div>
+
+                        <div class="health-card health-card--out">
+                            <div class="health-card__dot"></div>
+                            <div class="health-card__info">
+                                <span class="health-card__title">{{ 'dashboard.outOfStock' | transloco }}</span>
+                                <span class="health-card__count">{{ stockHealth().outOfStockCount }} ({{ stockHealth().outOfStockPercent }}%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- LISTS ROW 3: Top-selling products & Low stock alerts -->
         <div class="columns">
             <section class="panel">
-                <h2>{{ 'dashboard.topSelling' | transloco }}</h2>
-                @if (summary.topSellingProducts.length === 0) {
+                <div class="panel__head">
+                    <h2>{{ 'dashboard.topSelling' | transloco }}</h2>
+                    <div class="sort-container">
+                        <button (click)="toggleSort()" class="sort-toggle-btn" type="button" [attr.aria-expanded]="isSortOpen()" [attr.aria-label]="'dashboard.sortOptions' | transloco">
+                            <svg class="sort-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m3 16 4 4 4-4"/>
+                                <path d="M7 20V4"/>
+                                <path d="m21 8-4-4-4 4"/>
+                                <path d="M17 4v16"/>
+                            </svg>
+                        </button>
+
+                        @if (isSortOpen()) {
+                            <div class="sort-popover">
+                                <div class="sort-popover__header">
+                                    <span class="sort-popover__title">{{ 'dashboard.sortBy' | transloco }}</span>
+                                    <button (click)="closeSort()" class="sort-popover__close" type="button" [attr.aria-label]="'common.cancel' | transloco">✕</button>
+                                </div>
+                                <div class="sort-popover__body">
+                                    <label class="sort-popover__label">
+                                        <span>{{ 'dashboard.sortByColumn' | transloco }}</span>
+                                        <select [value]="tempSortColumn()" (change)="onColumnChange($event)" class="custom-select">
+                                            <option value="productName">{{ 'dashboard.productName' | transloco }}</option>
+                                            <option value="quantitySold">{{ 'dashboard.quantitySold' | transloco }}</option>
+                                            <option value="totalPrice">{{ 'dashboard.totalPrice' | transloco }}</option>
+                                            <option value="productUnitPrice">{{ 'dashboard.unitPrice' | transloco }}</option>
+                                        </select>
+                                    </label>
+                                    <label class="sort-popover__label">
+                                        <span>{{ 'dashboard.direction' | transloco }}</span>
+                                        <select [value]="tempSortDirection()" (change)="onDirectionChange($event)" class="custom-select">
+                                            <option value="asc">{{ 'dashboard.ascending' | transloco }}</option>
+                                            <option value="desc">{{ 'dashboard.descending' | transloco }}</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="sort-popover__footer">
+                                    <button (click)="applySort()" class="sort-popover__apply" type="button">{{ 'dashboard.apply' | transloco }}</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                @if (sortedTopSellingProducts().length === 0) {
                     <p class="empty">{{ 'dashboard.noSalesYet' | transloco }}</p>
                 } @else {
                     <ol class="ranked">
-                        @for (item of summary.topSellingProducts; track item.productId) {
+                        @for (item of sortedTopSellingProducts(); track item.productId) {
                             <li>
                                 <div class="ranked__item">
                                     <span>{{ item.productName }}</span>

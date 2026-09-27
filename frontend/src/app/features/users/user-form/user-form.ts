@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Role, User } from '../../../core/models/user.model';
+import { Role, User } from '@core/models/user.model';
 
 export interface UserFormValue {
     username: string;

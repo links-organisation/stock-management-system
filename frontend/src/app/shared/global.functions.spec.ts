@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp, compare, formatDateForInput, formatDateV2, sortData } from './global.functions';
-import { Sort } from '../core/models/types';
+import { Sort } from '@core/models/types';
 
 describe('formatDateForInput', () => {
     it('returns an empty string for undefined', () => {

@@ -7,6 +7,7 @@ export interface NetworkAddress {
 export interface NetworkInfo {
     enabled: boolean;
     https: boolean;
+    certificateValid: boolean;
     port: number;
     addresses: NetworkAddress[];
 }

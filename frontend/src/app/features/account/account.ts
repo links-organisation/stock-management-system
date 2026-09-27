@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { AuthService } from '../../core/services/auth.service';
-import { UserService } from '../../core/services/user.service';
-import { roleLabelKey } from '../../core/models/types';
+import { AuthService } from '@core/services/auth/auth.service';
+import { UserService } from '@core/services/user/user.service';
+import { roleLabelKey } from '@core/models/types';
 
 function passwordsMatchValidator(): ValidatorFn {
     return (group: AbstractControl): ValidationErrors | null => {

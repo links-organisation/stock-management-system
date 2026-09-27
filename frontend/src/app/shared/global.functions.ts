@@ -1,7 +1,7 @@
 // Helper pour formater une date au format requis par <input type="date"> (local, sans décalage UTC)
 import { assertInInjectionContext, ElementRef, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Sort } from '../core/models/types';
+import { Sort } from '@core/models/types';
 
 export function formatDateForInput(date: Date | string | undefined): string {
     if (!date) return '';

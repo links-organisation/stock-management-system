@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from '../../../core/i18n/transloco-loader';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
 import { CartLine, CartSummary } from './cart-summary';
 
 function transloco() {

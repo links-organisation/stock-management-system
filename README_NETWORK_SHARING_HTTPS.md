@@ -1155,7 +1155,7 @@ Données locales Windows :
 
 Ne pas implémenter tout en même temps.
 
-## Phase 1 — réseau
+## Phase 1 - réseau
 
 1. `NetworkSharingService`
 2. `NetworkController`
@@ -1166,7 +1166,7 @@ Ne pas implémenter tout en même temps.
 
 ---
 
-## Phase 2 — interface Angular
+## Phase 2 - interface Angular
 
 1. `NetworkSharingService`
 2. `NetworkSharingComponent`
@@ -1177,7 +1177,7 @@ Ne pas implémenter tout en même temps.
 
 ---
 
-## Phase 3 — QR Code
+## Phase 3 - QR Code
 
 1. installer la librairie QR Code ;
 2. afficher le QR Code ;
@@ -1186,7 +1186,7 @@ Ne pas implémenter tout en même temps.
 
 ---
 
-## Phase 4 — HTTPS
+## Phase 4 - HTTPS
 
 1. créer `CertificateService` ;
 2. générer la CA ;
@@ -1198,7 +1198,7 @@ Ne pas implémenter tout en même temps.
 
 ---
 
-## Phase 5 — Windows
+## Phase 5 - Windows
 
 1. détecter l'état du firewall ;
 2. proposer une action de configuration ;
@@ -1207,7 +1207,7 @@ Ne pas implémenter tout en même temps.
 
 ---
 
-## Phase 6 — PWA
+## Phase 6 - PWA
 
 1. tester le Service Worker sur HTTPS LAN ;
 2. tester l'installation PWA ;

@@ -1,13 +1,14 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Category } from '../../../core/models/category.model';
-import { CategoryFormData, CategoryService } from '../../../core/services/category.service';
+import { Category } from '@core/models/category.model';
+import { CategoryFormData, CategoryService } from '@core/services/category/category.service';
+import { DetailsSheet } from '@shared/components/details-sheet/details-sheet';
 
 @Component({
     selector: 'app-category-list',
     standalone: true,
-    imports: [ReactiveFormsModule, TranslocoPipe],
+    imports: [ReactiveFormsModule, TranslocoPipe, DetailsSheet],
     templateUrl: './category-list.html',
     styleUrl: './category-list.scss',
 })
@@ -18,6 +19,7 @@ export class CategoryList {
     errorMessage = signal('');
     successMessage = signal('');
     editingCategory = signal<Category | null>(null);
+    selectedCategory = signal<Category | null>(null);
 
     private transloco = inject(TranslocoService);
     private fb = inject(FormBuilder);
@@ -29,6 +31,14 @@ export class CategoryList {
 
     constructor(private categoryService: CategoryService) {
         this.load();
+
+        effect(() => {
+            const selected = this.selectedCategory();
+            if (selected && !this.categories().some((c) => c.id === selected.id)) {
+                this.selectedCategory.set(null);
+            }
+        });
+
         this.form.get('name')?.valueChanges.subscribe({
             next: (name) => {
                 const currentName = name?.trim() ?? '';
@@ -197,6 +207,19 @@ export class CategoryList {
         this.editingCategory.set(null);
         this.form.reset({ name: '', prefix: '', description: '' });
         this.errorMessage.set('');
+    }
+
+    openDetails(category: Category): void {
+        this.selectedCategory.set(category);
+    }
+
+    closeDetails(): void {
+        this.selectedCategory.set(null);
+    }
+
+    editFromDetails(category: Category): void {
+        this.closeDetails();
+        this.onEdit(category);
     }
 
     onDeleteCategory(category: Category): void {

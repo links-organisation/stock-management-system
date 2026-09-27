@@ -2,13 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Category } from '../../../core/models/category.model';
-import { Product } from '../../../core/models/product.model';
-import { AuthService } from '../../../core/services/auth.service';
-import { CategoryService } from '../../../core/services/category.service';
-import { ProductFormData, ProductService } from '../../../core/services/product.service';
-import { ProductCard } from '../product-card/product-card';
-import { ProductForm } from '../product-form/product-form';
+import { Category } from '@core/models/category.model';
+import { Product } from '@core/models/product.model';
+import { AuthService } from '@core/services/auth/auth.service';
+import { CategoryService } from '@core/services/category/category.service';
+import { ProductFormData, ProductService } from '@core/services/product/product.service';
+import { ProductCard } from '@features/products/product-card/product-card';
+import { ProductForm } from '@features/products/product-form/product-form';
 
 @Component({
     selector: 'app-product-list',

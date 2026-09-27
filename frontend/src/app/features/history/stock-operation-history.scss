@@ -29,6 +29,10 @@ table {
     border-spacing: 0;
 }
 
+tbody tr {
+    cursor: pointer;
+}
+
 th {
     text-align: left;
     font-size: 0.75rem;
@@ -81,4 +85,11 @@ tr:last-child td {
 
 .comment {
     color: var(--color-ink-muted);
+}
+
+@media (max-width: 760px) {
+    th.hide-mobile,
+    td.hide-mobile {
+        display: none;
+    }
 }

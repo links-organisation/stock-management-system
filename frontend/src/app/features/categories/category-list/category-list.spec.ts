@@ -3,8 +3,8 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from '../../../core/i18n/transloco-loader';
-import { Category } from '../../../core/models/category.model';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
+import { Category } from '@core/models/category.model';
 import { CategoryList } from './category-list';
 
 function transloco() {
@@ -169,5 +169,54 @@ describe('CategoryList', () => {
 
         httpMock.expectNone((r) => r.url.endsWith('/categories/c1') && r.method === 'DELETE');
         expect(fixture.componentInstance.categories()).toEqual([beverages]);
+    });
+
+    it('starts with no category selected for the details popup', () => {
+        const fixture = createLoaded();
+
+        expect(fixture.componentInstance.selectedCategory()).toBeNull();
+    });
+
+    it('openDetails selects a category and closeDetails clears it', () => {
+        const fixture = createLoaded();
+
+        fixture.componentInstance.openDetails(beverages);
+        expect(fixture.componentInstance.selectedCategory()).toEqual(beverages);
+
+        fixture.componentInstance.closeDetails();
+        expect(fixture.componentInstance.selectedCategory()).toBeNull();
+    });
+
+    it('editFromDetails closes the popup and populates the edit form for that category', () => {
+        const fixture = createLoaded();
+        fixture.componentInstance.openDetails(beverages);
+
+        fixture.componentInstance.editFromDetails(beverages);
+
+        expect(fixture.componentInstance.selectedCategory()).toBeNull();
+        expect(fixture.componentInstance.editingCategory()).toEqual(beverages);
+    });
+
+    it('auto-closes the details popup once the selected category is actually deleted', () => {
+        const fixture = createLoaded();
+        fixture.componentInstance.openDetails(beverages);
+        vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+        fixture.componentInstance.onDeleteCategory(beverages);
+        httpMock.expectOne((r) => r.url.endsWith('/categories/c1') && r.method === 'DELETE').flush(null);
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.selectedCategory()).toBeNull();
+    });
+
+    it('keeps the details popup open when the delete confirmation is cancelled', () => {
+        const fixture = createLoaded();
+        fixture.componentInstance.openDetails(beverages);
+        vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+        fixture.componentInstance.onDeleteCategory(beverages);
+        fixture.detectChanges();
+
+        expect(fixture.componentInstance.selectedCategory()).toEqual(beverages);
     });
 });

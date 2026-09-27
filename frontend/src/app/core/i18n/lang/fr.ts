@@ -14,7 +14,6 @@ export const fr: Translation = {
         history: 'Historique',
         invoices: 'Factures',
         users: 'Utilisateurs',
-        network: 'Partage réseau',
         signOut: 'Déconnexion',
     },
     common: {
@@ -25,6 +24,7 @@ export const fr: Translation = {
         edit: 'Modifier',
         delete: 'Supprimer',
         remove: 'Retirer',
+        close: 'Fermer',
     },
     role: {
         superAdmin: 'Super administrateur',
@@ -85,6 +85,38 @@ export const fr: Translation = {
         left: 'restants',
         goToInventory: "Aller à l'inventaire",
         loadError: 'Impossible de charger les données du tableau de bord.',
+        sortOptions: 'Options de tri',
+        sortBy: 'Trier par :',
+        sortByColumn: 'Trier par colonne',
+        productName: 'Nom du produit',
+        quantitySold: 'Quantité vendue',
+        totalPrice: 'Prix total',
+        unitPrice: 'Prix unitaire',
+        direction: 'Direction',
+        ascending: 'Croissant',
+        descending: 'Décroissant',
+        apply: 'Appliquer',
+        salesTrend: 'Tendance des ventes (7 jours)',
+        salesTrendSubtitle: 'Chiffre d’affaires journalier et volume des transactions',
+        categoryDistribution: 'Stock par catégorie',
+        categorySubtitle: 'Allocation du capital par catégorie',
+        productProfitability: 'Bénéfices et marges des produits',
+        profitabilitySubtitle: 'Bénéfice brut généré par les ventes',
+        inventoryHealth: 'Santé de l’inventaire',
+        healthSubtitle: 'État des stocks et niveaux de risque',
+        optimalStock: 'Stock optimal',
+        lowStock: 'Stock faible',
+        outOfStock: 'Rupture de stock',
+        totalProducts: 'Produits totaux',
+        margin: 'marge',
+        revenue: 'Revenu',
+        cost: 'Coût',
+        profit: 'Bénéfice',
+        orders: 'commandes',
+        noData: 'Aucune donnée disponible pour le moment.',
+        noCategoryData: 'Aucun produit catégorisé pour le moment.',
+        noProfitData: 'Aucun bénéfice enregistré pour le moment.',
+        uncategorized: 'Non catégorisé',
     },
     categories: {
         title: 'Catégories',
@@ -129,6 +161,7 @@ export const fr: Translation = {
         performedBy: 'Effectué par',
         comment: 'Commentaire',
         loadError: "Impossible de charger l'historique des opérations.",
+        details: "Détail de l'opération",
     },
     inventory: {
         title: 'Inventaire',
@@ -249,13 +282,51 @@ export const fr: Translation = {
     },
     network: {
         title: 'Partage réseau',
-        description:
-            "D'autres appareils du même réseau peuvent accéder à l'application via l'une des adresses ci-dessous.",
+        shareButton: "Partager l'application sur le réseau ?",
         loading: 'Détection des adresses réseau…',
         loadError: 'Impossible de détecter les adresses réseau.',
         empty: "Aucune adresse réseau détectée. Cet appareil n'est peut-être pas connecté à un réseau.",
         copy: 'Copier',
         copied: 'Copié',
-        refresh: 'Actualiser',
+        showQr: 'Afficher le code QR',
+        hideQr: 'Masquer le code QR',
+        qrCodeAlt: 'Code QR pour cette adresse réseau',
+        downloadCertificate: 'Télécharger le certificat',
+        certificateTrustHint:
+            "Installez ce certificat sur les autres appareils pour éviter les avertissements de sécurité du navigateur lors de leur connexion.",
+        certificateInstall: {
+            toggleShow: 'Comment installer ce certificat',
+            toggleHide: "Masquer les instructions d'installation",
+            platformWindows: 'Windows',
+            platformMacos: 'macOS',
+            platformLinux: 'Linux',
+            platformAndroid: 'Android',
+            platformIos: 'iOS',
+            windows:
+                '1. Double-cliquez sur le fichier stockroom-cert.pem téléchargé.\n' +
+                '2. Cliquez sur « Installer le certificat… ».\n' +
+                '3. Choisissez « Ordinateur local » (nécessite les droits admin) ou « Utilisateur actuel », puis cliquez sur Suivant.\n' +
+                '4. Sélectionnez « Placer tous les certificats dans le magasin suivant », cliquez sur Parcourir, puis choisissez « Autorités de certification racines de confiance ».\n' +
+                "5. Cliquez sur Terminer, puis confirmez l'avertissement de sécurité.",
+            macos:
+                '1. Double-cliquez sur le fichier stockroom-cert.pem téléchargé pour l\'ouvrir dans Accès au trousseau.\n' +
+                '2. Repérez « Stockroom Local Network » dans le trousseau où il a été ajouté (généralement « login »).\n' +
+                '3. Double-cliquez sur le certificat, développez « Approbation », puis réglez « Lors de l\'utilisation de ce certificat » sur « Toujours faire confiance ».\n' +
+                '4. Fermez la fenêtre et saisissez votre mot de passe pour confirmer.',
+            linux:
+                '1. Copiez le certificat : sudo cp stockroom-cert.pem /usr/local/share/ca-certificates/stockroom.crt\n' +
+                '2. Mettez à jour le magasin de confiance : sudo update-ca-certificates (Debian/Ubuntu) ou sudo trust anchor stockroom-cert.pem (Fedora/Arch).\n' +
+                '3. Redémarrez votre navigateur pour qu\'il prenne en compte le magasin de confiance mis à jour.',
+            android:
+                '1. Transférez le fichier stockroom-cert.pem téléchargé sur votre appareil.\n' +
+                '2. Ouvrez Paramètres → Sécurité → Chiffrement et identifiants → Installer un certificat → Certificat CA.\n' +
+                "3. Sélectionnez le fichier et confirmez l'avertissement.\n" +
+                '4. Certaines applications et versions d\'Android peuvent encore afficher un avertissement pour les CA installées par l\'utilisateur.',
+            ios:
+                '1. Ouvrez le lien de téléchargement du certificat dans Safari sur l\'appareil.\n' +
+                '2. Autorisez l\'invite « Ce site web essaie de télécharger un profil de configuration ».\n' +
+                '3. Allez dans Réglages → Général → VPN et gestion de l\'appareil, puis installez le profil téléchargé.\n' +
+                '4. Puis allez dans Réglages → Général → Informations → Réglages de confiance des certificats, et activez la confiance totale pour « Stockroom Local Network ».',
+        },
     },
 };

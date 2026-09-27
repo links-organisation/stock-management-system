@@ -1,0 +1,94 @@
+.backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(31, 36, 33, 0.45);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+    overflow-y: auto;
+    z-index: 20;
+}
+
+.sheet {
+    background: var(--color-surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--color-border);
+    padding: 1.75rem;
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+@media (max-width: 480px) {
+    .backdrop {
+        padding: 2rem 1rem;
+    }
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+header h2 {
+    font-size: 1.125rem;
+}
+
+.icon-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--color-ink-muted);
+    padding: 0;
+}
+
+.icon-close:hover {
+    color: var(--color-ink);
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.field-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.875rem;
+}
+
+.field-row .label {
+    color: var(--color-ink-muted);
+}
+
+footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.625rem;
+    margin-top: 0.5rem;
+}
+
+button {
+    border-radius: var(--radius);
+    padding: 0.5625rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+button.ghost {
+    background: transparent;
+    border-color: var(--color-border);
+    color: var(--color-ink);
+}

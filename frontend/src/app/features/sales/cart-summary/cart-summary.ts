@@ -1,6 +1,6 @@
 import { Component, computed, input, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
+import { FcfaPipe } from '@shared/pipes/fcfa/fcfa-pipe';
 
 export interface CartLine {
     productId: string;

@@ -3,16 +3,17 @@ import { Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Product } from '../../core/models/product.model';
-import { OperationType, StockOperation } from '../../core/models/stock-operation.model';
-import { operationTypeLabelKey } from '../../core/models/types';
-import { ProductService } from '../../core/services/product.service';
-import { StockOperationService } from '../../core/services/stock-operation.service';
+import { Product } from '@core/models/product.model';
+import { OperationType, StockOperation } from '@core/models/stock-operation.model';
+import { operationTypeLabelKey } from '@core/models/types';
+import { ProductService } from '@core/services/product/product.service';
+import { StockOperationService } from '@core/services/stock-operation/stock-operation.service';
+import { DetailsSheet } from '@shared/components/details-sheet/details-sheet';
 
 @Component({
     selector: 'app-stock-operation-history',
     standalone: true,
-    imports: [ReactiveFormsModule, DatePipe, TranslocoPipe],
+    imports: [ReactiveFormsModule, DatePipe, TranslocoPipe, DetailsSheet],
     templateUrl: './stock-operation-history.html',
     styleUrl: './stock-operation-history.scss',
 })
@@ -22,6 +23,7 @@ export class StockOperationHistory {
     isLoading = signal(true);
     errorMessage = signal('');
     readonly operationTypeLabelKey = operationTypeLabelKey;
+    selectedOperation = signal<StockOperation | null>(null);
 
     private transloco = inject(TranslocoService);
     private fb = inject(FormBuilder);
@@ -62,5 +64,13 @@ export class StockOperationHistory {
                     this.isLoading.set(false);
                 },
             });
+    }
+
+    openDetails(operation: StockOperation): void {
+        this.selectedOperation.set(operation);
+    }
+
+    closeDetails(): void {
+        this.selectedOperation.set(null);
     }
 }

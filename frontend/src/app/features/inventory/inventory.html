@@ -21,25 +21,25 @@
                             <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
                         }
                     </th>
-                    <th class="table-sort-header" (click)="sortData({active: 'reference'})">
+                    <th class="table-sort-header hide-mobile" (click)="sortData({active: 'reference'})">
                         <span>{{ 'inventory.reference' | transloco }}</span>
                         @if (sort().active === 'reference') {
                             <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
                         }
                     </th>
-                    <th class="table-sort-header" (click)="sortData({active: 'category'})">
+                    <th class="table-sort-header hide-mobile" (click)="sortData({active: 'category'})">
                         <span>{{ 'inventory.category' | transloco }}</span>
                         @if (sort().active === 'category') {
                             <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
                         }
                     </th>
-                    <th class="table-sort-header" (click)="sortData({active: 'unitValue'})">
+                    <th class="table-sort-header hide-mobile" (click)="sortData({active: 'unitValue'})">
                         <span>{{ 'inventory.unitValue' | transloco }}</span>
                         @if (sort().active === 'unitValue') {
                             <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
                         }
                     </th>
-                    <th class="table-sort-header" (click)="sortData({active: 'stockValue'})">
+                    <th class="table-sort-header hide-mobile" (click)="sortData({active: 'stockValue'})">
                         <span>{{ 'inventory.stockValue' | transloco }}</span>
                         @if (sort().active === 'stockValue') {
                             <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
@@ -51,24 +51,24 @@
                             <img class="sort-arrow" [src]="sort().direction === 'asc' ? ArrowUp(true) : ArrowDown(true)" alt="arrow-up">
                         }
                     </th>
-                    <th></th>
+                    <th class="hide-mobile"></th>
                 </tr>
                 </thead>
                 <tbody>
                     @for (product of sortedProducts(); track product.id) {
-                        <tr [class.low]="product.lowStock">
+                        <tr (click)="openDetails(product)" [class.low]="product.lowStock">
                             <td>{{ product.name }}</td>
-                            <td class="data">{{ product.reference }}</td>
-                            <td>{{ product.categoryName || '-' }}</td>
-                            <td class="data">{{ product.purchasePrice | fcfa }}</td>
-                            <td class="data">{{ product.purchasePrice * product.quantityInStock | fcfa }}</td>
+                            <td class="data hide-mobile">{{ product.reference }}</td>
+                            <td class="hide-mobile">{{ product.categoryName || '-' }}</td>
+                            <td class="data hide-mobile">{{ product.purchasePrice | fcfa }}</td>
+                            <td class="data hide-mobile">{{ product.purchasePrice * product.quantityInStock | fcfa }}</td>
                             <td class="data">
                                 {{ product.quantityInStock }}
                                 @if (product.lowStock) {
                                     <span class="tag">{{ 'inventory.low' | transloco }}</span>
                                 }
                             </td>
-                            <td class="actions">
+                            <td (click)="$event.stopPropagation()" class="actions hide-mobile">
                                 @if (adjustingProductId() === product.id) {
                                     <div [formGroup]="adjustForm" class="adjust">
                                         <input formControlName="newQuantity" min="0" type="number"/>
@@ -92,5 +92,55 @@
                 </tbody>
             </table>
         </div>
+
+        @if (selectedProduct(); as product) {
+            <app-details-sheet (close)="closeDetails()" [title]="product.name">
+                <div class="field-row">
+                    <span class="label">{{ 'inventory.reference' | transloco }}: </span>
+                    <span class="data">{{ product.reference }}</span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'inventory.category' | transloco }}: </span>
+                    <span>{{ product.categoryName || '-' }}</span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'inventory.unitValue' | transloco }}: </span>
+                    <span class="data">{{ product.purchasePrice | fcfa }}</span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'inventory.stockValue' | transloco }}: </span>
+                    <span class="data">{{ product.purchasePrice * product.quantityInStock | fcfa }}</span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'inventory.quantity' | transloco }}: </span>
+                    <span class="data">
+                        {{ product.quantityInStock }}
+                        @if (product.lowStock) {
+                            <span class="tag">{{ 'inventory.low' | transloco }}</span>
+                        }
+                    </span>
+                </div>
+
+                <div sheet-actions>
+                    @if (adjustingProductId() === product.id) {
+                        <div [formGroup]="adjustForm" class="adjust adjust--sheet">
+                            <input formControlName="newQuantity" min="0" type="number"/>
+                            <input formControlName="comment"
+                                   [placeholder]="'inventory.reasonOptional' | transloco" type="text"/>
+                            <button (click)="saveAdjust(product)" [disabled]="isSaving()" class="btn primary"
+                                    type="button">{{ 'common.save' | transloco }}
+                            </button>
+                            <button (click)="cancelAdjust()" class="btn ghost"
+                                    type="button">{{ 'common.cancel' | transloco }}
+                            </button>
+                        </div>
+                    } @else {
+                        <button (click)="startAdjust(product)" class="btn primary"
+                                type="button">{{ 'inventory.adjust' | transloco }}
+                        </button>
+                    }
+                </div>
+            </app-details-sheet>
+        }
     }
 </div>

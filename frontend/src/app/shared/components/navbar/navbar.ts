@@ -2,9 +2,9 @@ import { DOCUMENT } from '@angular/common';
 import { Component, Inject, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { AuthService } from '../../../core/services/auth.service';
-import { SystemService } from '../../../core/services/system.service';
-import { AppLanguage, storeLanguage } from '../../../core/i18n/language';
+import { AuthService } from '@core/services/auth/auth.service';
+import { SystemService } from '@core/services/system/system.service';
+import { AppLanguage, storeLanguage } from '@core/i18n/language';
 
 interface NavItem {
     path: string;
@@ -42,7 +42,6 @@ export class Navbar {
         if (this.authService.isAdminOrAbove()) {
             items.push({ path: '/inventory', labelKey: 'nav.inventory' });
             items.push({ path: '/categories', labelKey: 'nav.categories' });
-            items.push({ path: '/network', labelKey: 'nav.network' });
         }
         items.push({ path: '/history', labelKey: 'nav.history' });
         items.push({ path: '/invoices', labelKey: 'nav.invoices' });

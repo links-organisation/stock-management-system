@@ -1,12 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Product } from '../../../core/models/product.model';
-import { SaleItemRequest } from '../../../core/models/sale.model';
-import { ProductService } from '../../../core/services/product.service';
-import { SaleService } from '../../../core/services/sale.service';
-import { CartLine, CartSummary } from '../cart-summary/cart-summary';
-import { ProductPick, ProductSelector } from '../product-selector/product-selector';
+import { Product } from '@core/models/product.model';
+import { SaleItemRequest } from '@core/models/sale.model';
+import { ProductService } from '@core/services/product/product.service';
+import { SaleService } from '@core/services/sale/sale.service';
+import { CartLine, CartSummary } from '@features/sales/cart-summary/cart-summary';
+import { ProductPick, ProductSelector } from '@features/sales/product-selector/product-selector';
 
 @Component({
     selector: 'app-sale',

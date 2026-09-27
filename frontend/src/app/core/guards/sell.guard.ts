@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '@core/services/auth/auth.service';
 
 /** Restricts the Sale route to roles that can actually create a sale (not Compta). */
 export const sellGuard: CanActivateFn = () => {
