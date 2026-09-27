@@ -1,15 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Role, User } from '../../../core/models/user.model';
-import { roleLabelKey } from '../../../core/models/types';
-import { ASSIGNABLE_ROLES, UserService } from '../../../core/services/user.service';
-import { AuthService } from '../../../core/services/auth.service';
-import { UserForm, UserFormValue } from '../user-form/user-form';
+import { Role, User } from '@core/models/user.model';
+import { roleLabelKey } from '@core/models/types';
+import { ASSIGNABLE_ROLES, UserService } from '@core/services/user/user.service';
+import { AuthService } from '@core/services/auth/auth.service';
+import { UserForm, UserFormValue } from '@features/users/user-form/user-form';
+import { DetailsSheet } from '@shared/components/details-sheet/details-sheet';
 
 @Component({
     selector: 'app-user-list',
     standalone: true,
-    imports: [UserForm, TranslocoPipe],
+    imports: [UserForm, TranslocoPipe, DetailsSheet],
     templateUrl: './user-list.html',
     styleUrl: './user-list.scss',
 })
@@ -21,6 +22,7 @@ export class UserList {
 
     isFormOpen = signal(false);
     editingUser = signal<User | null>(null);
+    selectedUser = signal<User | null>(null);
     readonly roleLabelKey = roleLabelKey;
 
     private transloco = inject(TranslocoService);
@@ -85,6 +87,19 @@ export class UserList {
     closeForm(): void {
         this.isFormOpen.set(false);
         this.editingUser.set(null);
+    }
+
+    openDetails(user: User): void {
+        this.selectedUser.set(user);
+    }
+
+    closeDetails(): void {
+        this.selectedUser.set(null);
+    }
+
+    editFromDetails(user: User): void {
+        this.closeDetails();
+        this.openEditForm(user);
     }
 
     onSave(value: UserFormValue): void {

@@ -1,7 +1,7 @@
 <div class="page">
     <header class="page-head">
         <h1>{{ 'users.title' | transloco }}</h1>
-        <button (click)="openCreateForm()" class="primary" type="button">{{ 'users.registerUser' | transloco }}</button>
+        <button (click)="openCreateForm()" class="btn primary" type="button">{{ 'users.registerUser' | transloco }}</button>
     </header>
 
     @if (errorMessage()) {
@@ -19,20 +19,24 @@
                 <thead>
                 <tr>
                     <th>{{ 'users.fullName' | transloco }}</th>
-                    <th>{{ 'users.username' | transloco }}</th>
+                    <th class="hide-mobile">{{ 'users.username' | transloco }}</th>
                     <th>{{ 'users.role' | transloco }}</th>
-                    <th></th>
+                    <th class="hide-mobile"></th>
                 </tr>
                 </thead>
                 <tbody>
                     @for (user of users(); track user.id) {
-                        <tr>
+                        <tr (click)="openDetails(user)">
                             <td>{{ user.fullName }}</td>
-                            <td class="data">{{ user.username }}</td>
-                            <td><span [class]="'role--' + user.role.toLowerCase()" class="role">{{ roleLabelKey[user.role] | transloco }}</span></td>
-                            <td class="actions">
+                            <td class="data hide-mobile">{{ user.username }}</td>
+                            <td>
+                                <span [class]="'role--' + user.role.toLowerCase()"
+                                      class="role">{{ roleLabelKey[user.role] | transloco }}</span>
+                            </td>
+                            <td (click)="$event.stopPropagation()" class="actions hide-mobile">
                                 @if (canManage(user)) {
-                                    <button (click)="openEditForm(user)" type="button">{{ 'common.edit' | transloco }}</button>
+                                    <button (click)="openEditForm(user)" type="button">{{ 'common.edit' | transloco }}
+                                    </button>
                                 }
                             </td>
                         </tr>
@@ -40,6 +44,24 @@
                 </tbody>
             </table>
         </div>
+
+        @if (selectedUser(); as user) {
+            <app-details-sheet (close)="closeDetails()" [title]="user.fullName">
+                <div class="field-row">
+                    <span class="label">{{ 'users.username' | transloco }}: </span>
+                    <span class="data">{{ user.username }}</span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'users.role' | transloco }}: </span>
+                    <span [class]="'role--' + user.role.toLowerCase()"
+                          class="role">{{ roleLabelKey[user.role] | transloco }}</span>
+                </div>
+
+                @if (canManage(user)) {
+                    <button class="btn primary" (click)="editFromDetails(user)" sheet-actions type="button">{{ 'common.edit' | transloco }}</button>
+                }
+            </app-details-sheet>
+        }
     }
 
     @if (isFormOpen()) {

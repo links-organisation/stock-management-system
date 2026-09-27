@@ -148,4 +148,55 @@ class DashboardServiceTest {
 
         assertThat(summary.lowStockProducts()).extracting(ProductResponse::name).containsExactly("WellBelow", "Below");
     }
+
+    @Test
+    void getSummary_calculatesCategoryDistributionStockHealthAndTimeline() {
+        Product p1 = product("Soda", new BigDecimal("100"), 10, 2); // Stock val: 1000
+        p1.setSellingPrice(new BigDecimal("150"));
+        com.shopstock.entity.Category cat = new com.shopstock.entity.Category();
+        cat.setId(UUID.randomUUID());
+        cat.setName("Beverages");
+        p1.setCategory(cat);
+
+        Product p2 = product("Bread", new BigDecimal("200"), 0, 5); // Out of stock
+        p2.setSellingPrice(new BigDecimal("250"));
+
+        when(productRepository.findAll()).thenReturn(List.of(p1, p2));
+
+        Sale sale = new Sale();
+        sale.setSaleDate(LocalDateTime.now());
+        sale.setTotalAmount(new BigDecimal("450"));
+        SaleItem item = new SaleItem();
+        item.setProduct(p1);
+        item.setQuantity(3);
+        item.setUnitPrice(new BigDecimal("150"));
+        item.setSubtotal(new BigDecimal("450"));
+        sale.setItems(List.of(item));
+        when(saleRepository.findAll()).thenReturn(List.of(sale));
+
+        DashboardSummaryResponse summary = dashboardService.getSummary();
+
+        // Stock health
+        assertThat(summary.stockHealth().totalProducts()).isEqualTo(2);
+        assertThat(summary.stockHealth().inStockCount()).isEqualTo(1);
+        assertThat(summary.stockHealth().outOfStockCount()).isEqualTo(1);
+        assertThat(summary.stockHealth().lowStockCount()).isEqualTo(0);
+
+        // Sales timeline (7 days)
+        assertThat(summary.salesTimeline()).hasSize(7);
+        DashboardSummaryResponse.SalesTimelinePoint todayPoint = summary.salesTimeline().get(6);
+        assertThat(todayPoint.revenue()).isEqualByComparingTo("450");
+        assertThat(todayPoint.orderCount()).isEqualTo(1);
+
+        // Product profits: Soda (Revenue 450, Cost 300, Profit 150)
+        assertThat(summary.productProfits()).hasSize(1);
+        DashboardSummaryResponse.ProductProfit profit = summary.productProfits().get(0);
+        assertThat(profit.productName()).isEqualTo("Soda");
+        assertThat(profit.totalProfit()).isEqualByComparingTo("150");
+        assertThat(profit.profitMarginPercentage()).isCloseTo(33.33, org.assertj.core.data.Offset.offset(0.01));
+
+        // Category distribution
+        assertThat(summary.categoryDistribution()).isNotEmpty();
+        assertThat(summary.categoryDistribution().stream().anyMatch(c -> c.categoryName().equals("Beverages"))).isTrue();
+    }
 }

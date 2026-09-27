@@ -1,7 +1,7 @@
 import { Component, input, output } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Product } from '../../../core/models/product.model';
-import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
+import { Product } from '@core/models/product.model';
+import { FcfaPipe } from '@shared/pipes/fcfa/fcfa-pipe';
 
 @Component({
     selector: 'app-product-card',

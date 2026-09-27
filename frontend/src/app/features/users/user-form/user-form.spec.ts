@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from '../../../core/i18n/transloco-loader';
-import { User } from '../../../core/models/user.model';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
+import { User } from '@core/models/user.model';
 import { UserForm, UserFormValue } from './user-form';
 
 function transloco() {

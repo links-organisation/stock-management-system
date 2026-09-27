@@ -1,10 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { Invoice } from '../../../core/models/invoice.model';
-import { InvoiceService } from '../../../core/services/invoice.service';
-import { InvoiceDetail } from '../invoice-detail/invoice-detail';
-import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
+import { Invoice } from '@core/models/invoice.model';
+import { InvoiceService } from '@core/services/invoice/invoice.service';
+import { InvoiceDetail } from '@features/invoices/invoice-detail/invoice-detail';
+import { FcfaPipe } from '@shared/pipes/fcfa/fcfa-pipe';
 
 @Component({
     selector: 'app-invoice-list',

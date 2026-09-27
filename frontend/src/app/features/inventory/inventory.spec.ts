@@ -3,8 +3,8 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from '../../core/i18n/transloco-loader';
-import { Product } from '../../core/models/product.model';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
+import { Product } from '@core/models/product.model';
 import { Inventory } from './inventory';
 
 function transloco() {
@@ -161,5 +161,38 @@ describe('Inventory', () => {
 
         expect(fixture.componentInstance.errorMessage()).not.toBe('');
         expect(fixture.componentInstance.isSaving()).toBe(false);
+    });
+
+    it('starts with no product selected for the details popup', () => {
+        const fixture = createLoaded();
+
+        expect(fixture.componentInstance.selectedProduct()).toBeNull();
+    });
+
+    it('openDetails selects a product and closeDetails clears it', () => {
+        const fixture = createLoaded();
+
+        fixture.componentInstance.openDetails(water);
+        expect(fixture.componentInstance.selectedProduct()).toEqual(water);
+
+        fixture.componentInstance.closeDetails();
+        expect(fixture.componentInstance.selectedProduct()).toBeNull();
+    });
+
+    it('adjust actions triggered from the details popup work the same as from the row', () => {
+        const fixture = createLoaded();
+        fixture.componentInstance.openDetails(water);
+
+        fixture.componentInstance.startAdjust(water);
+        expect(fixture.componentInstance.adjustingProductId()).toBe('p1');
+
+        fixture.componentInstance.adjustForm.setValue({ newQuantity: 50, comment: 'recount' });
+        fixture.componentInstance.saveAdjust(water);
+
+        const req = httpMock.expectOne((r) => r.url.endsWith('/inventory/adjust') && r.method === 'POST');
+        req.flush({ ...water, quantityInStock: 50 });
+
+        expect(fixture.componentInstance.adjustingProductId()).toBeNull();
+        expect(fixture.componentInstance.selectedProduct()).toEqual(water);
     });
 });

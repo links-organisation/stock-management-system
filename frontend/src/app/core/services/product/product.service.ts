@@ -1,0 +1,64 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { API_BASE_URL, API_PREFIX, API_VERSION } from '@core/api-config';
+import { Product, ProductRequest } from '@core/models/product.model';
+import { AuthService } from '@core/services/auth/auth.service';
+
+export type ProductFormData = Omit<ProductRequest, 'userId'>;
+
+@Injectable({ providedIn: 'root' })
+export class ProductService {
+    private readonly baseUrl = `${API_BASE_URL}/${API_PREFIX}/${API_VERSION}/products`;
+
+    constructor(
+        private http: HttpClient,
+        private authService: AuthService,
+    ) {}
+
+    getAll(): Observable<Product[]> {
+        return this.http.get<Product[]>(this.baseUrl);
+    }
+
+    getById(id: string): Observable<Product> {
+        return this.http.get<Product>(`${this.baseUrl}/${id}`);
+    }
+
+    search(query: string, categoryId?: string | null): Observable<Product[]> {
+        const params: Record<string, string> = {};
+        if (query) params['query'] = query;
+        if (categoryId != null) params['categoryId'] = categoryId;
+        return this.http.get<Product[]>(`${this.baseUrl}/search`, { params });
+    }
+
+    create(data: ProductFormData): Observable<Product> {
+        return this.http.post<Product>(this.baseUrl, this.withUser(data));
+    }
+
+    update(id: string, data: ProductFormData): Observable<Product> {
+        return this.http.put<Product>(`${this.baseUrl}/${id}`, this.withUser(data));
+    }
+
+    delete(id: string): Observable<void> {
+        return this.http.delete<void>(`${this.baseUrl}/${id}`, {
+            params: { userId: this.authService.currentUserId! },
+        });
+    }
+
+    getNextRef(prefix: string): Observable<string> {
+        return this.http.get<string>(`${this.baseUrl}/next-ref`, {
+            responseType: 'text' as 'json',
+            params: { prefix, userId: this.authService.currentUserId! },
+        });
+    }
+
+    checkRefAvailability(reference: string): Observable<{ available: boolean }> {
+        return this.http.get<{ available: boolean }>(`${this.baseUrl}/check-availability`, {
+            params: { reference, userId: this.authService.currentUserId! },
+        });
+    }
+
+    private withUser(data: ProductFormData): ProductRequest {
+        return { ...data, userId: this.authService.currentUserId! };
+    }
+}

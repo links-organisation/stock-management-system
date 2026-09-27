@@ -1,8 +1,8 @@
 import { DatePipe } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Invoice } from '../../../core/models/invoice.model';
-import { FcfaPipe } from '../../../shared/pipes/fcfa/fcfa-pipe';
+import { Invoice } from '@core/models/invoice.model';
+import { FcfaPipe } from '@shared/pipes/fcfa/fcfa-pipe';
 
 @Component({
     selector: 'app-invoice-detail',

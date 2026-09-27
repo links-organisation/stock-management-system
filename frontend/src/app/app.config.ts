@@ -4,8 +4,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideServiceWorker } from '@angular/service-worker';
 import { provideTransloco } from '@jsverse/transloco';
 import { routes } from './app.routes';
-import { TranslocoHttpLoader } from './core/i18n/transloco-loader';
-import { AVAILABLE_LANGUAGES, readStoredLanguage } from './core/i18n/language';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
+import { AVAILABLE_LANGUAGES, readStoredLanguage } from '@core/i18n/language';
 
 export const appConfig: ApplicationConfig = {
     providers: [

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { sellGuard } from './sell.guard';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '@core/services/auth/auth.service';
 
 describe('sellGuard', () => {
     function setup(canSell: boolean) {

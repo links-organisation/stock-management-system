@@ -5,10 +5,10 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideRouter, Router } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
 import { Navbar } from './navbar';
-import { AuthService } from '../../../core/services/auth.service';
-import { SystemService } from '../../../core/services/system.service';
-import { TranslocoHttpLoader } from '../../../core/i18n/transloco-loader';
-import { User } from '../../../core/models/user.model';
+import { AuthService } from '@core/services/auth/auth.service';
+import { SystemService } from '@core/services/system/system.service';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
+import { User } from '@core/models/user.model';
 
 describe('Navbar', () => {
     let authServiceMock: {
@@ -86,7 +86,6 @@ describe('Navbar', () => {
         expect(paths).toContain('/inventory');
         expect(paths).toContain('/categories');
         expect(paths).toContain('/users');
-        expect(paths).toContain('/network');
     });
 
     it('toggleSidebar flips isSidebarOpen and toggles the no-scroll body class', () => {

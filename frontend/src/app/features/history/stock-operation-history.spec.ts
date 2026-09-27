@@ -3,8 +3,8 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from '../../core/i18n/transloco-loader';
-import { StockOperation } from '../../core/models/stock-operation.model';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
+import { StockOperation } from '@core/models/stock-operation.model';
 import { StockOperationHistory } from './stock-operation-history';
 
 function transloco() {
@@ -105,5 +105,21 @@ describe('StockOperationHistory', () => {
         expect(fixture.componentInstance.operationTypeLabelKey['ADJUSTMENT']).toBe('operationType.adjustment');
         expect(fixture.componentInstance.operationTypeLabelKey['SALE']).toBe('operationType.sale');
         expect(fixture.componentInstance.operationTypeLabelKey['REGISTRATION']).toBe('operationType.registration');
+    });
+
+    it('starts with no operation selected for the details popup', () => {
+        const fixture = createLoaded();
+
+        expect(fixture.componentInstance.selectedOperation()).toBeNull();
+    });
+
+    it('openDetails selects an operation and closeDetails clears it', () => {
+        const fixture = createLoaded();
+
+        fixture.componentInstance.openDetails(operation);
+        expect(fixture.componentInstance.selectedOperation()).toEqual(operation);
+
+        fixture.componentInstance.closeDetails();
+        expect(fixture.componentInstance.selectedOperation()).toBeNull();
     });
 });

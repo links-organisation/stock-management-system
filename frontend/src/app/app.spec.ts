@@ -5,8 +5,8 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideTransloco } from '@jsverse/transloco';
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
-import { TranslocoHttpLoader } from './core/i18n/transloco-loader';
-import { SystemService } from './core/services/system.service';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
+import { SystemService } from '@core/services/system/system.service';
 
 describe('App', () => {
     beforeEach(async () => {

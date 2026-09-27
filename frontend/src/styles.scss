@@ -149,6 +149,15 @@ table {
     -webkit-overflow-scrolling: touch;
 }
 
+.btn {
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.625rem 1.125rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
 .primary {
     color: var(--color-ink) !important;
     background-color: var(--color-accent) !important;
@@ -160,6 +169,7 @@ table {
 }
 
 .primary-outline {
+    border: 1px solid !important;
     color: var(--color-accent) !important;
     border-color: var(--color-accent) !important;
     background-color: var(--color-surface) !important;
@@ -182,6 +192,7 @@ table {
 }
 
 .secondary-outline {
+    border: 1px solid !important;
     color: var(--color-secondary) !important;
     border-color: var(--color-secondary) !important;
     background-color: var(--color-surface) !important;
@@ -204,6 +215,7 @@ table {
 }
 
 .danger-outline {
+    border: 1px solid !important;
     color: var(--color-danger) !important;
     border-color: var(--color-danger) !important;
     background-color: var(--color-surface) !important;
@@ -213,6 +225,16 @@ table {
     color: var(--color-paper) !important;
     border-color: var(--color-danger-hover) !important;
     background-color: var(--color-danger-hover) !important;
+}
+
+.ghost {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-ink);
+}
+
+.ghost:hover {
+    border-color: var(--color-ink-muted);
 }
 
 .error {

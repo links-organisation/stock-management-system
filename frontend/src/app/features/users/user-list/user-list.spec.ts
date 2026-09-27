@@ -3,9 +3,9 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from '../../../core/i18n/transloco-loader';
-import { AuthService } from '../../../core/services/auth.service';
-import { User } from '../../../core/models/user.model';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
+import { AuthService } from '@core/services/auth/auth.service';
+import { User } from '@core/models/user.model';
 import { UserList } from './user-list';
 
 function transloco() {
@@ -171,5 +171,32 @@ describe('UserList', () => {
             .flush('boom', { status: 409, statusText: 'Conflict' });
 
         expect(fixture.componentInstance.errorMessage()).not.toBe('');
+    });
+
+    it('starts with no user selected for the details popup', () => {
+        const fixture = createLoaded();
+
+        expect(fixture.componentInstance.selectedUser()).toBeNull();
+    });
+
+    it('openDetails selects a user and closeDetails clears it', () => {
+        const fixture = createLoaded();
+
+        fixture.componentInstance.openDetails(seller);
+        expect(fixture.componentInstance.selectedUser()).toEqual(seller);
+
+        fixture.componentInstance.closeDetails();
+        expect(fixture.componentInstance.selectedUser()).toBeNull();
+    });
+
+    it('editFromDetails closes the popup and opens the edit form for that user', () => {
+        const fixture = createLoaded();
+        fixture.componentInstance.openDetails(seller);
+
+        fixture.componentInstance.editFromDetails(seller);
+
+        expect(fixture.componentInstance.selectedUser()).toBeNull();
+        expect(fixture.componentInstance.editingUser()).toEqual(seller);
+        expect(fixture.componentInstance.isFormOpen()).toBe(true);
     });
 });

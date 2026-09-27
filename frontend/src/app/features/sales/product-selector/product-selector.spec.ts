@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from '../../../core/i18n/transloco-loader';
-import { Product } from '../../../core/models/product.model';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
+import { Product } from '@core/models/product.model';
 import { ProductPick, ProductSelector } from './product-selector';
 
 function transloco() {

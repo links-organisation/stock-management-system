@@ -22,7 +22,7 @@ public class StockManagementApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     void applicationReadyEvent() {
-        browse("http://localhost:" + SERVER_PORT);
+//        browse("http://localhost:" + SERVER_PORT);
     }
 
     public static void browse(String url) {

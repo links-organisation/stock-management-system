@@ -1,0 +1,17 @@
+<div (click)="close.emit()" class="backdrop">
+    <section (click)="$event.stopPropagation()" class="sheet">
+        <header>
+            <h2>{{ title() }}</h2>
+            <button (click)="close.emit()" [attr.aria-label]="'common.close' | transloco" class="icon-close" type="button">
+                ×
+            </button>
+        </header>
+        <div class="body">
+            <ng-content></ng-content>
+        </div>
+        <footer>
+            <ng-content select="[sheet-actions]"></ng-content>
+            <button (click)="close.emit()" class="ghost" type="button">{{ 'common.close' | transloco }}</button>
+        </footer>
+    </section>
+</div>

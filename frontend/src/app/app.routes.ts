@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
-import { adminGuard } from './core/guards/admin.guard';
-import { sellGuard } from './core/guards/sell.guard';
+import { authGuard } from '@core/guards/auth.guard';
+import { adminGuard } from '@core/guards/admin.guard';
+import { sellGuard } from '@core/guards/sell.guard';
 
 export const routes: Routes = [
     { path: 'login', loadComponent: () => import('./features/login/login').then((m) => m.Login) },
@@ -53,12 +53,6 @@ export const routes: Routes = [
         path: 'users',
         canActivate: [authGuard, adminGuard],
         loadComponent: () => import('./features/users/user-list/user-list').then((m) => m.UserList),
-    },
-    {
-        path: 'network',
-        canActivate: [authGuard, adminGuard],
-        loadComponent: () =>
-            import('./features/network-sharing/network-sharing').then((m) => m.NetworkSharing),
     },
     {
         path: 'account',

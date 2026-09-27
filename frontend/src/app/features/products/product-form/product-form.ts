@@ -1,9 +1,9 @@
 import { Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
-import { Category } from '../../../core/models/category.model';
-import { Product } from '../../../core/models/product.model';
-import { ProductFormData, ProductService } from '../../../core/services/product.service';
+import { Category } from '@core/models/category.model';
+import { Product } from '@core/models/product.model';
+import { ProductFormData, ProductService } from '@core/services/product/product.service';
 
 @Component({
     selector: 'app-product-form',

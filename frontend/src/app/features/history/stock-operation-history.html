@@ -47,30 +47,64 @@
                 <thead>
                 <tr>
                     <th>{{ 'history.date' | transloco }}</th>
-                    <th>{{ 'history.type' | transloco }}</th>
+                    <th class="hide-mobile">{{ 'history.type' | transloco }}</th>
                     <th>{{ 'history.product' | transloco }}</th>
                     <th>{{ 'history.change' | transloco }}</th>
-                    <th>{{ 'history.performedBy' | transloco }}</th>
-                    <th>{{ 'history.comment' | transloco }}</th>
+                    <th class="hide-mobile">{{ 'history.performedBy' | transloco }}</th>
+                    <th class="hide-mobile">{{ 'history.comment' | transloco }}</th>
                 </tr>
                 </thead>
                 <tbody>
                     @for (op of operations(); track op.id) {
-                        <tr>
+                        <tr (click)="openDetails(op)">
                             <td class="data">{{ op.operationDate | date: 'medium' }}</td>
-                            <td><span [class]="'type--' + op.operationType.toLowerCase()"
-                                      class="type">{{ operationTypeLabelKey[op.operationType] | transloco }}</span></td>
+                            <td class="hide-mobile">
+                                <span [class]="'type--' + op.operationType.toLowerCase()"
+                                      class="type">{{ operationTypeLabelKey[op.operationType] | transloco }}</span>
+                            </td>
                             <td>{{ op.productName }}</td>
                             <td [class.negative]="op.quantityChange < 0" [class.positive]="op.quantityChange > 0"
                                 class="data">
                                 {{ op.quantityChange > 0 ? '+' : '' }}{{ op.quantityChange }}
                             </td>
-                            <td>{{ op.performedByFullname }}</td>
-                            <td class="comment">{{ op.comment || '-' }}</td>
+                            <td class="hide-mobile">{{ op.performedByFullname }}</td>
+                            <td class="comment hide-mobile">{{ op.comment || '-' }}</td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
+
+        @if (selectedOperation(); as op) {
+            <app-details-sheet (close)="closeDetails()" [title]="'history.details' | transloco">
+                <div class="field-row">
+                    <span class="label">{{ 'history.date' | transloco }}: </span>
+                    <span class="data">{{ op.operationDate | date: 'medium' }}</span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'history.type' | transloco }}: </span>
+                    <span [class]="'type--' + op.operationType.toLowerCase()"
+                          class="type">{{ operationTypeLabelKey[op.operationType] | transloco }}</span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'history.product' | transloco }}: </span>
+                    <span>{{ op.productName }}</span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'history.change' | transloco }}: </span>
+                    <span [class.negative]="op.quantityChange < 0" [class.positive]="op.quantityChange > 0" class="data">
+                        {{ op.quantityChange > 0 ? '+' : '' }}{{ op.quantityChange }}
+                    </span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'history.performedBy' | transloco }}: </span>
+                    <span>{{ op.performedByFullname }} ({{ '@' + op.performedByUsername }})</span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'history.comment' | transloco }}: </span>
+                    <span>{{ op.comment || '-' }}</span>
+                </div>
+            </app-details-sheet>
+        }
     }
 </div>

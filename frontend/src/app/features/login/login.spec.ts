@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter, Router } from '@angular/router';
 import { provideTransloco } from '@jsverse/transloco';
-import { TranslocoHttpLoader } from '../../core/i18n/transloco-loader';
+import { TranslocoHttpLoader } from '@core/i18n/transloco-loader';
 import { Login } from './login';
 
 function transloco() {

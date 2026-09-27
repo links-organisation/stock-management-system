@@ -32,11 +32,11 @@
             </label>
         </div>
         <div class="form-actions">
-            <button [disabled]="isSaving()" class="primary" type="submit">
+            <button [disabled]="isSaving()" class="btn primary" type="submit">
                 {{ isSaving() ? (editingCategory() ? ('categories.saving' | transloco) : ('categories.creating' | transloco)) : (editingCategory() ? ('categories.saveChanges' | transloco) : ('categories.createCategory' | transloco)) }}
             </button>
             @if (editingCategory()) {
-                <button (click)="cancelEdit()" class="ghost" type="button">
+                <button (click)="cancelEdit()" class="btn ghost" type="button">
                     {{ 'common.cancel' | transloco }}
                 </button>
             }
@@ -61,21 +61,21 @@
                 <tr>
                     <th>{{ 'categories.name' | transloco }}</th>
                     <th>{{ 'categories.prefix' | transloco }}</th>
-                    <th>{{ 'categories.description' | transloco }}</th>
-                    <th></th>
+                    <th class="hide-mobile">{{ 'categories.description' | transloco }}</th>
+                    <th class="hide-mobile"></th>
                 </tr>
                 </thead>
                 <tbody>
                     @for (category of categories(); track category.id) {
-                        <tr>
+                        <tr (click)="openDetails(category)">
                             <td>{{ category.name }}</td>
                             <td>{{ category.prefix }}</td>
-                            <td>{{ category.description || '-' }}</td>
-                            <td class="actions">
-                                <button (click)="onEdit(category)" class="secondary-outline" type="button">
+                            <td class="hide-mobile">{{ category.description || '-' }}</td>
+                            <td (click)="$event.stopPropagation()" class="actions hide-mobile">
+                                <button (click)="onEdit(category)" class="btn secondary-outline" type="button">
                                     {{ 'common.edit' | transloco }}
                                 </button>
-                                <button (click)="onDeleteCategory(category)" class="danger-outline" type="button">
+                                <button (click)="onDeleteCategory(category)" class="btn danger-outline" type="button">
                                     {{ 'common.delete' | transloco }}
                                 </button>
                             </td>
@@ -84,5 +84,27 @@
                 </tbody>
             </table>
         </div>
+
+        @if (selectedCategory(); as category) {
+            <app-details-sheet (close)="closeDetails()" [title]="category.name">
+                <div class="field-row">
+                    <span class="label">{{ 'categories.prefix' | transloco }}</span>
+                    <span>{{ category.prefix }}</span>
+                </div>
+                <div class="field-row">
+                    <span class="label">{{ 'categories.description' | transloco }}</span>
+                    <span>{{ category.description || '-' }}</span>
+                </div>
+
+                <div sheet-actions style="display: flex; gap: 0.75rem;">
+                    <button (click)="editFromDetails(category)" class="btn secondary-outline" type="button">
+                        {{ 'common.edit' | transloco }}
+                    </button>
+                    <button (click)="onDeleteCategory(category)" class="btn danger" type="button">
+                        {{ 'common.delete' | transloco }}
+                    </button>
+                </div>
+            </app-details-sheet>
+        }
     }
 </div>
